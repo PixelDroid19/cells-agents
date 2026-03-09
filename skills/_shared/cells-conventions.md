@@ -133,6 +133,18 @@ Do and don't examples:
 - Don't: `new CustomEvent('cuenta-seleccionada', { detail: { idCuenta } })`
 - Don't: `public obtenerResumenCuenta()`
 
+## Locales Path Policy (Mandatory)
+
+For Cells projects, locale files MUST live under `demo/locales` and MUST NOT be created or referenced outside that path.
+
+- Apply this rule to generation, manual edits, tests, demos, and runtime `IntlMsg.localesHost` setup.
+- If legacy files exist outside `demo/locales`, treat them as migration debt and do not add new locale data there.
+
+Do and don't example:
+
+- Do: `demo/locales/locales.json`
+- Don't: `locales/locales.json`
+
 ## Mandatory Testing Stack (Strict Order)
 
 When the user asks about tests, test execution, coverage, or test creation in a Cells context, consult and apply this stack FIRST, in this exact order, before any other testing source:

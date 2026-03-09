@@ -113,6 +113,7 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - Treat `custom-elements.json` and package docs as part of the deliverable, not as optional extras
 - When public API changes, call out migration risk explicitly
 - When the component uses locales or translated literals, route through `skills/cells-i18n/`
+- In Cells projects, require locale files under `demo/locales` only; do not plan locale files outside that path
 - When tests are needed, route through `skills/cells-test-creator/`
 - Use English for generated JSDoc/comments, event names/custom event types/payload keys, and public API naming unless the user explicitly asks for another naming language
 - Return the standard structured envelope with the markdown report above in `detailed_report`

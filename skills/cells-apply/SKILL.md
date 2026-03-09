@@ -222,6 +222,7 @@ If none, say "None."}
 - ALWAYS follow the design decisions  don't freelance a different approach
 - ALWAYS match existing code patterns and conventions in the project
 - For Cells projects, preserve public attributes, event names, scoped registrations, and package import conventions unless the task explicitly changes them
+- For Cells projects, keep locale files under `demo/locales` only; do not create or reference locale files outside `demo/locales`
 - Use English for generated JSDoc/comments, event names/custom event types/payload keys, and public API naming unless the user explicitly requests a different naming language
 - In `openspec` mode, mark tasks complete in `tasks.md` AS you go, not at the end
 - If you discover the design is wrong or incomplete, NOTE IT in your return summary  don't silently deviate

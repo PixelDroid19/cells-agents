@@ -22,6 +22,7 @@ Use this topic for Cells CLI commands and local workflow mapping.
   - `cells app:lint`
 - `cells lit-component:documentation` is the official path for generating `README.md` and `custom-elements.json`.
 - `cells lit-component:locales` is the official path for generating merged demo locales.
+- In Cells projects, locale files must be under `demo/locales` and must not be referenced outside that path.
 - Do not assume the user wants global installation or upgrade guidance.
 
 ## Decision rules

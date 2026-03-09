@@ -6,7 +6,7 @@ Use this reference when a component renders predefined user-visible text or i18n
 
 - Add `BbvaCoreIntlMixin` when a component owns localized predefined literals.
 - Route component literals through `this.t('key')`.
-- Keep default locale bundles in `locales/locales.json` with at least `en` and `es` unless project policy differs.
+- Keep default locale bundles in `demo/locales/locales.json` with at least `en` and `es`.
 - Keep keys component-prefixed and stable.
 - Prefer region-free language keys and add region-specific overrides only when needed.
 - Support per-instance customization through slot overrides or i18n key map objects when required.
@@ -14,7 +14,8 @@ Use this reference when a component renders predefined user-visible text or i18n
 ## Locales parity contract
 
 - Any new key used by component runtime must exist in component locales.
-- Demo runtime should use `demo/locales/locales.json` when demo includes dependencies with additional keys.
+- Demo runtime must use `demo/locales/locales.json` when demo includes dependencies with additional keys.
+- Do not create or reference locale bundles outside `demo/locales` in Cells projects.
 - Keep key names aligned exactly between code and locale files.
 
 ## Demo and test runtime setup

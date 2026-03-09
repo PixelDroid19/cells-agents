@@ -13,6 +13,7 @@ Use this topic for demo structure, documentation generation, i18n, and assets.
 - `custom-elements.json` is the structured source of truth for generated component docs.
 - i18n should rely on `BbvaCoreIntlMixin`, `window.IntlMsg`, and localized keys loaded from locales.
 - Demo locales can differ from package default locales when dependencies also need translations.
+- In Cells projects, locale files are mandatory under `demo/locales`; do not create or reference locales outside that path.
 - Assets and icons should be used in a way that preserves tree-shaking and avoids unnecessary bundle weight.
 - Themes may be loaded in demos as dev-only support, but themes are app-level concerns in production.
 

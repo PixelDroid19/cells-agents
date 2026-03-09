@@ -92,7 +92,8 @@ Generates the `locales.json` file for the demo.
 - **Details**:
     - Merges `locales.json` from dependencies.
     - Component's own `locales.json` takes precedence.
-    - Outputs to `/demo/locales`.
+    - Outputs to `/demo/locales` (mandatory path in Cells projects).
+    - Do not place locale files outside `demo/locales`.
 
 ### `cells lit-component:documentation`
 Generates component documentation.

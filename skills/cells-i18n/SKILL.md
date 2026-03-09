@@ -40,6 +40,7 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 - Do not leave component-owned user-facing literals hardcoded when they should be localized
 - Keep keys stable, component-prefixed, and aligned exactly across code and locale files
 - Prefer region-free keys like `en` and `es` unless regional override is necessary
+- In Cells projects, locale files are mandatory under `demo/locales` and must not be created or referenced outside `demo/locales`
 - If tests or demos depend on locales, mention `IntlMsg.lang`, `IntlMsg.localesHost`, and any required wait for locale loading
 
 ## Finish checklist

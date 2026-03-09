@@ -328,6 +328,7 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - A spec scenario is only COMPLIANT when a test that covers it has PASSED
 - Compare against SPECS first (behavioral correctness), DESIGN second (structural correctness)
 - For Cells projects, explicitly report mismatches between source code, `custom-elements.json`, package docs, and tests
+- For Cells projects, explicitly report any locale file created or referenced outside `demo/locales` as a verification issue
 - Verify generated and changed technical naming remains in English for JSDoc/comments, event names/custom event types/payload keys, and public API names unless the user explicitly requested otherwise
 - For Cells app/theme verification, do NOT default to generic external runners (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
 - If uncertain whether a command is Cells-native, ask the user before running a non-Cells command

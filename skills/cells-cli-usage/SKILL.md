@@ -39,6 +39,7 @@ Read and follow:
 - If uncertain whether a command is Cells-native, ask the user before running any non-Cells command.
 - Never reintroduce generic fallback testing commands (`npm test`, `npm run test`, `npx web-test-runner`) for Cells contexts.
 - When a command affects docs, demos, tests, or locales, cross-check the official docs map from `skills/_shared/cells-official-reference.md`.
+- For Cells locale workflows, enforce `demo/locales` as the only valid locale path.
 - Do not start the project or tests for every small change; resolve the lightest confirmation path that matches the task.
 - If a local dev server is already running, return that existing host and port as the primary runtime target.
 - If a browser session is already open, prefer reusing it through `agent-browser connect <port>`, `agent-browser --cdp`, or `agent-browser --auto-connect`.
