@@ -40,6 +40,7 @@ For Cells projects, explicitly inspect:
 - whether the project is a base component, a feature composition, or a data manager package
 - `skills/cells-cli-usage/`, `skills/cells-test-creator/`, and `skills/cells-app-architecture/` when present, so the team knows the local Cells workflow, testing rules, and architecture model
 - whether the workspace exposes a local serve, demo, or route path suitable for browser validation via `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md`
+- whether there is evidence of an already running dev server, existing preview URL, or known browser/CDP reuse path that should be preferred later
 
 ### Step 2: Initialize Persistence Backend
 
@@ -161,6 +162,7 @@ Ready for /cells-explore <topic> or /cells-new <change-name>.
 - NEVER create placeholder spec files - specs are created via cells-spec during a change
 - ALWAYS detect the real tech stack, don't guess
 - For Cells projects, mention concrete evidence: package names, test command, and whether `custom-elements.json` exists
+- For Cells projects, mention whether future confirmation should reuse an existing runtime/browser/port before starting a new one
 - If the project already has an `openspec/` directory, report what exists and continue using the canonical layout
 - Keep config.yaml context CONCISE - no more than 10 lines
 - Return the standard structured envelope with the mode-specific markdown report in `detailed_report`
@@ -172,3 +174,4 @@ When the workspace contains demos, app routes, or rendered UI, also read:
 - `agent-browser/SKILL.md` when available
 
 Initialization should record whether the repo exposes a practical local browser-validation path, such as a demo server, app route, or component preview command.
+It should also record whether later browser confirmation should reuse an existing runtime or CDP port instead of launching a fresh browser.
