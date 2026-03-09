@@ -156,6 +156,7 @@ Ready for design (cells-design). If design already exists, ready for tasks (cell
 - Include both happy path AND edge case scenarios
 - Keep scenarios TESTABLE  someone should be able to write an automated test from each one
 - DO NOT include implementation details in specs  specs describe WHAT, not HOW
+- Keep technical naming in specs in English (event names, payload keys, API names, and code-facing identifiers) unless the user explicitly requests another naming language
 - If filesystem config exists, apply any `rules.specs` from `openspec/config.yaml`
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 

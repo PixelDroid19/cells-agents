@@ -199,3 +199,10 @@ When a claim is important, validate it in this order:
 - Do not paste full official docs into reports.
 - Extract only the rule, pattern, or command needed for the current decision.
 - If a task is only about one topic, read only one topic family from this file.
+
+## Language Policy
+
+- Keep generated technical naming in English by default.
+- JSDoc and maintainer-facing comments must be written in English.
+- Event names, custom event types, payload keys, and public API names must be in English.
+- If the user writes in Spanish (or another language), the assistant may respond in that language, but generated code/docs naming must stay in English unless the user explicitly requests otherwise.

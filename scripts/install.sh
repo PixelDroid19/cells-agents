@@ -285,6 +285,24 @@ install_skills() {
     echo -e "\n  ${GREEN}${BOLD}$count skills installed${NC} → $target_dir"
 }
 
+get_opencode_config_path() {
+    local mode="$1"
+    case "$mode" in
+        global)
+            case "$OS" in
+                windows)  echo "$USERPROFILE/.config/opencode/opencode.json" ;;
+                *)        echo "$HOME/.config/opencode/opencode.json" ;;
+            esac
+            ;;
+        project)
+            echo "$REPO_DIR/.opencode/opencode.json"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
 install_opencode_commands() {
     local commands_src="$REPO_DIR/examples/opencode/commands"
     local commands_target
@@ -307,6 +325,34 @@ install_opencode_commands() {
     echo -e "\n  ${GREEN}${BOLD}$count commands installed${NC} → $commands_target"
 }
 
+install_opencode_config() {
+    local mode="$1"
+    local config_src="$REPO_DIR/examples/opencode/opencode.json"
+    local config_target
+    config_target="$(get_opencode_config_path "$mode")"
+
+    if [ ! -f "$config_src" ]; then
+        print_warn "Skipping OpenCode config install (source not found: $config_src)"
+        return
+    fi
+
+    mkdir -p "$(dirname "$config_target")"
+
+    if [ -e "$config_target" ] && [ "$config_src" -ef "$config_target" ]; then
+        print_warn "Skipping OpenCode config copy (source and destination are the same file)"
+        return
+    fi
+
+    if [ -f "$config_target" ]; then
+        print_warn "OpenCode config already exists at $config_target"
+        print_warn "Merge cells-orchestrator from examples/opencode/opencode.json"
+        return
+    fi
+
+    cp "$config_src" "$config_target"
+    print_skill "opencode.json ($(dirname "$config_target"))"
+}
+
 # ============================================================================
 # Agent install dispatcher
 # ============================================================================
@@ -322,6 +368,7 @@ install_for_agent() {
         opencode)
             install_skills "$(get_tool_path opencode)" "OpenCode"
             install_opencode_commands
+            install_opencode_config "global"
             echo ""
             echo -e "${YELLOW}${BOLD}╔══════════════════════════════════════════════════════════════╗${NC}"
             echo -e "${YELLOW}${BOLD}║  ACTION REQUIRED: Add the cells-orchestrator agent config     ║${NC}"
@@ -358,12 +405,14 @@ install_for_agent() {
             ;;
         project-local)
             install_skills "$(get_tool_path project-local)" "Project-local"
+            install_opencode_config "project"
             echo -e "\n${YELLOW}Note:${NC} Skills installed in ${BOLD}./skills/${NC} — relative to this project"
             ;;
         all-global)
             install_skills "$(get_tool_path claude-code)" "Claude Code"
             install_skills "$(get_tool_path opencode)" "OpenCode"
             install_opencode_commands
+            install_opencode_config "global"
             install_skills "$(get_tool_path gemini-cli)" "Gemini CLI"
             install_skills "$(get_tool_path codex)" "Codex"
             install_skills "$(get_tool_path cursor)" "Cursor"

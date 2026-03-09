@@ -37,6 +37,7 @@ Before large test work, read:
 14. Do not assume Unix-only utilities. If `awk` or `grep` are unavailable, use a shell-native or Python equivalent and keep the same evidence goal.
 15. In Cells contexts, always apply the mandatory testing stack in order (`cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`) before any other testing source.
 16. Never use generic fallback testing commands (`npm test`, `npm run test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
+17. Keep generated technical naming in English (event names, custom event types, payload keys, public API names, and assertion messages) unless the user explicitly requests another naming language.
 
 ## Multi-subagent orchestration mode
 

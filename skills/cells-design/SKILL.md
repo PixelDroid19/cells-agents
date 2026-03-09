@@ -161,6 +161,7 @@ Ready for tasks (cells-tasks).
 - Include concrete file paths, not abstract descriptions
 - Use the project's ACTUAL patterns and conventions, not generic best practices
 - For Cells projects, document `scopedElements`, emitted events, tests, and style overrides when they shape the implementation
+- When design content references JSDoc/comments, event names, payload keys, or public API naming, keep those technical names in English unless the user explicitly requests otherwise
 - If you find the codebase uses a pattern different from what you'd recommend, note it but FOLLOW the existing pattern unless the change specifically addresses it
 - Keep ASCII diagrams simple  clarity over beauty
 - If filesystem config exists, apply any `rules.design` from `openspec/config.yaml`
