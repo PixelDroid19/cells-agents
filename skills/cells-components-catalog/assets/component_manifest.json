@@ -1,0 +1,537 @@
+{
+  "package_count": 106,
+  "database": "skills/cells-components-catalog/assets/bbva_cells_components.db",
+  "source_records": "skills/cells-components-catalog/assets/component_records.json",
+  "packages": [
+    {
+      "slug": "bbva-ambient-default",
+      "package": "@bbva-spherica-components/bbva-ambient-default",
+      "category": "foundations"
+    },
+    {
+      "slug": "bbva-badge-default",
+      "package": "@bbva-spherica-components/bbva-badge-default",
+      "category": "badges"
+    },
+    {
+      "slug": "bbva-badge-feedback",
+      "package": "@bbva-spherica-components/bbva-badge-feedback",
+      "category": "badges"
+    },
+    {
+      "slug": "bbva-badge-icon",
+      "package": "@bbva-spherica-components/bbva-badge-icon",
+      "category": "badges"
+    },
+    {
+      "slug": "bbva-badge-notification",
+      "package": "@bbva-spherica-components/bbva-badge-notification",
+      "category": "badges"
+    },
+    {
+      "slug": "bbva-badge-reference",
+      "package": "@bbva-spherica-components/bbva-badge-reference",
+      "category": "badges"
+    },
+    {
+      "slug": "bbva-badge-variability",
+      "package": "@bbva-spherica-components/bbva-badge-variability",
+      "category": "badges"
+    },
+    {
+      "slug": "bbva-banner-image",
+      "package": "@bbva-spherica-components/bbva-banner-image",
+      "category": "foundations"
+    },
+    {
+      "slug": "bbva-button-action",
+      "package": "@bbva-spherica-components/bbva-button-action",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-button-default",
+      "package": "@bbva-spherica-components/bbva-button-default",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-button-group",
+      "package": "@bbva-spherica-components/bbva-button-group",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-button-progress",
+      "package": "@bbva-spherica-components/bbva-button-progress",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-button-row",
+      "package": "@bbva-spherica-components/bbva-button-row",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-button-share",
+      "package": "@bbva-spherica-components/bbva-button-share",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-button-tpv-pad",
+      "package": "@bbva-spherica-components/bbva-button-tpv-pad",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-button-videocall",
+      "package": "@bbva-spherica-components/bbva-button-videocall",
+      "category": "buttons"
+    },
+    {
+      "slug": "bbva-carousel-default",
+      "package": "@bbva-spherica-components/bbva-carousel-default",
+      "category": "other"
+    },
+    {
+      "slug": "bbva-chat-bot",
+      "package": "@bbva-spherica-components/bbva-chat-bot",
+      "category": "chat"
+    },
+    {
+      "slug": "bbva-chat-button",
+      "package": "@bbva-spherica-components/bbva-chat-button",
+      "category": "chat"
+    },
+    {
+      "slug": "bbva-chat-container",
+      "package": "@bbva-spherica-components/bbva-chat-container",
+      "category": "chat"
+    },
+    {
+      "slug": "bbva-chat-form",
+      "package": "@bbva-spherica-components/bbva-chat-form",
+      "category": "chat"
+    },
+    {
+      "slug": "bbva-clip-bot",
+      "package": "@bbva-spherica-components/bbva-clip-bot",
+      "category": "media"
+    },
+    {
+      "slug": "bbva-clip-box",
+      "package": "@bbva-spherica-components/bbva-clip-box",
+      "category": "media"
+    },
+    {
+      "slug": "bbva-clip-card",
+      "package": "@bbva-spherica-components/bbva-clip-card",
+      "category": "media"
+    },
+    {
+      "slug": "bbva-clip-card-data",
+      "package": "@bbva-spherica-components/bbva-clip-card-data",
+      "category": "media"
+    },
+    {
+      "slug": "bbva-clip-flag",
+      "package": "@bbva-spherica-components/bbva-clip-flag",
+      "category": "media"
+    },
+    {
+      "slug": "bbva-clip-microillustration",
+      "package": "@bbva-spherica-components/bbva-clip-microillustration",
+      "category": "media"
+    },
+    {
+      "slug": "bbva-component-configuration-mixin",
+      "package": "@bbva-spherica-components/bbva-component-configuration-mixin",
+      "category": "mixins"
+    },
+    {
+      "slug": "bbva-data-visualization-bar",
+      "package": "@bbva-spherica-components/bbva-data-visualization-bar",
+      "category": "data-visualization"
+    },
+    {
+      "slug": "bbva-data-visualization-donut",
+      "package": "@bbva-spherica-components/bbva-data-visualization-donut",
+      "category": "data-visualization"
+    },
+    {
+      "slug": "bbva-data-visualization-linear",
+      "package": "@bbva-spherica-components/bbva-data-visualization-linear",
+      "category": "data-visualization"
+    },
+    {
+      "slug": "bbva-data-visualization-maps",
+      "package": "@bbva-spherica-components/bbva-data-visualization-maps",
+      "category": "data-visualization"
+    },
+    {
+      "slug": "bbva-disable-mixin",
+      "package": "@bbva-spherica-components/bbva-disable-mixin",
+      "category": "mixins"
+    },
+    {
+      "slug": "bbva-divider-default",
+      "package": "@bbva-spherica-components/bbva-divider-default",
+      "category": "foundations"
+    },
+    {
+      "slug": "bbva-draggable-default",
+      "package": "@bbva-spherica-components/bbva-draggable-default",
+      "category": "foundations"
+    },
+    {
+      "slug": "bbva-expandable-accordion",
+      "package": "@bbva-spherica-components/bbva-expandable-accordion",
+      "category": "expandable"
+    },
+    {
+      "slug": "bbva-expandable-multistep",
+      "package": "@bbva-spherica-components/bbva-expandable-multistep",
+      "category": "expandable"
+    },
+    {
+      "slug": "bbva-expandable-multistep-index",
+      "package": "@bbva-spherica-components/bbva-expandable-multistep-index",
+      "category": "expandable"
+    },
+    {
+      "slug": "bbva-expandable-panel",
+      "package": "@bbva-spherica-components/bbva-expandable-panel",
+      "category": "expandable"
+    },
+    {
+      "slug": "bbva-form-calendar",
+      "package": "@bbva-spherica-components/bbva-form-calendar",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-checkbox",
+      "package": "@bbva-spherica-components/bbva-form-checkbox",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-container",
+      "package": "@bbva-spherica-components/bbva-form-container",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-date-range",
+      "package": "@bbva-spherica-components/bbva-form-date-range",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-filter",
+      "package": "@bbva-spherica-components/bbva-form-filter",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-input",
+      "package": "@bbva-spherica-components/bbva-form-input",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-multiselect",
+      "package": "@bbva-spherica-components/bbva-form-multiselect",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-predictive",
+      "package": "@bbva-spherica-components/bbva-form-predictive",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-radio-button",
+      "package": "@bbva-spherica-components/bbva-form-radio-button",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-range",
+      "package": "@bbva-spherica-components/bbva-form-range",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-rating",
+      "package": "@bbva-spherica-components/bbva-form-rating",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-scanner",
+      "package": "@bbva-spherica-components/bbva-form-scanner",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-scratch",
+      "package": "@bbva-spherica-components/bbva-form-scratch",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-select",
+      "package": "@bbva-spherica-components/bbva-form-select",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-select-filter",
+      "package": "@bbva-spherica-components/bbva-form-select-filter",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-sign",
+      "package": "@bbva-spherica-components/bbva-form-sign",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-toggle",
+      "package": "@bbva-spherica-components/bbva-form-toggle",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-uploader",
+      "package": "@bbva-spherica-components/bbva-form-uploader",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-form-verification",
+      "package": "@bbva-spherica-components/bbva-form-verification",
+      "category": "forms"
+    },
+    {
+      "slug": "bbva-header-category",
+      "package": "@bbva-spherica-components/bbva-header-category",
+      "category": "headers"
+    },
+    {
+      "slug": "bbva-header-main",
+      "package": "@bbva-spherica-components/bbva-header-main",
+      "category": "headers"
+    },
+    {
+      "slug": "bbva-header-navigation",
+      "package": "@bbva-spherica-components/bbva-header-navigation",
+      "category": "headers"
+    },
+    {
+      "slug": "bbva-header-public",
+      "package": "@bbva-spherica-components/bbva-header-public",
+      "category": "headers"
+    },
+    {
+      "slug": "bbva-help-modal",
+      "package": "@bbva-spherica-components/bbva-help-modal",
+      "category": "help"
+    },
+    {
+      "slug": "bbva-help-onboarding",
+      "package": "@bbva-spherica-components/bbva-help-onboarding",
+      "category": "help"
+    },
+    {
+      "slug": "bbva-help-tooltip",
+      "package": "@bbva-spherica-components/bbva-help-tooltip",
+      "category": "help"
+    },
+    {
+      "slug": "bbva-list-budget",
+      "package": "@bbva-spherica-components/bbva-list-budget",
+      "category": "lists"
+    },
+    {
+      "slug": "bbva-list-bullet",
+      "package": "@bbva-spherica-components/bbva-list-bullet",
+      "category": "lists"
+    },
+    {
+      "slug": "bbva-list-swipe",
+      "package": "@bbva-spherica-components/bbva-list-swipe",
+      "category": "lists"
+    },
+    {
+      "slug": "bbva-map-dynamic",
+      "package": "@bbva-spherica-components/bbva-map-dynamic",
+      "category": "maps"
+    },
+    {
+      "slug": "bbva-map-static",
+      "package": "@bbva-spherica-components/bbva-map-static",
+      "category": "maps"
+    },
+    {
+      "slug": "bbva-navigation-menu",
+      "package": "@bbva-spherica-components/bbva-navigation-menu",
+      "category": "navigation"
+    },
+    {
+      "slug": "bbva-navigation-tab-bar",
+      "package": "@bbva-spherica-components/bbva-navigation-tab-bar",
+      "category": "navigation"
+    },
+    {
+      "slug": "bbva-notification-contextual",
+      "package": "@bbva-spherica-components/bbva-notification-contextual",
+      "category": "notifications"
+    },
+    {
+      "slug": "bbva-notification-help",
+      "package": "@bbva-spherica-components/bbva-notification-help",
+      "category": "notifications"
+    },
+    {
+      "slug": "bbva-notification-message",
+      "package": "@bbva-spherica-components/bbva-notification-message",
+      "category": "notifications"
+    },
+    {
+      "slug": "bbva-notification-status",
+      "package": "@bbva-spherica-components/bbva-notification-status",
+      "category": "notifications"
+    },
+    {
+      "slug": "bbva-notification-toast",
+      "package": "@bbva-spherica-components/bbva-notification-toast",
+      "category": "notifications"
+    },
+    {
+      "slug": "bbva-panel-audio-player",
+      "package": "@bbva-spherica-components/bbva-panel-audio-player",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-panel-code-number",
+      "package": "@bbva-spherica-components/bbva-panel-code-number",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-panel-comparative",
+      "package": "@bbva-spherica-components/bbva-panel-comparative",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-panel-container",
+      "package": "@bbva-spherica-components/bbva-panel-container",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-panel-iframe",
+      "package": "@bbva-spherica-components/bbva-panel-iframe",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-panel-photo",
+      "package": "@bbva-spherica-components/bbva-panel-photo",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-panel-risk",
+      "package": "@bbva-spherica-components/bbva-panel-risk",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-panel-side",
+      "package": "@bbva-spherica-components/bbva-panel-side",
+      "category": "panels"
+    },
+    {
+      "slug": "bbva-progress-content",
+      "package": "@bbva-spherica-components/bbva-progress-content",
+      "category": "progress"
+    },
+    {
+      "slug": "bbva-progress-step",
+      "package": "@bbva-spherica-components/bbva-progress-step",
+      "category": "progress"
+    },
+    {
+      "slug": "bbva-progress-stepped-process",
+      "package": "@bbva-spherica-components/bbva-progress-stepped-process",
+      "category": "progress"
+    },
+    {
+      "slug": "bbva-progress-timer",
+      "package": "@bbva-spherica-components/bbva-progress-timer",
+      "category": "progress"
+    },
+    {
+      "slug": "bbva-progress-vertical-step",
+      "package": "@bbva-spherica-components/bbva-progress-vertical-step",
+      "category": "progress"
+    },
+    {
+      "slug": "bbva-skeleton-default",
+      "package": "@bbva-spherica-components/bbva-skeleton-default",
+      "category": "foundations"
+    },
+    {
+      "slug": "bbva-tab-default",
+      "package": "@bbva-spherica-components/bbva-tab-default",
+      "category": "navigation"
+    },
+    {
+      "slug": "bbva-table-body",
+      "package": "@bbva-spherica-components/bbva-table-body",
+      "category": "tables"
+    },
+    {
+      "slug": "bbva-table-default",
+      "package": "@bbva-spherica-components/bbva-table-default",
+      "category": "tables"
+    },
+    {
+      "slug": "bbva-table-filter",
+      "package": "@bbva-spherica-components/bbva-table-filter",
+      "category": "tables"
+    },
+    {
+      "slug": "bbva-table-footer",
+      "package": "@bbva-spherica-components/bbva-table-footer",
+      "category": "tables"
+    },
+    {
+      "slug": "bbva-table-header",
+      "package": "@bbva-spherica-components/bbva-table-header",
+      "category": "tables"
+    },
+    {
+      "slug": "bbva-table-row-group",
+      "package": "@bbva-spherica-components/bbva-table-row-group",
+      "category": "tables"
+    },
+    {
+      "slug": "bbva-transition-container",
+      "package": "@bbva-spherica-components/bbva-transition-container",
+      "category": "foundations"
+    },
+    {
+      "slug": "bbva-type-amount",
+      "package": "@bbva-spherica-components/bbva-type-amount",
+      "category": "typography"
+    },
+    {
+      "slug": "bbva-type-date",
+      "package": "@bbva-spherica-components/bbva-type-date",
+      "category": "typography"
+    },
+    {
+      "slug": "bbva-type-icon",
+      "package": "@bbva-spherica-components/bbva-type-icon",
+      "category": "typography"
+    },
+    {
+      "slug": "bbva-type-link",
+      "package": "@bbva-spherica-components/bbva-type-link",
+      "category": "typography"
+    },
+    {
+      "slug": "bbva-type-text",
+      "package": "@bbva-spherica-components/bbva-type-text",
+      "category": "typography"
+    },
+    {
+      "slug": "bbva-widget-configuration-mixin",
+      "package": "@bbva-spherica-components/bbva-widget-configuration-mixin",
+      "category": "mixins"
+    },
+    {
+      "slug": "bbva-widget-defaults-mixin",
+      "package": "@bbva-spherica-components/bbva-widget-defaults-mixin",
+      "category": "mixins"
+    }
+  ]
+}

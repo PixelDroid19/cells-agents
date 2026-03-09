@@ -1,0 +1,45 @@
+{
+  "skill_name": "cells-test-creator",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Create a new test for src/styles-overrides/shared-style-overrides.js following repository conventions and without touching private members.",
+      "expected_output": "Generates a mirrored test at test/styles-overrides/shared-style-overrides.test.js with OpenWC + Sinon structure and public-behavior validation.",
+      "files": [
+        "src/styles-overrides/shared-style-overrides.js"
+      ],
+      "expectations": [
+        "The generated file ends with .test.js and is placed under test/ using a mirrored path",
+        "There are no references to private members with _ or # prefixes",
+        "It includes suite, setup, teardown, and sinon.restore",
+        "Assertions focus on events/spies/public effects"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Increase coverage for the target file to 100% in Statements, Branches, Functions, and Lines using only public API.",
+      "expected_output": "Updates existing tests to cover guards, branches, and error paths without coupling to internal details.",
+      "files": [
+        "build/coverage-reports/lcov-report/bbva-feature-oc-account-fx-co/src/styles-overrides/shared-style-overrides.js.html"
+      ],
+      "expectations": [
+        "Tests do not invoke private functions directly",
+        "Uncovered branches highlighted in lcov-report are covered",
+        "Evidence of 100% for the target file is reported"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Validate a newly created test and detect naming/structure/private-convention violations.",
+      "expected_output": "Runs the validator and returns a clear report with actionable errors.",
+      "files": [
+        "test/styles-overrides/shared-style-overrides.test.js"
+      ],
+      "expectations": [
+        "The validator flags files outside test/ or without a .test.js suffix",
+        "The validator detects use of _private or #private references",
+        "The validator enforces minimum suite/setup/teardown/test structure"
+      ]
+    }
+  ]
+}

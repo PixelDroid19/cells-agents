@@ -1,0 +1,94 @@
+﻿---
+name: cells-official-docs-catalog
+description: >
+  Search and retrieve normalized official BBVA Cells guidance from an internal SQLite FTS5 catalog bundled inside this package. Use this when an agent needs authoritative rules for architecture, CLI, component API, Lit authoring, composition, testing, demos, i18n, theming, or packaging without reading external folders.
+license: MIT
+metadata:
+  author: D. J
+  version: "1.0"
+---
+
+# Cells Official Docs Catalog
+
+## Purpose
+
+This skill is the internal knowledge base for official Cells guidance.
+
+It exists so the installed skill bundle can answer Cells questions without depending on folder references outside this package.
+
+## Bundled Resources
+
+- `references/*.md`: normalized internal snapshots of official Cells guidance
+- `scripts/build_index.py`: builds the local SQLite FTS5 index from the bundled references
+- `scripts/search_docs.py`: searches the local index by topic or natural-language query
+- `assets/cells_official_docs.db`: generated SQLite index
+- `assets/manifest.json`: generated manifest of indexed topics
+
+## When To Use
+
+Use this skill when the task needs official guidance for:
+
+- Cells and Web Components fundamentals
+- Cells app or feature architecture
+- Cells application runtime and configuration
+- Cells bridge communication, event channels, native integration, or logout flows
+- advanced application concerns like feature flags, microfrontends, performance, or service workers
+- Cells CLI commands and local workflows
+- component public API and packaging
+- Lit templating and lifecycle
+- composition, scoped elements, extension, and mixins
+- demo, documentation, i18n, assets, and icons
+- testing patterns and quality rules
+- application-level testing guidance
+- theming, tokens, and dark mode
+
+## Workflow
+
+### 1. Search by intent
+
+Use the search script with a short intent query:
+
+```bash
+python skills/cells-official-docs-catalog/scripts/search_docs.py --query "how to structure a Cells feature with data manager"
+python skills/cells-official-docs-catalog/scripts/search_docs.py --query "how to test a lit component with open-wc and sinon"
+```
+
+### 2. Open a topic dossier
+
+If you already know the topic slug, inspect it directly:
+
+```bash
+python skills/cells-official-docs-catalog/scripts/search_docs.py --topic architecture
+python skills/cells-official-docs-catalog/scripts/search_docs.py --topic testing
+python skills/cells-official-docs-catalog/scripts/search_docs.py --topic cli
+```
+
+### 3. Apply only the relevant rules
+
+Extract the exact rule, pattern, or command needed for the current task.
+
+Do not dump large documentation blocks into the report.
+
+## Topics
+
+- `architecture`
+- `web-components-foundations`
+- `application-runtime`
+- `application-communication`
+- `advanced-application`
+- `cli`
+- `component-api`
+- `lit-authoring`
+- `composition`
+- `demo-docs-i18n-assets`
+- `testing`
+- `application-testing`
+- `theming`
+
+## Rules
+
+- Prefer this internal catalog over direct references to folders outside this package
+- Still validate important claims against project code and tests
+- Use `cells-components-catalog` for BBVA package discovery and this skill for official Cells process and authoring guidance
+- If the bundled docs look insufficient for a specific edge case, report the gap explicitly
+

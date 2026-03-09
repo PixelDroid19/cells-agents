@@ -1,0 +1,25 @@
+---
+description: Fast-forward all SDD planning phases — proposal through tasks
+agent: cells-orchestrator
+---
+
+Follow the SDD orchestrator workflow to fast-forward all planning phases for change "{argument}".
+
+WORKFLOW:
+Run these sub-agents in sequence:
+1. cells-propose — create the proposal
+2. cells-spec — write specifications
+3. cells-design — create technical design
+4. cells-tasks — break down into implementation tasks
+
+Present a combined summary after ALL phases complete (not between each one).
+
+If this is a Cells project or component task, make sure the delegated phases use evidence from `custom-elements.json`, `skills/cells-components-catalog/`, `skills/cells-official-docs-catalog/`, tests, and real feature repos before finalizing the plan.
+
+CONTEXT:
+- Working directory: {workdir}
+- Current project: {project}
+- Change name: {argument}
+- Artifact store mode: engram
+
+Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline — delegate to sub-agents.

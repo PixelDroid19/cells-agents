@@ -1,0 +1,71 @@
+{
+  "topic_count": 13,
+  "database": "skills\\cells-official-docs-catalog\\assets\\cells_official_docs.db",
+  "topics": [
+    {
+      "slug": "advanced-application",
+      "title": "Advanced Application",
+      "path": "skills\\cells-official-docs-catalog\\references\\advanced-application.md"
+    },
+    {
+      "slug": "application-communication",
+      "title": "Application Communication",
+      "path": "skills\\cells-official-docs-catalog\\references\\application-communication.md"
+    },
+    {
+      "slug": "application-runtime",
+      "title": "Application Runtime",
+      "path": "skills\\cells-official-docs-catalog\\references\\application-runtime.md"
+    },
+    {
+      "slug": "application-testing",
+      "title": "Application Testing",
+      "path": "skills\\cells-official-docs-catalog\\references\\application-testing.md"
+    },
+    {
+      "slug": "architecture",
+      "title": "Architecture",
+      "path": "skills\\cells-official-docs-catalog\\references\\architecture.md"
+    },
+    {
+      "slug": "cli",
+      "title": "CLI",
+      "path": "skills\\cells-official-docs-catalog\\references\\cli.md"
+    },
+    {
+      "slug": "component-api",
+      "title": "Component API",
+      "path": "skills\\cells-official-docs-catalog\\references\\component-api.md"
+    },
+    {
+      "slug": "composition",
+      "title": "Composition",
+      "path": "skills\\cells-official-docs-catalog\\references\\composition.md"
+    },
+    {
+      "slug": "demo-docs-i18n-assets",
+      "title": "Demo Docs I18n Assets",
+      "path": "skills\\cells-official-docs-catalog\\references\\demo-docs-i18n-assets.md"
+    },
+    {
+      "slug": "lit-authoring",
+      "title": "Lit Authoring",
+      "path": "skills\\cells-official-docs-catalog\\references\\lit-authoring.md"
+    },
+    {
+      "slug": "testing",
+      "title": "Testing",
+      "path": "skills\\cells-official-docs-catalog\\references\\testing.md"
+    },
+    {
+      "slug": "theming",
+      "title": "Theming",
+      "path": "skills\\cells-official-docs-catalog\\references\\theming.md"
+    },
+    {
+      "slug": "web-components-foundations",
+      "title": "Web Components Foundations",
+      "path": "skills\\cells-official-docs-catalog\\references\\web-components-foundations.md"
+    }
+  ]
+}
