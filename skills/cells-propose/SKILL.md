@@ -132,4 +132,13 @@ Ready for specs (cells-spec) or design (cells-design).
 - If filesystem config exists, apply any `rules.proposal` from `openspec/config.yaml`
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+When the proposed change affects rendered UI, routes, demos, visible interactions, or styling, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Include browser validation in the proposal when relevant:
+- mention browser-visible scope
+- include visual or functional acceptance signals in success criteria
+- call out runtime blockers if local serving is uncertain.

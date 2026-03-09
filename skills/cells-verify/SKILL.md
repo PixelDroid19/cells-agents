@@ -27,6 +27,7 @@ If the project is Cells-oriented, also read and follow `skills/_shared/cells-con
 If the project is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route verification to the right official testing, lifecycle, i18n, and CLI guidance.
 If the project leaves coverage reports or structured test-error artifacts, use `skills/cells-coverage/` for compact triage.
 If the project touches translated literals, locales, or `BbvaCoreIntlMixin`, use `skills/cells-i18n/` to verify runtime and locale coherence.
+If the change affects rendered UI, routes, demos, theming, or browser-visible interaction flows, also read `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md` when available.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `verify-report`. Retrieve `proposal`, `spec`, `design`, and `tasks` as dependencies.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Save to `openspec/changes/{change-name}/verify-report.md`.
@@ -109,6 +110,10 @@ Detect test runner from:
  Makefile  make test
  Fallback: ask orchestrator
 
+Prefer the smallest confirmation scope that proves the change:
+ targeted file/suite first for small or isolated changes
+ broader project test execution only when risk, coupling, or user request justifies it
+
 Execute: {test_command}
 Capture:
  Total tests run
@@ -135,6 +140,7 @@ Detect build command from:
  Makefile  make build
  Fallback: skip and report as WARNING (not CRITICAL)
 
+For small, isolated changes, prefer the lightest relevant confirmation command before a full project build.
 Execute: {build_command}
 Capture:
  Exit code
@@ -161,6 +167,25 @@ IF coverage_threshold is configured:
 IF coverage_threshold is NOT configured:
  Skip this step, report as "Not configured"
 ```
+
+### Step 4e: Browser Functional And Visual Validation
+
+When the implemented change affects rendered UI, demos, routes, i18n-visible output, styling, or interaction flows:
+
+```
+Resolve the local serve/demo command and target URL through `skills/cells-cli-usage/`
+Reuse an already running dev server, route, browser session, or CDP port when available
+Open or connect with `agent-browser` using that existing runtime first
+Snapshot before interaction
+Execute the minimum user flow needed to prove the changed behavior
+Re-snapshot after route or DOM changes
+Capture screenshot or screenshot diff evidence when the change is visual
+Flag: CRITICAL if a required user flow is broken or blocked at runtime
+Flag: WARNING if the flow works but visible output or screenshot evidence shows a mismatch
+If no local runtime can be started, report browser validation as blocked evidence
+```
+
+Use browser validation as supporting runtime proof. It complements tests and code review, especially for feature flows, visible state transitions, i18n, and theming.
 
 ### Step 5: Spec Compliance Matrix (Behavioral Validation)
 
@@ -231,6 +256,11 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 
 **Coverage**: {N}% / threshold: {N}%   Above threshold /  Below threshold / - Not configured
 
+**Browser Validation**: {Not required | Passed | Warning | Failed | Blocked}
+```
+{route, interactions, screenshot or diff evidence summary}
+```
+
 ---
 
 ### Spec Compliance Matrix
@@ -296,6 +326,16 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - DO NOT fix any issues  only report them. The orchestrator decides what to do.
 - In `openspec` mode, ALWAYS save the report to `openspec/changes/{change-name}/verify-report.md`  this persists the verification for cells-archive and the audit trail
 - If filesystem config exists, apply any `rules.verify` from `openspec/config.yaml`
+- Do not escalate every small change into full-project execution; use targeted confirmation first and broaden only when required
+- If browser validation is needed, reuse the already running runtime, browser, and port before starting another one
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+Browser validation is mandatory whenever the verified change affects rendered UI, routes, demos, visible state transitions, styling, theming, or runtime i18n.
+
+Always use:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Treat browser results as runtime evidence that complements tests, build output, and the spec compliance matrix.

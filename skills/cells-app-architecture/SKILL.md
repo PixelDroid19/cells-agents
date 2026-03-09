@@ -102,3 +102,16 @@ When the task involves feature flags, performance, service workers, microfronten
 - `references/pub-sub.md`
 - `references/bridge.md`
 
+## Browser Integration
+
+When the architecture work affects routes, pages, feature shells, or browser-visible state transitions, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Define browser checkpoints explicitly for:
+- route entry points
+- page-to-page transitions
+- loading, empty, and error states
+- visual theming or i18n-visible states
+
+If a design decision changes what the user can see or do, call out how that state should be validated in a local browser run.

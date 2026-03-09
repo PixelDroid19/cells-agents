@@ -28,6 +28,11 @@ Read and follow:
 - Do not suggest global install or update steps unless the user explicitly asks for installation help.
 - If the workspace already exposes `npm run test`, `npm run lint`, `npm run docs`, or similar, prefer those names in guidance and execution.
 - When a command affects docs, demos, tests, or locales, cross-check the official docs map from `skills/_shared/cells-official-reference.md`.
+- Do not start the project or tests for every small change; resolve the lightest confirmation path that matches the task.
+- If a local dev server is already running, return that existing host and port as the primary runtime target.
+- If a browser session is already open, prefer reusing it through `agent-browser connect <port>`, `agent-browser --cdp`, or `agent-browser --auto-connect`.
+- Prefer an existing global `agent-browser` binary when available; otherwise use `npx agent-browser` only if it is already available in the environment or project.
+- Do not install `agent-browser`, Chromium, or project dependencies unless the user explicitly asks.
 
 ## Usage
 
@@ -94,3 +99,19 @@ Return a compact decision with:
 - [Common Commands](references/commands.md)
 - [Troubleshooting](references/troubleshooting.md)
 
+## Browser Integration
+
+When a task needs functional or visual browser validation, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Resolve and return:
+- whether a reusable runtime already exists
+- whether an existing browser or CDP port can be reused
+- the repo-local serve or demo command
+- the most likely URL or route to open
+- any prerequisites for local browser validation
+- the safest command path for screenshot, interaction, or UI verification work
+- the preferred `agent-browser` invocation form: global command, `connect`, `--auto-connect`, or `npx` fallback
+
+Never assume that a browser-check URL exists without confirming the local runtime path first.

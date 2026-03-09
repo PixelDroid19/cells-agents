@@ -167,4 +167,14 @@ Ready for tasks (cells-tasks).
 - If you have open questions that BLOCK the design, say so clearly  don't guess
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+When the design changes rendered UI, demos, routes, component states, or visible interaction flows, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Document browser checkpoints in the design:
+- page or demo entry points
+- interactions to validate
+- states that require screenshot or diff evidence
+- runtime blockers if local serving is not available.

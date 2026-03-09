@@ -116,3 +116,14 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - When tests are needed, route through `skills/cells-test-creator/`
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
+
+When authoring or evolving a component with visible UI behavior, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Include browser validation targets in the authoring plan:
+- demo or local preview entry point
+- key interaction states
+- screenshots or diffs when the component has meaningful visual changes
+- runtime i18n or theming checkpoints when applicable.

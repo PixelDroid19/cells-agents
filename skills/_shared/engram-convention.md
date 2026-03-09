@@ -1,6 +1,6 @@
 # Engram Artifact Convention (shared across all SDD skills)
 
-This is the canonical persistence architecture for this package, matching the Engram-first model used by `agent-teams-lite`.
+This is the canonical persistence architecture for this package.
 
 ## Naming Rules
 
@@ -26,6 +26,7 @@ scope:     project
 | `apply-progress` | cells-apply | Implementation progress (one per batch) |
 | `verify-report` | cells-verify | Verification report |
 | `archive-report` | cells-archive | Archive closure with lineage |
+| `ui-evidence` | any UI-aware skill | Compact browser validation evidence, screenshot paths, or visual diff summary |
 | `state` | orchestrator | DAG state for recovery after compaction |
 
 **Exception**: `cells-init` uses `cells-init/{project-name}` as both title and topic_key (it's project-scoped, not change-scoped).

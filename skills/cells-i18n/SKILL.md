@@ -49,3 +49,13 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 - Demo/test i18n config matches runtime expectations
 - Risks are explicit when locale parity or runtime setup is incomplete
 
+## Browser Integration
+
+For runtime i18n work, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Use browser validation to confirm:
+- translated literals actually render
+- locale switches or loads behave correctly
+- visible fallback text or broken async locale loading is detected in real UI.

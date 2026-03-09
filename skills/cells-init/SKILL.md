@@ -39,6 +39,7 @@ For Cells projects, explicitly inspect:
 - `@bbva-spherica-components/*`, `@bbva-web-components/*`, `lit`, and `@open-wc/scoped-elements`
 - whether the project is a base component, a feature composition, or a data manager package
 - `skills/cells-cli-usage/`, `skills/cells-test-creator/`, and `skills/cells-app-architecture/` when present, so the team knows the local Cells workflow, testing rules, and architecture model
+- whether the workspace exposes a local serve, demo, or route path suitable for browser validation via `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md`
 
 ### Step 2: Initialize Persistence Backend
 
@@ -164,4 +165,10 @@ Ready for /cells-explore <topic> or /cells-new <change-name>.
 - Keep config.yaml context CONCISE - no more than 10 lines
 - Return the standard structured envelope with the mode-specific markdown report in `detailed_report`
 
+## Browser Integration
 
+When the workspace contains demos, app routes, or rendered UI, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Initialization should record whether the repo exposes a practical local browser-validation path, such as a demo server, app route, or component preview command.

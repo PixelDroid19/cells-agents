@@ -169,4 +169,13 @@ Ready for design (cells-design). If design already exists, ready for tasks (cell
 | **SHOULD NOT** | Not recommended, but may be acceptable with justification |
 | **MAY** | Optional |
 
+## Browser Integration
 
+When the change affects rendered UI or browser-visible behavior, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Write scenarios so they are browser-observable when needed:
+- include visible state expectations
+- include interaction outcomes that can be proven in a browser
+- include i18n or theming-visible outcomes when those are part of the requirement.

@@ -151,4 +151,14 @@ Ready for implementation (cells-apply).
 - If the project uses TDD, integrate test-first tasks: RED task (write failing test)  GREEN task (make it pass)  REFACTOR task (clean up)
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+When tasks involve rendered UI, routes, demos, or visual behavior, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Add explicit browser tasks when relevant, such as:
+- resolve local serve/demo command
+- open the target page and validate a user flow
+- capture screenshot or diff evidence for visible changes
+- verify runtime i18n, theming, or state transitions.

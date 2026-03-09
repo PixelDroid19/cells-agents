@@ -92,3 +92,10 @@ Do not dump large documentation blocks into the report.
 - Use `cells-components-catalog` for BBVA package discovery and this skill for official Cells process and authoring guidance
 - If the bundled docs look insufficient for a specific edge case, report the gap explicitly
 
+## Browser Integration
+
+When official testing, demo, i18n, or theming guidance must be checked against a rendered page, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Use this catalog to retrieve the rule first, then validate the rule against real runtime behavior only when the task requires browser-visible evidence.

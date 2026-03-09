@@ -1,6 +1,6 @@
 # OpenSpec File Convention (shared across all SDD skills)
 
-This convention matches `agent-teams-lite` filesystem layout, but in this package it is secondary to Engram unless the active mode is strictly `openspec`.
+This convention defines the filesystem layout used when the active mode writes OpenSpec artifacts. It is secondary to Engram unless the active mode is strictly `openspec`.
 
 ## Directory Structure
 
@@ -21,7 +21,8 @@ openspec/
         │       └── spec.md  <- Delta spec
         ├── design.md        <- from cells-design
         ├── tasks.md         <- from cells-tasks (updated by cells-apply)
-        └── verify-report.md <- from cells-verify
+        ├── verify-report.md <- from cells-verify
+        └── ui-evidence/     <- optional screenshots, snapshots, diffs, or browser logs
 ```
 
 ## Artifact File Paths
@@ -37,6 +38,7 @@ openspec/
 | cells-tasks | Creates | `openspec/changes/{change-name}/tasks.md` |
 | cells-apply | Updates | `openspec/changes/{change-name}/tasks.md` (marks `[x]`) |
 | cells-verify | Creates | `openspec/changes/{change-name}/verify-report.md` |
+| any UI-aware skill | Creates (optional) | `openspec/changes/{change-name}/ui-evidence/` |
 | cells-archive | Moves | `openspec/changes/{change-name}/` → `openspec/changes/archive/YYYY-MM-DD-{change-name}/` |
 | cells-archive | Updates | `openspec/specs/{domain}/spec.md` (merges deltas into main specs) |
 
@@ -50,6 +52,7 @@ Specs:     openspec/changes/{change-name}/specs/  (all domain subdirectories)
 Design:    openspec/changes/{change-name}/design.md
 Tasks:     openspec/changes/{change-name}/tasks.md
 Verify:    openspec/changes/{change-name}/verify-report.md
+UI evidence: openspec/changes/{change-name}/ui-evidence/  (optional)
 Config:    openspec/config.yaml
 Main specs: openspec/specs/{domain}/spec.md
 ```
@@ -60,6 +63,7 @@ Main specs: openspec/specs/{domain}/spec.md
 - If a file already exists, READ it first and UPDATE it (don't overwrite blindly)
 - If the change directory already exists with artifacts, the change is being CONTINUED
 - Use the `openspec/config.yaml` `rules` section to apply project-specific constraints per phase
+- If browser evidence is produced for UI work, keep it under `ui-evidence/` instead of scattering screenshots across the repo
 - In `hybrid`, treat these files as a filesystem projection of the canonical Engram-backed workflow state
 
 ## Config File Reference

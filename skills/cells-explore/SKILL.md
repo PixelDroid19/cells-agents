@@ -149,5 +149,13 @@ Use the following markdown as the `detailed_report` body. If you persist to `exp
 - If the request is too vague to explore, say what clarification is needed
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+When the exploration topic touches rendered UI, demos, routes, or user-visible interaction flows, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
 
+Exploration should identify:
+- the local page or demo entry point
+- the main user flow to validate in a browser
+- whether the request is likely to require screenshots, snapshots, or visual diffs later in the workflow.

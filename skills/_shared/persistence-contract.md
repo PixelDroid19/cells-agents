@@ -1,6 +1,6 @@
 # Persistence Contract (shared across all SDD skills)
 
-This project follows the same storage architecture as `agent-teams-lite` for Engram handling:
+This project uses an Engram-first storage architecture:
 - `engram` is the canonical backend for artifact and state recovery.
 - `openspec` is filesystem mode for local file artifacts.
 - `hybrid` keeps Engram as primary for recovery and writes an OpenSpec mirror alongside it.
@@ -58,6 +58,9 @@ The orchestrator persists DAG state after each phase transition. This enables SD
 - NEVER force `openspec/` creation unless the orchestrator explicitly passed `openspec` or `hybrid` mode.
 - If you are unsure which mode to use, default to `none`.
 - Treat Engram as the source of truth for stateful recovery unless the active mode is strictly `openspec`.
+- If browser captures, snapshots, or diffs are produced, treat them as supporting evidence rather than standalone success criteria. Persist a compact summary plus any relevant paths only when the active mode allows it.
+- In `openspec` or `hybrid`, store optional browser evidence under `openspec/changes/{change-name}/ui-evidence/` when filesystem artifacts are required.
+- In `none`, return browser evidence inline and avoid leaving extra files unless the user explicitly asked for them.
 - If the repo is Cells-oriented, load `skills/_shared/cells-conventions.md` before analyzing, designing, implementing, verifying, or generating component knowledge.
 
 ## Detail Level

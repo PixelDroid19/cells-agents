@@ -50,3 +50,10 @@ Return the standard envelope and include:
 - highest-impact uncovered paths first
 - focused rerun recommendation
 
+## Browser Integration
+
+When coverage gaps correspond to page-level flows or browser-visible failures, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Treat screenshots, DOM snapshots, and visual diffs as first-class evidence when they help explain why a browser flow remains untested or broken.

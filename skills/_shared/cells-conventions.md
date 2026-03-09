@@ -8,6 +8,8 @@ Your job is to ground every recommendation in real Cells evidence, not generic f
 
 Also read `skills/_shared/cells-official-reference.md` to route each task to the right internal official source without loading unnecessary documentation.
 
+When the task touches rendered UI, demos, routes, screenshots, or functional/visual verification, also read `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md` when available in the workspace or installed bundle.
+
 ## Source Priority
 
 Read sources in this order when they exist:
@@ -29,6 +31,22 @@ Read sources in this order when they exist:
    - use `scripts/search_docs.py` to retrieve architecture, CLI, testing, theming, packaging, and authoring rules
 
 If two sources conflict, trust project code first, then the internal component catalog, then the internal official-docs catalog.
+
+## Browser Evidence for UI Work
+
+When a Cells task depends on what a user can actually see or do in the browser, validate it with browser evidence in addition to code evidence.
+
+Use browser evidence for:
+- visible state changes
+- demo or route flows
+- click, fill, select, and navigation interactions
+- visual regressions, screenshots, and diffs
+- runtime i18n, theming, or dark-mode checks
+
+For browser-visible claims, prefer this order:
+1. project code and tests
+2. local runtime opened through `agent-browser`
+3. screenshots, snapshots, or diffs captured from that runtime
 
 ## Cells Stack Detection
 
@@ -71,6 +89,7 @@ When verifying or designing for Cells, explicitly check:
 - `scopedElements` includes all local registrations needed by the template
 - `custom-elements.json` and source code do not contradict each other
 - tests cover render paths, events, and edge states
+- browser-visible user flows are validated with `agent-browser` when source-only evidence is insufficient
 - commands in `package.json` use realistic Cells flows, such as `cells lit-component:test`
 
 ## Evidence Rules
@@ -80,6 +99,9 @@ When verifying or designing for Cells, explicitly check:
 - When `skills/cells-components-catalog/` exists, use it as a fast discovery layer, then confirm important details against code or the internal dossier.
 - When proposing a new component or feature, cite the closest real feature/example you found.
 - Prefer composition patterns already used in the repo over inventing a new abstraction.
+- If a claim depends on rendered UI or interaction behavior, validate it with `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md` when available.
+- Do not run the project, demo server, or tests for every small change; reserve execution for confirmation when the change risk or visible impact justifies it.
+- If a runtime or browser session is already active, reuse the same route, session, and port instead of launching another one.
 - The core architecture must work with the installed bundle alone.
 
 ## Skill Creation Rules

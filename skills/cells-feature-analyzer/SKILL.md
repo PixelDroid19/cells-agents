@@ -84,4 +84,10 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - Call out anti-patterns or inconsistencies when found
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+When the target feature repository exposes runnable pages or demos, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Extract browser-visible flows, checkpoints, and state transitions that should inform later design, apply, and verify work.

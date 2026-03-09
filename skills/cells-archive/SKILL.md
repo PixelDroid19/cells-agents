@@ -83,6 +83,7 @@ Confirm:
 - [ ] Main specs updated correctly
 - [ ] Change folder moved to archive
 - [ ] Archive contains all artifacts (proposal, specs, design, tasks)
+- [ ] Optional `ui-evidence/` is preserved when browser evidence was produced
 - [ ] Active changes directory no longer has this change
 
 ### Step 4: Return Summary
@@ -105,6 +106,7 @@ Return to the orchestrator:
 - specs/ 
 - design.md 
 - tasks.md  ({N}/{N} tasks complete)
+- ui-evidence/  (if browser screenshots, snapshots, or diffs were produced)
 
 ### Source of Truth Updated
 The following specs now reflect the new behavior:
@@ -124,7 +126,16 @@ Ready for the next change.
 - If the merge would be destructive (removing large sections), WARN the orchestrator and ask for confirmation
 - The archive is an AUDIT TRAIL  never delete or modify archived changes
 - If `openspec/changes/archive/` doesn't exist, create it
+- Preserve optional `ui-evidence/` browser artifacts during archive moves when they exist
 - If filesystem config exists, apply any `rules.archive` from `openspec/config.yaml`
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+When a completed change produced screenshots, DOM snapshots, diffs, or other browser evidence, preserve that evidence during archive operations.
+
+Use:
+- `skills/_shared/browser-testing-convention.md`
+- optional `openspec/changes/{change-name}/ui-evidence/` when filesystem artifacts exist
+
+Do not drop browser evidence silently if it was part of the verification trail.

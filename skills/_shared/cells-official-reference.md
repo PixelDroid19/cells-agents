@@ -28,6 +28,8 @@ Do NOT reference folders outside this package from this file or from dependent s
    - `skills/cells-i18n/`
    - `skills/cells-test-creator/`
    - `skills/cells-app-architecture/`
+   - `skills/_shared/browser-testing-convention.md`
+   - `agent-browser/SKILL.md` when browser interaction or visual validation is required
 5. Return extracted rules and evidence, not long doc summaries.
 
 ## Official Source Map
@@ -134,6 +136,23 @@ Use for:
 - public-behavior testing rules
 - feature or app integration testing
 - coverage triage and deterministic failure analysis when artifacts exist
+
+### Browser-visible UI, demos, and visual validation
+
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+- `skills/cells-cli-usage/`
+
+Use for:
+- opening demo or local app routes
+- clicking through feature flows
+- taking screenshots or DOM snapshots
+- comparing visible UI states after a change
+- validating runtime i18n, theming, and dark mode
+
+Rule:
+- resolve the local serve or demo path first
+- snapshot before interaction and re-snapshot after DOM changes
 
 ### Theming and design tokens
 

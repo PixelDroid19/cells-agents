@@ -222,3 +222,15 @@ Checks:
 - Evidence of hard stop checks executed (private scan clean + validator clean).
 - Evidence of file-level lcov validation for the exact target source file.
 - Evidence exists for all four agents (creator, runner, coverage auditor, compliance auditor).
+
+## Browser Integration
+
+When unit tests alone cannot prove page-level, demo-level, or browser-visible behavior, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
+
+Use browser runs as complementary evidence for:
+- route or demo flows
+- interaction wiring across multiple components
+- visual state regressions
+- runtime i18n and theming behavior that is difficult to prove with unit tests alone.

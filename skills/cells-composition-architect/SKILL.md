@@ -82,5 +82,10 @@ FeatureHost
 - Mention `scopedElements`, mixins, and tests when they are part of the architecture
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
+## Browser Integration
 
+When the composition plan affects multi-step flows, pages, widgets, or user-visible interactions, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `agent-browser/SKILL.md` when available
 
+Call out browser checkpoints such as route entry, click flows, loading transitions, and visible state combinations that should be validated later in implementation or verification.

@@ -47,6 +47,7 @@ For Cells projects, also inspect:
 8. `skills/cells-components-catalog/`, when available, to confirm exact package names, tags, attributes, and usage snippets before coding
 9. `skills/cells-test-creator/` when adding or modifying tests
 10. `skills/cells-cli-usage/` when you need the correct local test, lint, docs, locales, or serve command
+11. `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md` when the task changes rendered UI, demos, routes, interaction flows, or visual states
 
 ### Step 2: Detect Implementation Mode
 
@@ -123,6 +124,29 @@ FOR EACH TASK:
  Note any issues or deviations
 ```
 
+For small, low-risk changes:
+
+- do not automatically start the full project
+- do not automatically run the full test suite
+- prefer code-local reasoning, targeted edits, and minimal confirmation only when the change needs proof
+
+### Step 2c: Browser Validation For Visible UI Changes
+
+When a task changes rendered UI, demos, routes, interaction flows, styling, or other browser-visible states:
+
+```
+Resolve the local serve/demo command and target URL through `skills/cells-cli-usage/`
+Reuse an already running dev server, route, browser session, or CDP port when available
+Open or connect with `agent-browser` using that existing runtime first
+Capture a snapshot before interaction
+Perform the minimum interaction needed to prove the changed behavior
+Re-snapshot after DOM changes
+Capture screenshot or diff evidence when the change is visual
+If runtime validation cannot be executed locally, report it as blocked evidence
+```
+
+This browser step complements implementation confidence for UI work and does not replace full verification in `cells-verify`.
+
 ### Step 3: Persist Task Progress Correctly
 
 If mode is `openspec` or `hybrid`, update `tasks.md` and change `- [ ]` to `- [x]` for completed tasks.
@@ -195,6 +219,9 @@ If none, say "None."}
 - If filesystem config exists, apply any `rules.apply` from `openspec/config.yaml`
 - If TDD mode is detected (Step 2), ALWAYS follow the RED  GREEN  REFACTOR cycle  never skip RED (writing the failing test first)
 - When running tests during TDD, run ONLY the relevant test file/suite, not the entire test suite (for speed)
+- Do not run project-wide runtime or test commands for every small change; execute only what is needed to confirm the assigned task
+- If browser confirmation is needed, reuse the existing runtime, browser session, and port before starting a new one
+- When implementation changes browser-visible UI, run a minimal browser validation loop if a local runtime can be served safely
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
 
