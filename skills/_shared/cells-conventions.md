@@ -53,12 +53,14 @@ Use this routing table before choosing which skill or catalog to read first:
 
 | Intent | First Route | Fallback Route |
 |---|---|---|
-| UI/component discovery, screen building, element selection | `skills/cells-components-catalog/` | `skills/cells-official-docs-catalog/` only when process/authoring rules are also required |
+| UI/component discovery, screen building, element selection | SQL/database-backed lookup in `skills/cells-components-catalog/assets/bbva_cells_components.db` via `skills/cells-components-catalog/scripts/search_docs.py` | `skills/cells-official-docs-catalog/` only when process/authoring rules are also required |
 | Any Cells documentation lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells knowledge) | `skills/cells-official-docs-catalog/` | `skills/cells-components-catalog/` only when the answer needs concrete package/tag/API discovery |
 | Tests, coverage, or test creation in Cells | `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/` | No reorder; only then use extra sources if still blocked |
 | Browser-visible UI behavior, route flow, visual checks | `skills/_shared/browser-testing-convention.md` + `skills/agent-browser/SKILL.md` | Source-only evidence only when browser validation is not required |
 
 Fallback is allowed only when the first route does not provide enough evidence for the decision.
+
+For any component/UI intent, do not skip the SQL lookup step and do not infer component APIs from memory.
 
 ## Browser Evidence for UI Work
 
@@ -205,7 +207,7 @@ When verifying or designing for Cells, explicitly check:
 
 - Never say a component "supports" a prop, event, or pattern unless you found it in code, in the internal component catalog, or in the internal official-docs catalog.
 - Route architecture, CLI, testing, theming, and packaging questions through `skills/_shared/cells-official-reference.md` before reading broad documentation trees.
-- When `skills/cells-components-catalog/` exists, use it as a fast discovery layer, then confirm important details against code or the internal dossier.
+- When `skills/cells-components-catalog/` exists, use its SQL/database-backed search (`scripts/search_docs.py` over `assets/bbva_cells_components.db`) as the required discovery step, then confirm important details against code or the internal dossier.
 - When proposing a new component or feature, cite the closest real feature/example you found.
 - Prefer composition patterns already used in the repo over inventing a new abstraction.
 - If a claim depends on rendered UI or interaction behavior, validate it with `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` when available.

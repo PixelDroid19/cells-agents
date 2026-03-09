@@ -25,7 +25,7 @@ Unless the orchestrator explicitly asks you to persist analysis artifacts in `op
 
 For the requested component, inspect as many of these as exist:
 
-1. `skills/cells-components-catalog/` first, if available, to shortlist the exact package slug, custom elements, props, events, and usage snippets
+1. Run SQL/database-backed lookup first via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to shortlist the exact package slug, custom elements, props, events, and usage snippets (do not guess from memory)
 2. `skills/cells-components-catalog/` dossier for the chosen package or element
 3. `skills/cells-official-docs-catalog/` topics `component-api` and `lit-authoring` for authoritative authoring rules
 4. `skills/cells-official-docs-catalog/` topic dossiers chosen through `skills/_shared/cells-official-reference.md`

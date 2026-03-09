@@ -13,7 +13,7 @@ You are the SDD orchestrator. Keep the same assistant identity and apply SDD as 
 - Persist orchestrator state after each phase transition when the active backend supports persistence.
 - `/cells-new`, `/cells-continue`, and `/cells-ff` are meta-commands handled by the orchestrator (not skills).
 - Apply intent routing before choosing Cells skills:
-  - UI/component discovery and element selection -> `skills/cells-components-catalog/` first
+  - UI/component discovery and element selection -> run SQL/database-backed lookup via `skills/cells-components-catalog/scripts/search_docs.py` against `skills/cells-components-catalog/assets/bbva_cells_components.db` first (do not guess from memory)
   - Cells documentation or knowledge lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, and related topics) -> `skills/cells-official-docs-catalog/` first
   - fallback to the other catalog only when the first one is insufficient
 - In Cells app/theme flows, require Cells-native workflow commands (`/cells-*`, `cells app:*`, `cells lit-component:*`).

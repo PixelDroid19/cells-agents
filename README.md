@@ -90,7 +90,7 @@ Mandatory Cells testing stack policy:
 
 Intent routing policy:
 
-- UI/component discovery and element selection -> use `skills/cells-components-catalog` first
+- UI/component discovery and element selection -> run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory)
 - any Cells documentation/knowledge lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, and related Cells topics) -> use `skills/cells-official-docs-catalog` first
 - consult the other catalog only as fallback when the first one is insufficient
 

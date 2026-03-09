@@ -51,7 +51,7 @@ For Cells projects, also inspect:
 5. `custom-elements.json` and public API docs for touched components
 6. nearby tests covering events, render states, and reflected attributes
 7. real feature usage before introducing new composition patterns
-8. `skills/cells-components-catalog/`, when available, to confirm exact package names, tags, attributes, and usage snippets before coding
+8. SQL/database-backed lookup via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db`, when available, to confirm exact package names, tags, attributes, and usage snippets before coding (do not guess from memory)
 9. `skills/cells-cli-usage/` first when resolving any test command path
 10. `skills/cells-coverage/` second when coverage thresholds, reports, or test-failure artifacts exist
 11. `skills/cells-test-creator/` third when adding or modifying tests

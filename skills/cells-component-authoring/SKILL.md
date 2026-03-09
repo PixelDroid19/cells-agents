@@ -40,7 +40,7 @@ Use this skill for prompts like:
 ### 1. Decide Reuse vs New Component
 
 Before authoring anything:
-- search `skills/cells-components-catalog/` for an existing package that already fits
+- run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to find an existing package that already fits (do not guess from memory)
 - check the current repo for similar local components
 - use official `component-api`, `lit-authoring`, `testing`, and `demo-docs-i18n-assets` guidance through `skills/_shared/cells-official-reference.md`
 

@@ -40,7 +40,7 @@ Before designing, read the actual code that will be affected:
 - Test infrastructure (if any)
 
 For Cells projects, explicitly map:
-- candidate packages and custom elements from `skills/cells-components-catalog/` when available
+- candidate packages and custom elements using SQL/database-backed lookup via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` when available (do not guess from memory)
 - relevant official docs selected through `skills/_shared/cells-official-reference.md`
 - architecture patterns from `skills/cells-app-architecture/` when the change is feature-level
 - component imports from `@bbva-spherica-components/*` and `@bbva-web-components/*`

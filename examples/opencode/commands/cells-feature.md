@@ -17,6 +17,6 @@ Analyze the feature "{argument}" and extract reusable patterns for composition, 
 
 Routing rule:
 - When this analysis requires Cells documentation lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general guidance), consult `skills/cells-official-docs-catalog/` first.
-- Use `skills/cells-components-catalog/` as fallback when concrete package/tag/API discovery is needed.
+- When concrete package/tag/API discovery is needed, run SQL/database-backed lookup first using `python skills/cells-components-catalog/scripts/search_docs.py --query "{argument}"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory).
 
 Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.

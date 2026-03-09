@@ -27,7 +27,7 @@ Inspect the target feature repository and, when useful:
 - `test/`
 - `custom-elements.json`
 - feature-level README files
-- `skills/cells-components-catalog/` to quickly identify and normalize the BBVA package names found in the feature
+- SQL/database-backed lookup via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to quickly identify and normalize the BBVA package names found in the feature (do not guess from memory)
 - `skills/cells-app-architecture/` and the official architecture docs routed through `skills/_shared/cells-official-reference.md`
 
 ## What To Extract
@@ -79,7 +79,7 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 ## Rules
 
 - Focus on patterns that are reusable, not every implementation detail
-- Use `cells-components-catalog` to normalize package identities, tags, and APIs before making reuse claims
+- Use `cells-components-catalog` SQL/database-backed search (`scripts/search_docs.py` on `assets/bbva_cells_components.db`) to normalize package identities, tags, and APIs before making reuse claims
 - Prefer evidence from source and tests over README prose
 - Call out anti-patterns or inconsistencies when found
 - Return the standard structured envelope with the markdown report above in `detailed_report`

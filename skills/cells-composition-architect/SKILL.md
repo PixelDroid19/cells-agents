@@ -22,7 +22,7 @@ Read and follow:
 ## What To Read
 
 Always inspect:
-- `skills/cells-components-catalog/` first, if available, to shortlist candidate packages and exact custom elements
+- run SQL/database-backed lookup first via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to shortlist candidate packages and exact custom elements (do not guess from memory)
 - the relevant internal topics selected from `skills/_shared/cells-official-reference.md`, especially `composition`, `component-api`, `lit-authoring`, and `architecture`
 - `skills/cells-app-architecture/` when the request is feature-level or involves pages, data managers, or bridge communication
 - the active project's `package.json`, `src/`, and `test/`
@@ -77,7 +77,7 @@ FeatureHost
 ## Rules
 
 - Prefer composition over extension unless extension is clearly established in the repo
-- Use `cells-components-catalog` to narrow the search space quickly, then confirm the chosen packages against code, tests, or the internal dossier
+- Use `cells-components-catalog` SQL/database-backed search (`scripts/search_docs.py` on `assets/bbva_cells_components.db`) to narrow the search space, then confirm the chosen packages against code, tests, or the internal dossier
 - Reuse patterns already present in real feature repositories
 - Mention `scopedElements`, mixins, and tests when they are part of the architecture
 - Return the standard structured envelope with the markdown report above in `detailed_report`

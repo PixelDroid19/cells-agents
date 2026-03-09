@@ -16,7 +16,7 @@ TASK:
 Design the best composition strategy for "{argument}" using existing BBVA Cells packages, feature patterns, mixins, scoped elements, and real implementation evidence.
 
 Routing rule:
-- For UI/component discovery and composition, consult `skills/cells-components-catalog/` first.
+- For UI/component discovery and composition, run SQL/database-backed lookup first using `python skills/cells-components-catalog/scripts/search_docs.py --query "{argument}"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory).
 - Use `skills/cells-official-docs-catalog/` only as fallback when official Cells documentation rules are required.
 
 Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.

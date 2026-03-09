@@ -55,7 +55,7 @@ Read relevant code to understand:
 For Cells or BBVA component work, always gather evidence from:
 - `package.json`, `custom-elements.json`, `src/`, and `test/`
 - `skills/_shared/cells-official-reference.md` to choose the smallest official doc set for architecture, CLI, testing, theming, or component API questions
-- `skills/cells-components-catalog/` first, if available, to discover existing packages, tags, attributes, events, and code snippets efficiently
+- SQL/database-backed lookup first via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to discover existing packages, tags, attributes, events, and code snippets efficiently (do not guess from memory)
 - `skills/cells-app-architecture/`, `skills/cells-cli-usage/`, and `skills/cells-test-creator/` when the topic is about feature architecture, commands, or test strategy
 - `skills/cells-components-catalog/` dossier output when a specific component is involved
 - `skills/cells-official-docs-catalog/` when the topic needs official Cells design, testing, lifecycle, or authoring guidance
@@ -149,7 +149,7 @@ Use the following markdown as the `detailed_report` body. If you persist to `exp
 - DO NOT modify any existing code or files
 - ALWAYS read real code, never guess about the codebase
 - For Cells work, never rely on a component skill alone when package docs, source code, or feature evidence are available
-- Use `cells-components-catalog` as a discovery accelerator, not as a replacement for final evidence
+- Use `cells-components-catalog` SQL/database-backed search as a required discovery step, not as a replacement for final evidence
 - Explicitly identify whether the request concerns a base component, a feature composition, or documentation/skill generation
 - Keep your analysis CONCISE - the orchestrator needs a summary, not a novel
 - If you can't find enough information, say so clearly

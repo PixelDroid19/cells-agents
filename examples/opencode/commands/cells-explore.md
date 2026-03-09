@@ -28,7 +28,7 @@ Mandatory testing stack for Cells testing-related explorations:
 - Do not reintroduce generic fallback commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells contexts.
 
 Intent routing for this command:
-- UI/component discovery, element selection, or screen composition topics -> consult `skills/cells-components-catalog/` first.
+- UI/component discovery, element selection, or screen composition topics -> run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "{argument}"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory).
 - Cells documentation/knowledge topics (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> consult `skills/cells-official-docs-catalog/` first.
 - Use the other catalog only as fallback when the first one is insufficient.
 

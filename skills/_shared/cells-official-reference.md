@@ -19,7 +19,7 @@ Do NOT reference folders outside this package from this file or from dependent s
    - demo, docs, i18n
    - styling, theming, assets
 1b. Apply intent routing before reading catalogs:
-   - UI/component discovery or element selection -> `skills/cells-components-catalog/` first
+   - UI/component discovery or element selection -> run SQL/database-backed lookup first with `skills/cells-components-catalog/scripts/search_docs.py` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory)
    - Any Cells documentation or knowledge lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> `skills/cells-official-docs-catalog/` first
    - Use fallback only when the first catalog is insufficient for the decision
 2. Read project code and `package.json` first.
