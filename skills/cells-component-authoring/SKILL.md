@@ -120,7 +120,7 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 
 When authoring or evolving a component with visible UI behavior, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Include browser validation targets in the authoring plan:
 - demo or local preview entry point

@@ -61,6 +61,13 @@ For Cells or BBVA component work, always gather evidence from:
 - `skills/cells-official-docs-catalog/` when the topic needs official Cells design, testing, lifecycle, or authoring guidance
 - real feature repos when the request is about composition, behavior, or best practices
 
+For Cells testing-related exploration topics, apply this mandatory stack before any other testing source:
+1. `skills/cells-cli-usage/`
+2. `skills/cells-coverage/`
+3. `skills/cells-test-creator/`
+
+Do not skip or reorder this stack. Do not introduce generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
+
 ```
 INVESTIGATE:
  Read entry points and key files
@@ -153,7 +160,7 @@ Use the following markdown as the `detailed_report` body. If you persist to `exp
 
 When the exploration topic touches rendered UI, demos, routes, or user-visible interaction flows, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Exploration should identify:
 - the local page or demo entry point

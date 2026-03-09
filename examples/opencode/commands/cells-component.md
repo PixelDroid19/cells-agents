@@ -15,4 +15,8 @@ CONTEXT:
 TASK:
 Investigate the Cells component "{argument}" using real sources. Extract API, events, CSS hooks, version/changelog clues, dependencies, testing evidence, and real usage patterns from feature repositories when available.
 
+Routing rule:
+- For this UI/component discovery task type, use `skills/cells-components-catalog/` first.
+- Use `skills/cells-official-docs-catalog/` only as fallback when official process/authoring rules are needed beyond component discovery evidence.
+
 Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.

@@ -38,8 +38,8 @@ For Cells projects, explicitly inspect:
 - `src/` and `test/`
 - `@bbva-spherica-components/*`, `@bbva-web-components/*`, `lit`, and `@open-wc/scoped-elements`
 - whether the project is a base component, a feature composition, or a data manager package
-- `skills/cells-cli-usage/`, `skills/cells-test-creator/`, and `skills/cells-app-architecture/` when present, so the team knows the local Cells workflow, testing rules, and architecture model
-- whether the workspace exposes a local serve, demo, or route path suitable for browser validation via `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md`
+- `skills/cells-cli-usage/`, `skills/cells-coverage/`, `skills/cells-test-creator/`, and `skills/cells-app-architecture/` when present, so the team knows the local Cells workflow, mandatory testing stack, coverage policy, testing rules, and architecture model
+- whether the workspace exposes a local serve, demo, or route path suitable for browser validation via `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md`
 - whether there is evidence of an already running dev server, existing preview URL, or known browser/CDP reuse path that should be preferred later
 
 ### Step 2: Initialize Persistence Backend
@@ -171,7 +171,7 @@ Ready for /cells-explore <topic> or /cells-new <change-name>.
 
 When the workspace contains demos, app routes, or rendered UI, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Initialization should record whether the repo exposes a practical local browser-validation path, such as a demo server, app route, or component preview command.
 It should also record whether later browser confirmation should reuse an existing runtime or CDP port instead of launching a fresh browser.

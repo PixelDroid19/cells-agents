@@ -27,7 +27,14 @@ If the project is Cells-oriented, also read and follow `skills/_shared/cells-con
 If the project is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route verification to the right official testing, lifecycle, i18n, and CLI guidance.
 If the project leaves coverage reports or structured test-error artifacts, use `skills/cells-coverage/` for compact triage.
 If the project touches translated literals, locales, or `BbvaCoreIntlMixin`, use `skills/cells-i18n/` to verify runtime and locale coherence.
-If the change affects rendered UI, routes, demos, theming, or browser-visible interaction flows, also read `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md` when available.
+If the change affects rendered UI, routes, demos, theming, or browser-visible interaction flows, also read `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` when available.
+
+For Cells testing and test-execution decisions, apply this mandatory stack first and in order:
+1. `skills/cells-cli-usage/` (canonical command resolution)
+2. `skills/cells-coverage/` (coverage thresholds/reporting and artifact triage)
+3. `skills/cells-test-creator/` (test quality/design/compliance criteria)
+
+Do not skip or reorder this stack. Do not use generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `verify-report`. Retrieve `proposal`, `spec`, `design`, and `tasks` as dependencies.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Save to `openspec/changes/{change-name}/verify-report.md`.
@@ -104,8 +111,10 @@ Detect the project's test runner and execute the tests:
 ```
 Detect test runner from:
  openspec/config.yaml  rules.verify.test_command (if filesystem config exists)
- package.json  scripts.test
- `skills/cells-cli-usage/` for the correct local Cells command if the script wraps a CLI flow
+ `skills/cells-cli-usage/` first for the correct Cells-native command path
+ `skills/cells-coverage/` second for threshold/reporting constraints when configured
+ `skills/cells-test-creator/` third for quality and convention checks
+ package.json  scripts.test (wrapper mapping only after Cells command resolution)
  pyproject.toml / pytest.ini  pytest
  Makefile  make test
  Fallback: ask orchestrator
@@ -319,6 +328,8 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - A spec scenario is only COMPLIANT when a test that covers it has PASSED
 - Compare against SPECS first (behavioral correctness), DESIGN second (structural correctness)
 - For Cells projects, explicitly report mismatches between source code, `custom-elements.json`, package docs, and tests
+- For Cells app/theme verification, do NOT default to generic external runners (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
+- If uncertain whether a command is Cells-native, ask the user before running a non-Cells command
 - Be objective  report what IS, not what should be
 - CRITICAL issues = must fix before archive
 - WARNINGS = should fix but won't block
@@ -336,6 +347,6 @@ Browser validation is mandatory whenever the verified change affects rendered UI
 
 Always use:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Treat browser results as runtime evidence that complements tests, build output, and the spec compliance matrix.

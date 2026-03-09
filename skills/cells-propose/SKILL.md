@@ -136,7 +136,7 @@ Ready for specs (cells-spec) or design (cells-design).
 
 When the proposed change affects rendered UI, routes, demos, visible interactions, or styling, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Include browser validation in the proposal when relevant:
 - mention browser-visible scope

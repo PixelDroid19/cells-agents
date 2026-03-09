@@ -11,11 +11,12 @@ Create and improve unit tests following repository conventions, with a file-leve
 Before large test work, read:
 
 - `skills/_shared/cells-official-reference.md`
-- `skills/cells-cli-usage/` to resolve the correct local test command for this workspace
+- `skills/cells-cli-usage/` FIRST to resolve canonical Cells-native test command/invocation
+- `skills/cells-coverage/` SECOND for coverage thresholds/reporting strategy and artifact triage
+- `skills/cells-test-creator/` THIRD (this skill) for test design/creation/update conventions
 - `skills/cells-official-docs-catalog/` topic `testing`
 - `skills/cells-official-docs-catalog/` topic `lit-authoring`
 - `skills/cells-official-docs-catalog/` topic `demo-docs-i18n-assets`
-- `skills/cells-coverage/` when coverage reports or failure artifacts exist
 - `skills/cells-i18n/` when the component uses `BbvaCoreIntlMixin`, locale files, or translated literals
 
 ## Mandatory rules
@@ -34,6 +35,8 @@ Before large test work, read:
 12. For non-trivial tasks, orchestrate subagents with explicit handoffs: test-creator -> test-runner -> coverage-auditor -> compliance-auditor.
 13. If test execution leaves a failure-output folder or coverage artifacts, use them as evidence instead of re-reading large raw reports manually.
 14. Do not assume Unix-only utilities. If `awk` or `grep` are unavailable, use a shell-native or Python equivalent and keep the same evidence goal.
+15. In Cells contexts, always apply the mandatory testing stack in order (`cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`) before any other testing source.
+16. Never use generic fallback testing commands (`npm test`, `npm run test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
 
 ## Multi-subagent orchestration mode
 
@@ -59,7 +62,9 @@ Goal:
 Required command:
 
 - Use the repo-local targeted test command resolved through `skills/cells-cli-usage/`
-- Prefer `npm run ...` scripts when they exist; fall back to direct Cells CLI only if no local script exists
+- Keep Cells-native commands canonical (`cells lit-component:test` or `cells app:test`) for Cells workflows
+- Do NOT default to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells app/theme orchestration
+- If uncertain whether a command is Cells-native, ask before running a non-Cells command
 
 Output contract:
 
@@ -155,6 +160,7 @@ If coverage HTML exists, prefer compact triage first:
 ## Repository conventions
 
 - Test command: resolve the local test path through `skills/cells-cli-usage/` and prefer existing repo scripts.
+- Test command: resolve through `skills/cells-cli-usage/` and keep the equivalent Cells-native command as canonical.
 - Structure: `src/...` -> `test/...` (mirrored path).
 - Expected name: `<source-file>.test.js`.
 - Suite patterns: `suite(...)`, `setup(...)`, `teardown(...)`, `test(...)`.
@@ -227,7 +233,7 @@ Checks:
 
 When unit tests alone cannot prove page-level, demo-level, or browser-visible behavior, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Use browser runs as complementary evidence for:
 - route or demo flows

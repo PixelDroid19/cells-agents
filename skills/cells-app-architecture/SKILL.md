@@ -106,7 +106,7 @@ When the task involves feature flags, performance, service workers, microfronten
 
 When the architecture work affects routes, pages, feature shells, or browser-visible state transitions, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Define browser checkpoints explicitly for:
 - route entry points

@@ -18,6 +18,10 @@ Do NOT reference folders outside this package from this file or from dependent s
    - testing or coverage
    - demo, docs, i18n
    - styling, theming, assets
+1b. Apply intent routing before reading catalogs:
+   - UI/component discovery or element selection -> `skills/cells-components-catalog/` first
+   - Any Cells documentation or knowledge lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> `skills/cells-official-docs-catalog/` first
+   - Use fallback only when the first catalog is insufficient for the decision
 2. Read project code and `package.json` first.
 3. Then query `skills/cells-official-docs-catalog/` for the exact topic family needed.
 4. Use repo-local specialist skills as accelerators:
@@ -29,7 +33,7 @@ Do NOT reference folders outside this package from this file or from dependent s
    - `skills/cells-test-creator/`
    - `skills/cells-app-architecture/`
    - `skills/_shared/browser-testing-convention.md`
-   - `agent-browser/SKILL.md` when browser interaction or visual validation is required
+   - `skills/agent-browser/SKILL.md` when browser interaction or visual validation is required
 5. Return extracted rules and evidence, not long doc summaries.
 
 ## Official Source Map
@@ -72,11 +76,18 @@ Use for:
 
 Use for:
 - build, serve, test, lint, docs commands
-- choosing between `npm run ...` and `cells ...`
+- mapping local wrappers to canonical `cells ...` commands
 - understanding app vs component vs `lit-component` commands
 
 Rule:
-- Prefer repo-local scripts and commands already defined in the workspace.
+- Keep Cells-native commands canonical for Cells app/theme workflows (`/cells-*`, `cells app:*`, `cells lit-component:*`).
+- Canonical command families to prefer in guidance and execution decisions:
+  - Workflow: `/cells-init`, `/cells-explore`, `/cells-new`, `/cells-continue`, `/cells-ff`, `/cells-apply`, `/cells-verify`, `/cells-archive`
+  - App: `cells app:serve -c <config>`, `cells app:build -c <config>`, `cells app:test`, `cells app:lint`, `cells app:install`, `cells app:create`
+  - Component: `cells lit-component:create`, `cells lit-component:serve`, `cells lit-component:test`, `cells lit-component:lint`, `cells lit-component:locales`, `cells lit-component:documentation`
+- Do NOT default to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells workflows.
+- Use non-Cells commands only when the user explicitly requests them in a clearly non-Cells context.
+- If uncertain whether a command is Cells-native, ask the user before running a non-Cells command.
 - Do NOT recommend global install or update steps unless the user explicitly asks for installation help.
 
 ### Component API and package contracts
@@ -137,10 +148,20 @@ Use for:
 - feature or app integration testing
 - coverage triage and deterministic failure analysis when artifacts exist
 
+Mandatory testing stack for Cells contexts (consult in strict order before any other testing source):
+1. `skills/cells-cli-usage/` (canonical test command and invocation path)
+2. `skills/cells-coverage/` (coverage thresholds, reports, branch-miss prioritization)
+3. `skills/cells-test-creator/` (test design, creation, update, compliance)
+
+Rules:
+- Apply this stack first whenever the request is about tests, test execution, coverage, or test creation in Cells.
+- Do not skip or reorder these three skills for Cells testing requests.
+- Do not reintroduce generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
+
 ### Browser-visible UI, demos, and visual validation
 
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 - `skills/cells-cli-usage/`
 
 Use for:

@@ -25,6 +25,13 @@ Read and follow `skills/_shared/persistence-contract.md` for mode resolution rul
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 For Cells implementation work, use `skills/_shared/cells-official-reference.md` to fetch only the official guidance needed for the touched area.
 
+For Cells testing or test-execution decisions during implementation, apply this mandatory stack first and in order:
+1. `skills/cells-cli-usage/` (canonical command resolution)
+2. `skills/cells-coverage/` (threshold/reporting and artifact triage)
+3. `skills/cells-test-creator/` (test design/update/compliance)
+
+Do not skip or reorder this stack. Do not use generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
+
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `apply-progress`. Retrieve `proposal`, `spec`, `design`, and `tasks` as dependencies. Also use `mem_update` to mark completed tasks in the `tasks` artifact.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Update `tasks.md` with `[x]` marks.
 - If mode is `hybrid`: Follow BOTH conventions  persist progress to Engram (`mem_update` for tasks) AND update `tasks.md` with `[x]` marks on filesystem.
@@ -45,9 +52,11 @@ For Cells projects, also inspect:
 6. nearby tests covering events, render states, and reflected attributes
 7. real feature usage before introducing new composition patterns
 8. `skills/cells-components-catalog/`, when available, to confirm exact package names, tags, attributes, and usage snippets before coding
-9. `skills/cells-test-creator/` when adding or modifying tests
-10. `skills/cells-cli-usage/` when you need the correct local test, lint, docs, locales, or serve command
-11. `skills/_shared/browser-testing-convention.md` and `agent-browser/SKILL.md` when the task changes rendered UI, demos, routes, interaction flows, or visual states
+9. `skills/cells-cli-usage/` first when resolving any test command path
+10. `skills/cells-coverage/` second when coverage thresholds, reports, or test-failure artifacts exist
+11. `skills/cells-test-creator/` third when adding or modifying tests
+12. `skills/cells-cli-usage/` when you need the correct local lint, docs, locales, or serve command
+13. `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` when the task changes rendered UI, demos, routes, interaction flows, or visual states
 
 ### Step 2: Detect Implementation Mode
 
@@ -100,8 +109,10 @@ Detect the test runner for execution:
 ```
 Detect test runner from:
  openspec/config.yaml  rules.apply.test_command (if filesystem config exists)
- package.json  scripts.test
- `skills/cells-cli-usage/` for the correct local Cells command if the script wraps a CLI flow
+ `skills/cells-cli-usage/` first for the correct Cells-native command path
+ `skills/cells-coverage/` second for coverage/reporting constraints when applicable
+ `skills/cells-test-creator/` third for test-design and convention constraints
+ package.json  scripts.test (wrapper mapping only after Cells command resolution)
  pyproject.toml / pytest.ini  pytest
  Makefile  make test
  Fallback: report that tests couldn't be run automatically
@@ -219,6 +230,8 @@ If none, say "None."}
 - If filesystem config exists, apply any `rules.apply` from `openspec/config.yaml`
 - If TDD mode is detected (Step 2), ALWAYS follow the RED  GREEN  REFACTOR cycle  never skip RED (writing the failing test first)
 - When running tests during TDD, run ONLY the relevant test file/suite, not the entire test suite (for speed)
+- For Cells app/theme work, do NOT switch to generic external runners (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
+- If uncertain whether a command is Cells-native, ask the user before running a non-Cells command
 - Do not run project-wide runtime or test commands for every small change; execute only what is needed to confirm the assigned task
 - If browser confirmation is needed, reuse the existing runtime, browser session, and port before starting a new one
 - When implementation changes browser-visible UI, run a minimal browser validation loop if a local runtime can be served safely

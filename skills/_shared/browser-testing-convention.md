@@ -16,7 +16,7 @@ Also read this file when any of these are true:
 - the task involves browser-level validation of i18n, theming, responsive behavior, or feature composition
 - unit tests are not enough to prove the user-visible behavior
 
-When browser automation is required, also read `agent-browser/SKILL.md` when it is available in the workspace or installed bundle.
+When browser automation is required, also read `skills/agent-browser/SKILL.md` when it is available in the workspace or installed bundle.
 
 ## Canonical Browser Workflow
 

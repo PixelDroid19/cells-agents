@@ -173,7 +173,7 @@ Ready for design (cells-design). If design already exists, ready for tasks (cell
 
 When the change affects rendered UI or browser-visible behavior, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Write scenarios so they are browser-observable when needed:
 - include visible state expectations

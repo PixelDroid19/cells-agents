@@ -142,6 +142,6 @@ Use this structure when the user is asking for component selection or app compos
 
 This skill is primarily an indexed discovery layer. When the chosen package must be validated in a rendered demo or local page, hand off to:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Search first, then use browser validation only for shortlisted packages that need runtime confirmation.

@@ -155,7 +155,7 @@ Ready for implementation (cells-apply).
 
 When tasks involve rendered UI, routes, demos, or visual behavior, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Add explicit browser tasks when relevant, such as:
 - resolve local serve/demo command

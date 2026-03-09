@@ -15,4 +15,8 @@ CONTEXT:
 TASK:
 Analyze the feature "{argument}" and extract reusable patterns for composition, scoped elements, mixins, tests, data flow, and emitted events.
 
+Routing rule:
+- When this analysis requires Cells documentation lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general guidance), consult `skills/cells-official-docs-catalog/` first.
+- Use `skills/cells-components-catalog/` as fallback when concrete package/tag/API discovery is needed.
+
 Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.

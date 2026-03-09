@@ -19,4 +19,17 @@ This is an exploration only — do NOT create any files or modify code. Just res
 
 If the topic involves Cells components, use real evidence from `custom-elements.json`, `skills/cells-components-catalog/`, `skills/cells-official-docs-catalog/`, feature repos, and tests before making any recommendation.
 
+Mandatory testing stack for Cells testing-related explorations:
+- Consult in strict order before any other testing source: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.
+- Use `cells-cli-usage` to resolve canonical test command/invocation first.
+- Use `cells-coverage` to frame thresholds/reporting and branch priorities.
+- Use `cells-test-creator` for test design/creation/update guidance.
+- Do not skip or reorder this stack.
+- Do not reintroduce generic fallback commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells contexts.
+
+Intent routing for this command:
+- UI/component discovery, element selection, or screen composition topics -> consult `skills/cells-components-catalog/` first.
+- Cells documentation/knowledge topics (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> consult `skills/cells-official-docs-catalog/` first.
+- Use the other catalog only as fallback when the first one is insufficient.
+
 Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.

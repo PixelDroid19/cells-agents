@@ -69,6 +69,31 @@ Default policy:
 - prefer targeted tests and targeted browser confirmation over full-project execution
 - reserve broader execution for verification, risky changes, integration work, or explicit user requests
 
+Cells command policy:
+
+- for Cells app/theme orchestration, keep Cells-native commands canonical (`/cells-*`, `cells app:*`, `cells lit-component:*`)
+- canonical Cells command set:
+  - workflow: `/cells-init`, `/cells-explore`, `/cells-new`, `/cells-continue`, `/cells-ff`, `/cells-apply`, `/cells-verify`, `/cells-archive`
+  - app: `cells app:serve -c <config>`, `cells app:build -c <config>`, `cells app:test`, `cells app:lint`, `cells app:install`, `cells app:create`
+  - component: `cells lit-component:create`, `cells lit-component:serve`, `cells lit-component:test`, `cells lit-component:lint`, `cells lit-component:locales`, `cells lit-component:documentation`
+- do not default to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
+- if command ownership is unclear, ask before running a non-Cells command
+
+Mandatory Cells testing stack policy:
+
+- for any Cells test intent (how to run tests, test execution, coverage, test creation, or test updates), consult skills in this exact order before any other testing source:
+  1. `skills/cells-cli-usage/` (canonical test commands and invocation)
+  2. `skills/cells-coverage/` (coverage thresholds and reporting strategy)
+  3. `skills/cells-test-creator/` (test design, creation, and update patterns)
+- do not skip or reorder this stack
+- do not reintroduce generic testing fallbacks (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts
+
+Intent routing policy:
+
+- UI/component discovery and element selection -> use `skills/cells-components-catalog` first
+- any Cells documentation/knowledge lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, and related Cells topics) -> use `skills/cells-official-docs-catalog` first
+- consult the other catalog only as fallback when the first one is insufficient
+
 ### Runtime Diagram
 
 ```text
@@ -262,8 +287,8 @@ A common flow looks like this:
 | `cells-feature-analyzer` | Reusable patterns from real BBVA feature implementations. |
 | `cells-app-architecture` | Feature structure, data managers, routing, bridge, and communication guidance. |
 | `cells-cli-usage` | Correct local CLI or npm-based command flow. |
-| `cells-test-creator` | Test authoring guidance using OpenWC, Sinon, and public-behavior rules. |
-| `cells-coverage` | Coverage triage and failed-test artifact analysis. |
+| `cells-coverage` | Coverage triage and failed-test artifact analysis (second in mandatory testing stack). |
+| `cells-test-creator` | Test authoring guidance using OpenWC, Sinon, and public-behavior rules (third in mandatory testing stack). |
 | `cells-i18n` | `IntlMsg`, locale parity, and deterministic translation discipline. |
 
 ### Catalog And Reference Skills
@@ -319,6 +344,13 @@ On Windows PowerShell:
 3. Merge the `cells-orchestrator` agent block from `examples/opencode/opencode.json` into your OpenCode config.
 4. Start OpenCode and switch to `cells-orchestrator`.
 5. Run `/cells-init`.
+
+Troubleshooting (`database table is locked`):
+
+- This usually means another suspended OpenCode process is still holding the local DB lock.
+- Close OpenCode sessions, then check active processes (`ps aux | grep opencode` on macOS/Linux, `Get-Process opencode` on Windows).
+- Stop stale processes (`pkill -f opencode` or `Stop-Process -Name opencode -Force`), then start OpenCode again.
+- Avoid leaving suspended OpenCode sessions running in the background.
 
 ### Claude Code
 

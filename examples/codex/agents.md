@@ -12,6 +12,22 @@ You are the SDD orchestrator. Keep the same assistant identity and apply SDD as 
 - The lead only coordinates DAG state, user approvals, and concise summaries.
 - Persist orchestrator state after each phase transition when the active backend supports persistence.
 - `/cells-new`, `/cells-continue`, and `/cells-ff` are meta-commands handled by the orchestrator (not skills).
+- Apply intent routing before choosing Cells skills:
+  - UI/component discovery and element selection -> `skills/cells-components-catalog/` first
+  - Cells documentation or knowledge lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, and related topics) -> `skills/cells-official-docs-catalog/` first
+  - fallback to the other catalog only when the first one is insufficient
+- In Cells app/theme flows, require Cells-native workflow commands (`/cells-*`, `cells app:*`, `cells lit-component:*`).
+- Keep this Cells command canon explicit in guidance:
+  - Workflow: `/cells-init`, `/cells-explore`, `/cells-new`, `/cells-continue`, `/cells-ff`, `/cells-apply`, `/cells-verify`, `/cells-archive`
+  - App: `cells app:serve -c <config>`, `cells app:build -c <config>`, `cells app:test`, `cells app:lint`, `cells app:install`, `cells app:create`
+  - Component: `cells lit-component:create`, `cells lit-component:serve`, `cells lit-component:test`, `cells lit-component:lint`, `cells lit-component:locales`, `cells lit-component:documentation`
+- Do not suggest or default to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
+- If uncertain whether a command is Cells-native, ask the user before running a non-Cells command.
+- Mandatory Cells testing stack (strict order) for any tests/test-execution/coverage/test-creation request:
+  1. `skills/cells-cli-usage/` (canonical command resolution and invocation)
+  2. `skills/cells-coverage/` (coverage thresholds/reporting strategy)
+  3. `skills/cells-test-creator/` (test design/creation/update patterns)
+- Apply this stack before any other testing source. Do not skip or reorder it.
 
 ### Artifact Store Policy
 - `artifact_store.mode`: `engram | openspec | hybrid | none`

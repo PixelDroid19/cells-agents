@@ -27,13 +27,17 @@ CYAN='\033[0;36m'
 BOLD='\033[1m'
 NC='\033[0m'
 
-# Expected skills from the source tree
+# Expected skills from the source tree (all skill folders with SKILL.md, excluding _shared)
 EXPECTED_SKILLS=()
-for skill_dir in "$REPO_DIR"/skills/cells-*; do
+for skill_dir in "$REPO_DIR"/skills/*; do
     [[ -d "$skill_dir" ]] || continue
-    EXPECTED_SKILLS+=("$(basename "$skill_dir")")
+    skill_name="$(basename "$skill_dir")"
+    [[ "$skill_name" == "_shared" ]] && continue
+    [[ -f "$skill_dir/SKILL.md" ]] || continue
+    EXPECTED_SKILLS+=("$skill_name")
 done
 EXPECTED_SKILL_COUNT="${#EXPECTED_SKILLS[@]}"
+EXPECTED_COMMAND_COUNT=$(find "$REPO_DIR/examples/opencode/commands" -name "cells-*.md" | wc -l | tr -d ' ')
 
 # ============================================================================
 # Test helpers
@@ -223,7 +227,7 @@ test_opencode_commands() {
     assert_file_exists "$commands_dir/cells-i18n.md" || return 1
     local count
     count=$(find "$commands_dir" -name "cells-*.md" | wc -l | tr -d ' ')
-    assert_eq "8" "$count" "Expected exactly 8 OpenCode commands"
+    assert_eq "$EXPECTED_COMMAND_COUNT" "$count" "Expected exactly $EXPECTED_COMMAND_COUNT OpenCode commands"
 }
 
 # ============================================================================
@@ -390,7 +394,7 @@ test_all_global_opencode_commands() {
     assert_dir_exists "$commands_dir" || return 1
     local count
     count=$(find "$commands_dir" -name "cells-*.md" | wc -l | tr -d ' ')
-    assert_eq "8" "$count" "Expected 8 OpenCode commands with all-global"
+    assert_eq "$EXPECTED_COMMAND_COUNT" "$count" "Expected $EXPECTED_COMMAND_COUNT OpenCode commands with all-global"
 }
 
 # ============================================================================
@@ -415,7 +419,7 @@ test_idempotent_opencode() {
     assert_eq "$EXPECTED_SKILL_COUNT" "$skill_count" "Expected exactly $EXPECTED_SKILL_COUNT skills after double install" || return 1
     local cmd_count
     cmd_count=$(find "$HOME/.config/opencode/commands" -name "cells-*.md" | wc -l | tr -d ' ')
-    assert_eq "8" "$cmd_count" "Expected exactly 8 commands after double install"
+    assert_eq "$EXPECTED_COMMAND_COUNT" "$cmd_count" "Expected exactly $EXPECTED_COMMAND_COUNT commands after double install"
 }
 
 test_idempotent_all_global() {

@@ -98,6 +98,6 @@ Use the following markdown as the `detailed_report` body. If the orchestrator as
 
 When a local demo, feature route, or runnable usage exists for the component, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Use browser evidence to confirm rendered behavior, interaction flow, and visible states when metadata or docs alone are not enough.

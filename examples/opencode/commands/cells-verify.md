@@ -20,4 +20,16 @@ Verify the active SDD change. Read the proposal, specs, design, and tasks artifa
 5. Run tests and build (real execution)
 6. Build the spec compliance matrix
 
+Mandatory testing stack for Cells contexts:
+- For any test execution, coverage validation, or test-quality judgment, consult in strict order: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.
+- `cells-cli-usage` defines canonical test command/invocation.
+- `cells-coverage` defines threshold/reporting and artifact triage.
+- `cells-test-creator` defines test quality and convention checks.
+- Do not skip or reorder this stack.
+
+Command guardrail for Cells app/theme flow:
+- Use Cells-native workflow commands and tooling only.
+- Do not switch to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
+- If uncertain whether a command is Cells-native, ask before running the non-Cells command.
+
 Return a structured verification report with: status, executive_summary, detailed_report, artifacts, and next_recommended.

@@ -171,7 +171,7 @@ Ready for tasks (cells-tasks).
 
 When the design changes rendered UI, demos, routes, component states, or visible interaction flows, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Document browser checkpoints in the design:
 - page or demo entry points

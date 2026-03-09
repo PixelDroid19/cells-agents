@@ -21,6 +21,15 @@ Use this skill to triage coverage and test-failure evidence without manually bro
 - `skills/cells-official-docs-catalog/` topic `testing`
 - `references/coverage-triage.md`
 
+## Mandatory testing stack position
+
+For Cells testing requests, this skill is mandatory and must be applied in this fixed sequence:
+1. `skills/cells-cli-usage/` first (canonical test command/invocation)
+2. `skills/cells-coverage/` second (this skill: thresholds/reporting/triage)
+3. `skills/cells-test-creator/` third (test design/creation/update)
+
+Do not skip this stack order and do not use generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) for Cells contexts.
+
 ## When to use
 
 - The user asks for coverage analysis, branch closure, or proof of test completeness
@@ -54,6 +63,6 @@ Return the standard envelope and include:
 
 When coverage gaps correspond to page-level flows or browser-visible failures, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Treat screenshots, DOM snapshots, and visual diffs as first-class evidence when they help explain why a browser flow remains untested or broken.

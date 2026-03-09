@@ -1,7 +1,7 @@
 ﻿---
 name: cells-cli-usage
 description: >
-  Resolve how to use Cells CLI and repo-local NPM scripts for building, serving, linting, documenting, and testing Cells apps and components. Use when an agent needs the correct command path without guessing or assuming a global installation.
+  Resolve how to use Cells-native CLI commands for building, serving, linting, documenting, and testing Cells apps and components. Use when an agent needs the correct command path without guessing or assuming a global installation.
 license: MIT
 metadata:
   author: D. J
@@ -23,10 +23,21 @@ Read and follow:
 
 ## Mandatory rules
 
-- Prefer repo-local `package.json` scripts before raw `cells ...` commands when both exist.
+- Prefer Cells-native commands as canonical (`/cells-*`, `cells app:*`, `cells lit-component:*`).
+- For Cells testing intents, enforce this stack and sequence before any other testing source:
+  1. `skills/cells-cli-usage/` (this skill) for canonical command resolution
+  2. `skills/cells-coverage/` for threshold/reporting and branch-priority decisions
+  3. `skills/cells-test-creator/` for test design or update conventions
+- Canonical Cells commands to prefer in guidance and execution decisions:
+  - Workflow: `/cells-init`, `/cells-explore`, `/cells-new`, `/cells-continue`, `/cells-ff`, `/cells-apply`, `/cells-verify`, `/cells-archive`
+  - App: `cells app:serve -c <config>`, `cells app:build -c <config>`, `cells app:test`, `cells app:lint`, `cells app:install`, `cells app:create`
+  - Component: `cells lit-component:create`, `cells lit-component:serve`, `cells lit-component:test`, `cells lit-component:lint`, `cells lit-component:locales`, `cells lit-component:documentation`
 - Distinguish between `cells app:*` and `cells lit-component:*`.
 - Do not suggest global install or update steps unless the user explicitly asks for installation help.
-- If the workspace already exposes `npm run test`, `npm run lint`, `npm run docs`, or similar, prefer those names in guidance and execution.
+- For Cells app/theme orchestration, do NOT default to generic external commands (`npm run *`, `npm test`, `npm run test`, `npx web-test-runner`).
+- Use non-Cells commands only when the user explicitly asks and the context is clearly non-Cells.
+- If uncertain whether a command is Cells-native, ask the user before running any non-Cells command.
+- Never reintroduce generic fallback testing commands (`npm test`, `npm run test`, `npx web-test-runner`) for Cells contexts.
 - When a command affects docs, demos, tests, or locales, cross-check the official docs map from `skills/_shared/cells-official-reference.md`.
 - Do not start the project or tests for every small change; resolve the lightest confirmation path that matches the task.
 - If a local dev server is already running, return that existing host and port as the primary runtime target.
@@ -37,38 +48,33 @@ Read and follow:
 ## Usage
 
 - "How do I run Cells tests here?"
-- "Should I use `npm run test` or `cells lit-component:test`?"
+- "Should I use `cells app:test` or `cells lit-component:test`?"
 - "How do I generate `custom-elements.json`?"
 - "How do I serve a Cells app or component demo?"
-- "Which local script corresponds to the official Cells command?"
+- "Which local wrapper maps to the official Cells command?"
 
 ## What To Read
 
 Inspect, in this order:
 
 1. Local `package.json` scripts
-2. `skills/cells-official-docs-catalog/` topic `cli`
+2. `skills/cells-official-docs-catalog/` topic `cli` (first for Cells documentation/workflow command guidance)
 3. `references/commands.md`
 4. `references/troubleshooting.md`
 5. Relevant internal topic from `skills/cells-official-docs-catalog/` when the command touches testing, docs, demos, or locales
 
 ## Standard NPM Scripts
 
-Most Cells projects (like `bbva-feature-example`) configure these standard scripts in `package.json`:
+Some Cells projects wrap CLI commands in `package.json` scripts. Treat them as wrappers only and keep the equivalent Cells command as canonical in guidance and execution decisions.
 
 ### 1. Testing
-- **`npm test`**: Runs unit tests using `cells lit-component:test`.
-- **`npm run test:compatibility`**: Runs tests against older browsers/environments.
-- **`npm run test:prune-snapshots`**: Removes unused snapshots.
-- **`npm run test:update-snapshots`**: Updates snapshots for UI tests.
+- Wrapper examples may map to `cells lit-component:test` or `cells app:test`.
 
 ### 2. Linting & Formatting
-- **`npm run lint`**: Runs all linters (ESLint, Prettier, Stylelint).
-- **`npm run format`**: Fixes linting errors automatically.
-- **`npm run docs`**: Generates component documentation, usually around `cells lit-component:documentation`.
+- Wrapper examples may map to `cells app:lint` or `cells lit-component:documentation`.
 
 ### 3. Release
-- **`npm run release`**: Uses `standard-version` to bump version, generate changelog, and tag the release.
+- Release wrappers are project-specific and not part of the canonical Cells app/theme workflow commands.
 
 ## Core CLI Commands
 
@@ -103,7 +109,7 @@ Return a compact decision with:
 
 When a task needs functional or visual browser validation, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Resolve and return:
 - whether a reusable runtime already exists

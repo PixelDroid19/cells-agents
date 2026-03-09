@@ -190,6 +190,10 @@ validate_source() {
             missing=$((missing + 1))
         fi
     done
+    if [ -d "$SKILLS_SRC/agent-browser" ] && [ ! -f "$SKILLS_SRC/agent-browser/SKILL.md" ]; then
+        print_error "Missing: agent-browser/SKILL.md"
+        missing=$((missing + 1))
+    fi
     if [ ! -d "$SKILLS_SRC/_shared" ]; then
         print_error "Missing: _shared/ directory"
         missing=$((missing + 1))
@@ -233,21 +237,50 @@ install_skills() {
     local count=0
     for skill_dir in "$SKILLS_SRC"/cells-*/; do
         [ -d "$skill_dir" ] || continue
+        local source_dir="${skill_dir%/}"
         local skill_name
-        skill_name=$(basename "$skill_dir")
+        skill_name=$(basename "$source_dir")
+        local target_skill_dir="$target_dir/$skill_name"
 
         # Verify source SKILL.md exists before creating target directory
-        if [ ! -f "$skill_dir/SKILL.md" ]; then
+        if [ ! -f "$source_dir/SKILL.md" ]; then
             print_warn "Skipping $skill_name (SKILL.md not found in source)"
             continue
         fi
 
-        rm -rf "$target_dir/$skill_name"
-        cp -R "$skill_dir" "$target_dir/"
-        find "$target_dir/$skill_name" -type d -name "__pycache__" -prune -exec rm -rf {} +
+        rm -rf "$target_skill_dir"
+        cp -R "$source_dir" "$target_skill_dir"
+
+        if [ ! -f "$target_skill_dir/SKILL.md" ]; then
+            print_error "Failed to install $skill_name (destination SKILL.md missing)"
+            exit 1
+        fi
+
+        find "$target_skill_dir" -type d -name "__pycache__" -prune -exec rm -rf {} +
         print_skill "$skill_name"
         count=$((count + 1))
     done
+
+    if [ -d "$SKILLS_SRC/agent-browser" ]; then
+        if [ -f "$SKILLS_SRC/agent-browser/SKILL.md" ]; then
+            local agent_browser_src="$SKILLS_SRC/agent-browser"
+            local agent_browser_target="$target_dir/agent-browser"
+
+            rm -rf "$agent_browser_target"
+            cp -R "$agent_browser_src" "$agent_browser_target"
+
+            if [ ! -f "$agent_browser_target/SKILL.md" ]; then
+                print_error "Failed to install agent-browser (destination SKILL.md missing)"
+                exit 1
+            fi
+
+            find "$agent_browser_target" -type d -name "__pycache__" -prune -exec rm -rf {} +
+            print_skill "agent-browser"
+            count=$((count + 1))
+        else
+            print_warn "Skipping agent-browser (SKILL.md not found in source)"
+        fi
+    fi
 
     echo -e "\n  ${GREEN}${BOLD}$count skills installed${NC} → $target_dir"
 }

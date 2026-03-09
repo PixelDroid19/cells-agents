@@ -13,7 +13,7 @@ Principal owner in subagent mode: `Agent 3 (coverage-auditor)`.
 
 ## Workflow
 
-1. Run `npm run test`.
+1. Run the project's Cells-native test command.
 2. Open `build/coverage-reports/lcov-report/index.html`.
 3. Navigate to the target file and inspect uncovered blocks.
 4. Write public-behavior tests to cover those blocks.

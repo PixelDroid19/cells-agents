@@ -139,6 +139,12 @@ function Test-SourceTree {
             $missing++
         }
     }
+
+    $agentBrowserDir = Join-Path $SkillsSrc 'agent-browser'
+    if ((Test-Path $agentBrowserDir) -and (-not (Test-Path (Join-Path $agentBrowserDir 'SKILL.md')))) {
+        Write-Err 'Missing: agent-browser/SKILL.md'
+        $missing++
+    }
     if (-not (Test-Path (Join-Path $SkillsSrc '_shared'))) {
         Write-Err 'Missing: _shared/ directory'
         $missing++
@@ -213,6 +219,29 @@ function Install-Skills {
 
         Write-Skill $skillName
         $count++
+    }
+
+    $agentBrowserDir = Join-Path $SkillsSrc 'agent-browser'
+    if (Test-Path $agentBrowserDir) {
+        $agentBrowserSkill = Join-Path $agentBrowserDir 'SKILL.md'
+        if (Test-Path $agentBrowserSkill) {
+            $targetAgentBrowserDir = Join-Path $TargetDir 'agent-browser'
+            if (Test-Path $targetAgentBrowserDir) {
+                Remove-Item -Path $targetAgentBrowserDir -Recurse -Force
+            }
+
+            Copy-Item -Path $agentBrowserDir -Destination $TargetDir -Recurse -Force
+
+            Get-ChildItem -Path $targetAgentBrowserDir -Directory -Recurse -Filter '__pycache__' -ErrorAction SilentlyContinue | ForEach-Object {
+                Remove-Item -Path $_.FullName -Recurse -Force
+            }
+
+            Write-Skill 'agent-browser'
+            $count++
+        }
+        else {
+            Write-Warn 'Skipping agent-browser (SKILL.md not found in source)'
+        }
     }
 
     Write-Host ''

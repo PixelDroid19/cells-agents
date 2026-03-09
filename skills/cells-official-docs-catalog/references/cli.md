@@ -26,8 +26,10 @@ Use this topic for Cells CLI commands and local workflow mapping.
 
 ## Decision rules
 
-- If `npm run test` exists, prefer it over raw `cells lit-component:test`.
-- If `npm run docs` exists and maps to Cells docs generation, prefer that script name in team guidance.
+- Keep Cells-native commands canonical for Cells app/theme workflows (`/cells-*`, `cells app:*`, `cells lit-component:*`).
+- Do not default to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells workflows.
+- Local scripts can be used as wrappers when they clearly map to Cells commands, but guidance should keep the equivalent Cells command explicit.
+- If uncertain whether a command path is Cells-native, ask before running non-Cells commands.
 - If no local scripts exist, recommend the narrowest Cells command that matches the project type.
 
 ## Use when

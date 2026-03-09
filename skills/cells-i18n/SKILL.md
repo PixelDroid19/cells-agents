@@ -53,7 +53,7 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 
 For runtime i18n work, also read:
 - `skills/_shared/browser-testing-convention.md`
-- `agent-browser/SKILL.md` when available
+- `skills/agent-browser/SKILL.md` when available
 
 Use browser validation to confirm:
 - translated literals actually render

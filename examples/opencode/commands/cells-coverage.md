@@ -15,4 +15,12 @@ CONTEXT:
 TASK:
 Analyze coverage and any test-failure artifacts related to "{argument}". Prioritize branch misses, summarize compact evidence, and recommend the smallest next rerun or test additions.
 
+Mandatory testing stack for Cells contexts:
+- Apply in strict order before any other testing source: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.
+- `cells-cli-usage` resolves canonical test invocation.
+- `cells-coverage` performs threshold/reporting triage.
+- `cells-test-creator` defines follow-up test design/update patterns.
+- Do not skip or reorder this stack.
+- Do not reintroduce generic fallback commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells contexts.
+
 Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.
