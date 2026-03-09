@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Cells Agent Bundle</h1>
   <p align="center">
-    <strong>OpenCode-first orchestration for BBVA Cells with AI sub-agents</strong>
+    <strong>OpenCode-first orchestration for BBVA Cells with skill-driven delegated runs</strong>
     <br />
     <em>An orchestrator + Cells specialists for structured feature development, indexed component research, architecture guidance, CLI usage, testing, and internal documentation lookup.</em>
     <br />
@@ -13,9 +13,9 @@
   <a href="#quick-start">Quick Start</a> &bull;
   <a href="#how-it-works">How It Works</a> &bull;
   <a href="#commands">Commands</a> &bull;
+  <a href="#skills-and-delegation">Skills</a> &bull;
   <a href="#installation">Installation</a> &bull;
-  <a href="#releases">Releases</a> &bull;
-  <a href="#supported-tools">Supported Tools</a>
+  <a href="#project-structure">Project Structure</a>
 </p>
 
 ---
@@ -31,22 +31,22 @@ AI coding assistants are powerful, but they struggle with complex features:
 
 ## The Solution
 
-This package is an OpenCode-first orchestration pattern for BBVA Cells work. A lightweight coordinator delegates real work to a generic sub-agent execution pattern driven by `SKILL.md` files for SDD, component research, feature composition, indexed component discovery, architecture guidance, CLI usage, testing, and internal documentation lookup. Each delegated run starts with fresh context, reads the target skill first, executes one focused task, and returns a structured result grounded in real sources such as `custom-elements.json`, project code, tests, the bundled component catalog, the bundled official-docs catalog, and real feature repositories.
+This package is an OpenCode-first orchestration pattern for BBVA Cells work. A lightweight coordinator delegates real work through generic skill-driven runs based on `SKILL.md` files for SDD, component research, feature composition, indexed component discovery, architecture guidance, CLI usage, testing, and internal documentation lookup. Each delegated run starts with fresh context, reads the target skill first, executes one focused task, and returns a structured result grounded in real sources such as `custom-elements.json`, project code, tests, the bundled component catalog, the bundled official-docs catalog, and real feature repositories.
 
 ```
 YOU: "I want to add CSV export to the app"
 
 ORCHESTRATOR (delegate-only, minimal context):
-  → launches EXPLORER sub-agent     → returns: codebase analysis
+  → launches EXPLORE delegated run  → returns: codebase analysis
   → shows you summary, you approve
-  → launches PROPOSER sub-agent     → returns: proposal artifact
-  → launches SPEC WRITER sub-agent  → returns: spec artifact
-  → launches DESIGNER sub-agent     → returns: design artifact
-  → launches TASK PLANNER sub-agent → returns: tasks artifact
+  → launches PROPOSE delegated run  → returns: proposal artifact
+  → launches SPEC delegated run     → returns: spec artifact
+  → launches DESIGN delegated run   → returns: design artifact
+  → launches TASKS delegated run    → returns: tasks artifact
   → shows you everything, you approve
-  → launches IMPLEMENTER sub-agent  → returns: code written, tasks checked off
-  → launches VERIFIER sub-agent     → returns: verification artifact
-  → launches ARCHIVER sub-agent     → returns: change closed
+  → launches APPLY delegated run    → returns: code written, tasks checked off
+  → launches VERIFY delegated run   → returns: verification artifact
+  → launches ARCHIVE delegated run  → returns: change closed
 ```
 
 **The key insight**: the orchestrator NEVER does phase work directly. It only coordinates delegation, tracks state, and synthesizes summaries. This keeps the main thread small and stable.
@@ -78,7 +78,7 @@ Architecturally, this package follows the same Engram-first handling model acros
 Recommended defaults by use case:
 
 ```yaml
-# Agent-team storage policy
+# Bundle storage policy
 artifact_store:
   mode: engram      # Recommended: persistent, repo-clean
 ```
@@ -105,76 +105,27 @@ artifact_store:
 
 ## How It Works
 
-### Where Agent Teams Lite Fits
+### Architecture Overview
 
-Agent Teams Lite sits between basic sub-agent patterns and full Agent Teams runtimes:
+This bundle has four layers:
+
+1. `examples/*` provide host-specific orchestrator prompts and OpenCode commands.
+2. The orchestrator stays lean and only decides routing, persistence mode, approvals, and next steps.
+3. Specialist behavior lives in `skills/cells-*/SKILL.md`.
+4. Shared conventions and bundled catalogs provide deterministic evidence and retrieval.
 
 ```mermaid
-graph TB
-    subgraph "Level 1 — Basic Subagents"
-        L1_Lead["Lead Agent"]
-        L1_Sub1["Sub-agent 1"]
-        L1_Sub2["Sub-agent 2"]
-        L1_Lead -->|"fire & forget"| L1_Sub1
-        L1_Lead -->|"fire & forget"| L1_Sub2
-    end
-
-    subgraph "Level 2 — Agent Teams Lite ⭐"
-        L2_Orch["Orchestrator<br/>(delegate-only)"]
-        L2_Explore["Explorer"]
-        L2_Propose["Proposer"]
-        L2_Spec["Spec Writer"]
-        L2_Design["Designer"]
-        L2_Tasks["Task Planner"]
-        L2_Apply["Implementer"]
-        L2_Verify["Verifier"]
-        L2_Archive["Archiver"]
-        
-        L2_Orch -->|"DAG phase"| L2_Explore
-        L2_Orch -->|"DAG phase"| L2_Propose
-        L2_Orch -->|"parallel"| L2_Spec
-        L2_Orch -->|"parallel"| L2_Design
-        L2_Orch -->|"DAG phase"| L2_Tasks
-        L2_Orch -->|"batched"| L2_Apply
-        L2_Orch -->|"DAG phase"| L2_Verify
-        L2_Orch -->|"DAG phase"| L2_Archive
-        
-        L2_Store[("Pluggable Store<br/>engram | openspec | hybrid | none")]
-        L2_Spec -.->|"persist"| L2_Store
-        L2_Design -.->|"persist"| L2_Store
-        L2_Apply -.->|"persist"| L2_Store
-    end
-
-    subgraph "Level 3 — Full Agent Teams"
-        L3_Orch["Orchestrator"]
-        L3_A1["Agent A"]
-        L3_A2["Agent B"]
-        L3_A3["Agent C"]
-        L3_Queue[("Shared Task Queue<br/>claim / heartbeat")]
-        
-        L3_Orch -->|"manage"| L3_Queue
-        L3_A1 <-->|"claim & report"| L3_Queue
-        L3_A2 <-->|"claim & report"| L3_Queue
-        L3_A3 <-->|"claim & report"| L3_Queue
-        L3_A1 <-.->|"peer comms"| L3_A2
-        L3_A2 <-.->|"peer comms"| L3_A3
-    end
-
-    style L2_Orch fill:#4CAF50,color:#fff,stroke:#333
-    style L2_Store fill:#2196F3,color:#fff,stroke:#333
-    style L3_Queue fill:#FF9800,color:#fff,stroke:#333
+graph TD
+    U[User command] --> C[/cells-* command or host prompt/]
+    C --> O[cells-orchestrator]
+    O --> T[Generic Task or delegated run]
+    T --> S[Read target SKILL.md]
+    S --> E[Read evidence: code, tests, catalogs, official docs]
+    E --> R[Return structured result]
+    R --> O
+    O --> U
+    S -. persist .-> P[(engram | openspec | hybrid | none)]
 ```
-
-| Capability | Basic Subagents | Agent Teams Lite | Full Agent Teams |
-|---|:---:|:---:|:---:|
-| Delegate-only lead | — | ✅ | ✅ |
-| DAG-based phase orchestration | — | ✅ | ✅ |
-| Parallel phases (spec ∥ design) | — | ✅ | ✅ |
-| Structured result envelope | — | ✅ | ✅ |
-| Pluggable artifact store | — | ✅ | ✅ |
-| Shared task queue with claim/heartbeat | — | — | ✅ |
-| Teammate ↔ teammate communication | — | — | ✅ |
-| Dynamic work stealing | — | — | ✅ |
 
 ### Architecture
 
@@ -184,7 +135,7 @@ graph TB
 │                                                           │
 │  Responsibilities:                                        │
 │  • Detect when SDD is needed                              │
-│  • Launch generic Task/sub-agent runs                     │
+│  • Launch generic delegated runs                          │
 │  • Show summaries to user                                 │
 │  • Ask for approval between phases                        │
 │  • Track state: which artifacts exist, what's next        │
@@ -192,7 +143,7 @@ graph TB
 │  Context usage: MINIMAL (only state + summaries)          │
 └──────────────┬───────────────────────────────────────────┘
                │
-               │ Task(subagent_type: 'general', prompt: 'Read SKILL.md first...')
+               │ Task / delegated run starts by reading SKILL.md
                │
     ┌──────────┴──────────────────────────────────────────┐
     │                                                      │
@@ -212,7 +163,7 @@ This bundle follows a canonical pattern based on a lean orchestrator plus skill-
 1. The user selects the orchestrator agent, typically `cells-orchestrator`.
 2. The user runs a command such as `/cells-init`, `/cells-component bbva-button-default`, or `/cells-new improve-card-detail-flow`.
 3. The command hands control to the orchestrator.
-4. The orchestrator delegates with a generic sub-agent or Task run.
+4. The orchestrator delegates with a generic Task or delegated run.
 5. That delegated run starts by reading the corresponding `SKILL.md`.
 6. The skill decides what evidence to read, what artifacts to create, and what result envelope to return.
 7. The orchestrator shows only the compact result, asks for approval when needed, and decides the next step.
@@ -253,9 +204,9 @@ This means there is **not** one JSON agent definition per skill. The installed s
                close change)
 ```
 
-### Sub-Agent Result Contract
+### Delegated Run Result Contract
 
-Each sub-agent should return a structured payload with variable depth:
+Each delegated skill run should return a structured payload with variable depth:
 
 ```json
 {
@@ -340,7 +291,7 @@ In OpenCode, the expected operating loop is:
 
 1. Pick `cells-orchestrator` in the agent picker.
 2. Run a slash command.
-3. Let the orchestrator delegate to a generic sub-agent run that reads the target skill.
+3. Let the orchestrator delegate to a generic run that reads the target skill.
 4. Review the compact result.
 5. Approve the next planning or implementation step when the workflow asks for it.
 
@@ -350,13 +301,20 @@ The team now also includes a central official-reference layer in `skills/_shared
 
 ---
 
-## Releases
+## Knowledge Sources
 
-We publish versioned release notes with the project history for this bundle.
+The bundle is designed to avoid loading broad Cells documentation trees into context by default. Instead, it routes work through compact local sources:
 
-Latest release:
+- `skills/_shared/cells-official-reference.md` as the top-level router
+- `skills/cells-official-docs-catalog/` for normalized official guidance on architecture, CLI, testing, theming, packaging, demos, and runtime topics
+- `skills/cells-components-catalog/` for indexed BBVA component discovery using bundled SQLite FTS5 assets
+- project evidence such as `custom-elements.json`, package docs, tests, and real feature code
 
-- `v3.0.5` — Lean orchestrator prompts across all agents, reduced always-loaded prompt footprint, and standardized `_shared` install steps.
+The default operating model is:
+
+1. keep `engram` as the canonical memory and recovery layer
+2. keep official docs and package docs indexed, not always loaded
+3. read detailed source material only when a skill needs concrete evidence
 
 ---
 
@@ -366,9 +324,9 @@ Latest release:
 |---------|-------------|
 | `/cells-init` | Initialize SDD context. Detects stack and bootstraps the active persistence backend. |
 | `/cells-explore <topic>` | Investigate an idea. Reads codebase, compares approaches. No files created. |
-| `/cells-new <name>` | Start a new change by delegating exploration + proposal to sub-agents. |
-| `/cells-continue` | Run the next dependency-ready phase via sub-agent(s). |
-| `/cells-ff <name>` | Fast-forward planning with sub-agents (proposal → specs → design → tasks). |
+| `/cells-new <name>` | Start a new change by delegating exploration + proposal through skill-driven runs. |
+| `/cells-continue` | Run the next dependency-ready phase through delegated skill execution. |
+| `/cells-ff <name>` | Fast-forward planning through delegated runs (proposal → specs → design → tasks). |
 | `/cells-apply` | Implement tasks in batches. Checks off items as it goes. |
 | `/cells-verify` | Validate implementation against specs. Reports CRITICAL / WARNING / SUGGESTION. |
 | `/cells-archive` | Close a change and persist final state in the active artifact store. |
@@ -406,11 +364,11 @@ AI:  Launching cells-composition-architect...
 
 You: /cells-new improve-card-detail-flow
 
-AI:  Launching explorer sub-agent...
+AI:  Launching `cells-explore` delegated run...
      ✓ Cells stack detected from package.json + custom-elements.json
      ✓ Affected widgets and test files identified
 
-     Launching proposal sub-agent...
+     Launching `cells-propose` delegated run...
      ✓ proposal.md created
        Intent: Improve debit-card detail flow using existing Cells composition patterns
        Scope: Widget composition, event handling, and tests
@@ -439,7 +397,7 @@ AI:  Implementing Phase 1 (Foundation)...
 
 ## Skills And Delegation
 
-Each specialist role is implemented as a `SKILL.md` file. In tools with real delegation support such as OpenCode and Claude Code, the orchestrator launches a generic sub-agent/Task run and instructs it to read the relevant skill first. In tools without true Task delegation, the orchestrator can still execute the same skill inline.
+Each specialist role is implemented as a `SKILL.md` file. In tools with real delegation support such as OpenCode and Claude Code, the orchestrator launches a generic Task or delegated run and instructs it to read the relevant skill first. In tools without true Task delegation, the orchestrator can still execute the same skill inline.
 
 | Role | Skill File | What It Does |
 |-----------|-----------|-------------|
@@ -485,12 +443,13 @@ The SDD and Cells specialist skills reference shared convention files in `skills
 - **Canonical OpenSpec layout** — OpenSpec artifacts use one canonical filesystem structure across the workflow.
 - **Self-contained component workflow** — The core architecture depends only on the installed skills and bundled catalogs.
 
-### v2.0 Skill Upgrades
+### Key Capabilities
 
-Two skills received major upgrades:
-
-- **cells-apply v2.0** — Added TDD workflow support. When enabled (via `openspec/config.yaml` or orchestrator config), the implementer follows a RED-GREEN-REFACTOR cycle: write a failing test first, implement until it passes, then refactor. Controlled by `tdd: true` and `test_command` in config.
-- **cells-verify v2.0** — Now performs real test execution instead of static analysis only. Runs the project's test suite and build commands, produces a spec compliance matrix mapping each requirement to PASS/FAIL/SKIP, and reports issues at CRITICAL/WARNING/SUGGESTION severity levels. Configurable via `test_command`, `build_command`, and `coverage_threshold`.
+- **SDD workflow** — proposal, spec, design, tasks, apply, verify, and archive phases
+- **Component discovery** — indexed search over bundled BBVA package records
+- **Official guidance routing** — compact lookup over normalized Cells docs
+- **Architecture support** — feature structure, data managers, routing, bridge, and composition patterns
+- **Quality support** — coverage triage, i18n validation, and test creation guidance
 
 ---
 
@@ -498,8 +457,8 @@ Two skills received major upgrades:
 
 Dedicated setup guides for all supported tools:
 
-- [Claude Code](#claude-code) — Full sub-agent support via Task tool
-- [OpenCode](#opencode) — Full sub-agent support via Task tool
+- [Claude Code](#claude-code) — Full Task-based delegated execution
+- [OpenCode](#opencode) — Full Task-based delegated execution
 - [Gemini CLI](#gemini-cli) — Inline skill execution
 - [Codex](#codex) — Inline skill execution
 - [VS Code (Copilot)](#vs-code-copilot) — Agent mode with context files
@@ -614,7 +573,7 @@ Make sure `GEMINI_SYSTEM_MD=1` is set in `~/.gemini/.env` so Gemini loads the sy
 
 Open Gemini CLI and type `/cells-init` — it should recognize the command.
 
-> **Note:** Gemini CLI doesn't have a native Task tool for sub-agent delegation. The skills work as inline instructions — the orchestrator reads them directly rather than spawning fresh-context sub-agents. For the best sub-agent experience, use Claude Code or OpenCode.
+> **Note:** Gemini CLI doesn't have a native Task tool for delegated fresh-context runs. The skills work as inline instructions, so the orchestrator reads them directly.
 
 ---
 
@@ -638,7 +597,7 @@ Add the orchestrator instructions to `~/.codex/agents.md` (or your `model_instru
 
 Open Codex and type `/cells-init`.
 
-> **Note:** Like Gemini CLI, Codex runs skills inline rather than as true sub-agents. The planning phases (proposal, spec, design, tasks) still work well; implementation batching is handled by the orchestrator instructions.
+> **Note:** Like Gemini CLI, Codex runs skills inline rather than through fresh-context delegated runs. The planning phases still work well; batching behavior comes from the orchestrator instructions.
 
 ---
 
@@ -679,7 +638,7 @@ If you also configure MCP at user level, use:
 
 Open VS Code, open the Chat panel (Ctrl+Cmd+I / Ctrl+Alt+I), and type `/cells-init`.
 
-> **Note:** VS Code Copilot supports agent mode with tool use. Skills work as context files. For true sub-agent delegation with fresh context windows, use Claude Code or OpenCode.
+> **Note:** VS Code Copilot supports agent mode with tool use. Skills work as context files. For fresh-context delegated execution, use Claude Code or OpenCode.
 
 ---
 
@@ -721,7 +680,7 @@ Open Antigravity and type `/cells-init` in the agent panel.
 
 ```bash
 # Global
-./scripts/install.sh  # Choose option 3: Cursor
+./scripts/install.sh  # Choose option 7: Cursor
 
 # Or per-project
 cp -r skills/_shared skills/cells-* ./your-project/skills/
@@ -731,7 +690,7 @@ cp -r skills/_shared skills/cells-* ./your-project/skills/
 
 Append the contents of [`examples/cursor/.cursorrules`](examples/cursor/.cursorrules) to your project's `.cursorrules` file.
 
-**Note:** Cursor doesn't have a Task tool for true sub-agent delegation. The skills still work — Cursor reads them as instructions — but the orchestrator runs inline rather than delegating to fresh-context sub-agents. For the best sub-agent experience, use Claude Code or OpenCode.
+**Note:** Cursor doesn't have a Task tool for true delegated fresh-context execution. The skills still work, but the orchestrator runs inline rather than delegating to separate runs.
 
 ---
 
@@ -743,35 +702,26 @@ The skills are pure Markdown. Any AI assistant that can read files can use them.
 
 **2. Add orchestrator instructions** to your tool's system prompt or rules file.
 
-**3. Adapt the sub-agent pattern:**
-- If your tool has a Task/sub-agent mechanism → use the pattern from `examples/claude-code/CLAUDE.md`
+**3. Adapt the delegation pattern:**
+- If your tool has a Task or delegated-run mechanism → use the pattern from `examples/claude-code/CLAUDE.md`
 - If not → the orchestrator reads the skills inline (still works, just uses more context)
 
 ---
 
-## Why Not Just Use OpenSpec?
+## Persistence Model
 
-[OpenSpec](https://openspec.dev) is great. We took heavy inspiration from it. But:
+The bundle supports four persistence modes:
 
-| | OpenSpec | This Bundle |
-|---|---|---|
-| **Dependencies** | Requires `npm install -g @fission-ai/openspec` | Zero. Pure Markdown files. |
-| **Sub-agents** | Runs inline (one context window) | Generic delegated runs guided by skills, with fresh context where the host supports Task |
-| **Context usage** | Everything in one conversation | Orchestrator stays lightweight, sub-agents get fresh context |
-| **Customization** | Edit YAML schemas + rebuild | Edit Markdown files, instant effect |
-| **Tool support** | 20+ tools via CLI | Any tool that can read Markdown (infinite) |
-| **Setup** | CLI init + slash commands | Copy files + go |
+- `engram` as the recommended default for canonical recovery and orchestrator state
+- `openspec` when the user explicitly wants file artifacts in the repository
+- `hybrid` when both Engram recovery and OpenSpec file output are required
+- `none` for ephemeral or privacy-first usage
 
-**The key difference is the delegation architecture.** OpenSpec runs everything in a single conversation context. This bundle uses a lean orchestrator plus skill-driven delegated runs, keeping the orchestrator's context window clean while routing Cells-specific work to focused specialist behaviors.
+The project is optimized for `engram` first:
 
-This bundle also supports an **OpenSpec filesystem profile**:
-- work uses a canonical `openspec/changes/{change}/...` layout
-- Engram can remain the primary recovery backend while OpenSpec acts as the file artifact layer in `openspec` or `hybrid`
-
-This means:
-- Less context compression = fewer hallucinations
-- Each sub-agent gets focused instructions = better output quality
-- Orchestrator stays lightweight = can handle longer feature development sessions
+- the orchestrator and skills assume Engram is the primary recovery backend
+- OpenSpec remains a compatible file layout, not the default source of truth
+- detailed docs and package data stay indexed and are read on demand instead of bloating context
 
 ---
 
@@ -781,37 +731,46 @@ This means:
 <repo-root>/
 ├── README.md                          ← You are here
 ├── LICENSE
-├── skills/                            ← SDD skills + Cells specialist skills + shared conventions
+├── skills/                            ← SDD skills, Cells specialists, catalogs, and shared conventions
 │   ├── _shared/                       ← Shared conventions (referenced by all skills)
 │   │   ├── cells-conventions.md       ← Cells evidence rules and source priority
+│   │   ├── cells-official-reference.md← Compact router to official Cells knowledge
 │   │   ├── persistence-contract.md    ← Mode resolution rules (engram/openspec/hybrid/none)
 │   │   ├── engram-convention.md       ← Deterministic naming & recovery protocol
 │   │   └── openspec-convention.md     ← File paths, directory structure, config reference
+│   ├── cells-app-architecture/SKILL.md
+│   ├── cells-cli-usage/SKILL.md
 │   ├── cells-component-researcher/SKILL.md
 │   ├── cells-component-authoring/SKILL.md
+│   ├── cells-components-catalog/      ← Bundled SQLite FTS5 component index + scripts
 │   ├── cells-composition-architect/SKILL.md
+│   ├── cells-coverage/SKILL.md
 │   ├── cells-feature-analyzer/SKILL.md
+│   ├── cells-i18n/SKILL.md
 │   ├── cells-init/SKILL.md
 │   ├── cells-explore/SKILL.md
+│   ├── cells-official-docs-catalog/   ← Bundled normalized official Cells docs index
 │   ├── cells-propose/SKILL.md
 │   ├── cells-spec/SKILL.md
 │   ├── cells-design/SKILL.md
 │   ├── cells-tasks/SKILL.md
-│   ├── cells-apply/SKILL.md             ← v2.0: TDD workflow support
-│   ├── cells-verify/SKILL.md            ← v2.0: Real test execution + spec compliance matrix
+│   ├── cells-test-creator/SKILL.md
+│   ├── cells-apply/SKILL.md
+│   ├── cells-verify/SKILL.md
 │   └── cells-archive/SKILL.md
 ├── examples/                          ← Config examples per tool
 │   ├── claude-code/CLAUDE.md
 │   ├── opencode/
 │   │   ├── opencode.json              ← Orchestrator agent config
-│   │   └── commands/*.md              ← `/cells-*` and `/cells-*` commands for OpenCode
+│   │   └── commands/*.md              ← `/cells-*` commands for OpenCode
 │   ├── gemini-cli/GEMINI.md
 │   ├── codex/agents.md
 │   ├── vscode/copilot-instructions.md
 │   ├── antigravity/cells-orchestrator.md
 │   └── cursor/.cursorrules
 └── scripts/
-    └── install.sh                     ← Interactive installer
+    ├── install.sh                     ← Cross-platform installer
+    └── install.ps1                    ← Native PowerShell installer
 ```
 
 ---
