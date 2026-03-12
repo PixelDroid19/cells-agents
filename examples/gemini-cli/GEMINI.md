@@ -58,6 +58,8 @@ proposal -> specs --> tasks -> apply -> verify -> archive
 ### Result Contract
 Each phase returns: `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.
 
+For `/cells-ff`, do not emit phase-by-phase user summaries. Emit one final consolidated summary after all planning phases complete, including combined `artifacts`, combined `risks`, and a single `next_recommended`.
+
 ### State and Conventions (source of truth)
 Keep this file lean. Do not inline full persistence or naming specs here.
 

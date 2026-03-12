@@ -217,6 +217,21 @@ FOR EACH REQUIREMENT in specs/:
 
 A spec scenario is only considered COMPLIANT when there is a test that passed proving the behavior at runtime. Code existing in the codebase is NOT sufficient evidence.
 
+### Step 5b: Fixed Compliance Checklist (Mandatory)
+
+Before issuing a verdict, complete this exact checklist:
+
+1. Restriction compliance confirmed
+   - Scope restrictions respected for the verified batch (for example, tests-only batches did not edit `src/**` or `demo/locales/**`)
+2. No private assertions
+   - Test evidence shows no private member access/assertions (`._*` or `#*`) in changed tests
+3. Native Cells command evidence
+   - Execution evidence uses Cells-native commands (`cells app:*`, `cells lit-component:*`, `/cells-*`) unless user explicitly requested non-Cells path
+4. lcov file-level evidence
+   - Target files show 100/100/100/100 (Statements/Branches/Functions/Lines) with per-file lcov counters
+
+If any checklist item fails, verdict cannot be `PASS`.
+
 ### Step 6: Persist Verification Report
 
 Persist the report according to the resolved `artifact_store.mode`, following the conventions in `skills/_shared/`:
@@ -319,6 +334,17 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 {PASS / PASS WITH WARNINGS / FAIL}
 
 {One-line summary of overall status}
+
+---
+
+### Fixed Compliance Checklist
+
+| Check | Result | Evidence |
+|------|--------|----------|
+| Restriction compliance |  OK /  FAIL | {path diff / scope note} |
+| No private assertions |  OK /  FAIL | {private scan result} |
+| Native Cells command evidence |  OK /  FAIL | `{command(s)}` |
+| lcov 100/100/100/100 evidence |  OK /  FAIL | {per-file counters} |
 ```
 
 ## Rules

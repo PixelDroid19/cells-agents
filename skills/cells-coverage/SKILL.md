@@ -44,12 +44,51 @@ Do not skip this stack order and do not use generic fallback commands (`npm test
 4. Prioritize highest-impact uncovered branches and broken flows first
 5. Return evidence-backed next tests or reruns
 
+## Branch-First Closure Playbook (Mandatory)
+
+Use this loop whenever file-level coverage is below 100/100/100/100:
+
+1. Pick one target file from `lcov.info` with branch misses (`BRF > BRH`)
+2. Extract uncovered `BRDA` entries for that file
+3. Map each uncovered branch line to a concrete runtime condition
+4. Propose the smallest public-behavior test that triggers each missing branch
+5. Re-run only the targeted test scope
+6. Recompute that file counters (`FNF/FNH/LF/LH/BRF/BRH`)
+7. Repeat until branch misses are closed, then move to the next file
+
+Quick counter snippet:
+
+```text
+SF:src/component.js
+FNF:12
+FNH:12
+LF:80
+LH:80
+BRF:22
+BRH:20
+```
+
+Interpretation: functions/lines done, branch closure still pending for this file.
+
+## lcov Per-File Prioritization Loop
+
+Prioritize by impact in this order:
+1. Files with `BRF-BRH` gap > 0 (branch debt first)
+2. Then files with line/function misses
+3. Then cosmetic cleanup or low-risk reruns
+
+Always return a short ordered queue like:
+- `src/a.js` -> `BR 14/18` (4 missing) -> next test focus
+- `src/b.js` -> `BR 9/10` (1 missing) -> next test focus
+- `src/c.js` -> `BR 6/6` but `L 91/95` -> handle after branch closure
+
 ## Rules
 
 - Never rely on manually reading full HTML coverage pages as the primary workflow
 - Prefer branch misses over superficial line-only gains
 - State clearly when runtime evidence is missing or incomplete
 - If the project stores a folder with test errors, treat it as first-class evidence for rerun prioritization
+- Do not close coverage analysis with only global percentages; include per-file lcov evidence for the prioritized file queue
 
 ## Output contract
 

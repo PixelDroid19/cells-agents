@@ -38,6 +38,8 @@ Before large test work, read:
 15. In Cells contexts, always apply the mandatory testing stack in order (`cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`) before any other testing source.
 16. Never use generic fallback testing commands (`npm test`, `npm run test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
 17. Keep generated technical naming in English (event names, custom event types, payload keys, public API names, and assertion messages) unless the user explicitly requests another naming language.
+18. Reuse a shared harness/mocks pattern under `test/mocks/*` for repeated setup dependencies (stores, services, i18n bootstraps, network stubs).
+19. Extract duplicated setup into helper builders when the same setup shape appears 2 or more times in the same file or test module.
 
 ## Multi-subagent orchestration mode
 
@@ -186,6 +188,35 @@ Read these references before major changes:
 7. If a new test fails due to DOM wiring side effects, prefer test-local stubs with explicit selector mappings instead of mutating shared DOM behavior.
 8. Use the 4-agent orchestration loop and keep each agent output as evidence.
 9. If the component or tests use i18n, consult `skills/cells-i18n/` and verify `IntlMsg` initialization plus locale parity before closing.
+
+## Reusable mock and harness pattern
+
+When setup logic repeats, move it to `test/mocks/*` and consume it from tests.
+
+Minimum pattern:
+
+```js
+// test/mocks/component-harness.js
+export function createComponentHarness({ api = {}, flags = {} } = {}) {
+  const stubs = {
+    fetchData: sinon.stub().resolves(api.response ?? { items: [] }),
+  };
+  return { stubs, flags };
+}
+```
+
+```js
+// test/src/my-component.test.js
+import { createComponentHarness } from '../../mocks/component-harness.js';
+
+setup(() => {
+  const { stubs } = createComponentHarness();
+  // attach stubs to element dependencies via public wiring
+});
+```
+
+Extraction trigger (mandatory):
+- If setup/stub scaffolding is duplicated 2+ times, extract it to a reusable helper in `test/mocks/*` before closing.
 
 ## Generate a base test when missing
 

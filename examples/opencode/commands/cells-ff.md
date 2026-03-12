@@ -12,7 +12,8 @@ Run these sub-agents in sequence:
 3. cells-design — create technical design
 4. cells-tasks — break down into implementation tasks
 
-Present a combined summary after ALL phases complete (not between each one).
+Present exactly ONE fast-forward summary after ALL phases complete (not between phases).
+That single summary must include: consolidated `artifacts`, consolidated `risks`, and one `next_recommended` step.
 
 If this is a Cells project or component task, make sure delegated phases run SQL/database-backed lookup via `skills/cells-components-catalog/scripts/search_docs.py` against `skills/cells-components-catalog/assets/bbva_cells_components.db` for component discovery first, then use evidence from `custom-elements.json`, `skills/cells-official-docs-catalog/`, tests, and real feature repos before finalizing the plan.
 

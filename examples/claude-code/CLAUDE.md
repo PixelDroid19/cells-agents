@@ -67,6 +67,8 @@ When launching a phase, require the sub-agent to read `~/.claude/skills/cells-{p
 - `next_recommended`
 - `risks`
 
+For `/cells-ff`, do not emit phase-by-phase user summaries. Emit one final consolidated summary after all planning phases complete, including combined `artifacts`, combined `risks`, and a single `next_recommended`.
+
 ### State & Conventions (source of truth)
 Keep this file lean. Do NOT inline full persistence and naming specs here.
 

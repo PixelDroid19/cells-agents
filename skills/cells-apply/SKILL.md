@@ -58,6 +58,26 @@ For Cells projects, also inspect:
 12. `skills/cells-cli-usage/` when you need the correct local lint, docs, locales, or serve command
 13. `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` when the task changes rendered UI, demos, routes, interaction flows, or visual states
 
+### Step 1b: Scope Restriction Gate (Mandatory)
+
+Before editing any file, enforce the assigned scope explicitly:
+
+```
+If the assigned batch is tests-only:
+ - Allowed paths: `test/**`, `test/mocks/**`, and test-only fixtures
+ - Forbidden paths: `src/**`, `demo/locales/**`, and any runtime source path
+ - Do not "just fix source quickly" during this batch
+
+If you identify a source-code fix is required while in tests-only mode:
+ - STOP before editing `src/**`
+ - Request an explicit mid-session scope transition confirmation
+ - Resume source edits only after confirmation is recorded
+```
+
+Use this one-line gate evidence in `detailed_report`:
+- `Scope gate: tests-only enforced (no src/** or demo/locales/** edits)`
+- or `Scope gate: transitioned to source edits after explicit confirmation`
+
 ### Step 2: Detect Implementation Mode
 
 Before writing code, determine if the project uses TDD:
@@ -228,6 +248,7 @@ If none, say "None."}
 - If you discover the design is wrong or incomplete, NOTE IT in your return summary  don't silently deviate
 - If a task is blocked by something unexpected, STOP and report back
 - NEVER implement tasks that weren't assigned to you
+- When the assigned scope is tests-only, do not edit `src/**` or `demo/locales/**` unless an explicit mid-session scope transition is confirmed
 - Load and follow any relevant coding skills for the project stack (e.g., react-19, typescript, django-drf, tdd, pytest, vitest) if available in the user's skill set
 - If filesystem config exists, apply any `rules.apply` from `openspec/config.yaml`
 - If TDD mode is detected (Step 2), ALWAYS follow the RED  GREEN  REFACTOR cycle  never skip RED (writing the failing test first)
