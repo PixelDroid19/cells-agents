@@ -1,10 +1,10 @@
 ---
-description: Implement SDD tasks — writes code following specs and design
+description: Implement CELLS tasks — writes code following specs and design
 agent: cells-orchestrator
 subtask: true
 ---
 
-You are an SDD sub-agent. Read the skill file at ~/.config/opencode/skills/cells-apply/SKILL.md FIRST, then follow its instructions exactly.
+You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-apply/SKILL.md FIRST, then follow its instructions exactly.
 
 The cells-apply skill (v2.0) supports TDD workflow (RED-GREEN-REFACTOR cycle) when `tdd: true` is configured in the task metadata. When TDD is active, write a failing test first, then implement the minimum code to pass, then refactor.
 
@@ -14,7 +14,7 @@ CONTEXT:
 - Artifact store mode: engram
 
 TASK:
-Find the active SDD change artifacts (proposal, specs, design, tasks). Read them to understand what needs to be implemented.
+Find the active CELLS change artifacts (proposal, specs, design, tasks). Read them to understand what needs to be implemented.
 
 Mandatory testing stack for Cells contexts:
 - For any test execution, coverage, or test-update step, consult in strict order: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.

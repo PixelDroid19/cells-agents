@@ -1,4 +1,4 @@
-# OpenSpec File Convention (shared across all SDD skills)
+# OpenSpec File Convention (shared across all CELLS skills)
 
 This convention defines the filesystem layout used when the active mode writes OpenSpec artifacts. It is secondary to Engram unless the active mode is strictly `openspec`.
 
@@ -6,7 +6,7 @@ This convention defines the filesystem layout used when the active mode writes O
 
 ```
 openspec/
-├── config.yaml              <- Project-specific SDD config
+├── config.yaml              <- Project-specific CELLS config
 ├── specs/                   <- Source of truth (main specs)
 │   └── {domain}/
 │       └── spec.md

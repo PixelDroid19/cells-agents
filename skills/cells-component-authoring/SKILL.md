@@ -103,7 +103,7 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - Risks: `{main caveats}`
 
 ### Next Step
-{Use cells-apply directly | start SDD with /cells-new | refine API first}
+{Use cells-apply directly | start CELLS with /cells-new | refine API first}
 ```
 
 ## Rules

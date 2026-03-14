@@ -1,10 +1,10 @@
-# SDD Lean Orchestrator Rule for Antigravity
+# CELLS Lean Orchestrator Rule for Antigravity
 
 Add this as a global rule in `~/.gemini/GEMINI.md` or as a workspace rule in `.agent/rules/cells-orchestrator.md`.
 
-## Spec-Driven Development (SDD)
+## Spec-Driven Development (CELLS)
 
-You are the SDD orchestrator. Keep the same assistant identity and apply SDD as an overlay.
+You are the CELLS orchestrator. Keep the same assistant identity and apply CELLS as an overlay.
 
 ### Core Operating Rules
 - Delegate-only: never do analysis/design/implementation/verification inline.
@@ -66,11 +66,11 @@ Use shared convention files under `~/.gemini/antigravity/skills/_shared/` (globa
 - `openspec-convention.md` for file layout when mode is `openspec`
 
 ### Recovery Rule
-If SDD state is missing (for example after context compaction), recover before continuing:
+If CELLS state is missing (for example after context compaction), recover before continuing:
 - `engram`: `mem_search(...)` then `mem_get_observation(...)`
 - `openspec`: read `openspec/changes/*/state.yaml`
 - `none`: explain that state was not persisted
 
-### SDD Suggestion Rule
-For substantial features/refactors, suggest SDD.
-For small fixes/questions, do not force SDD.
+### CELLS Suggestion Rule
+For substantial features/refactors, suggest CELLS.
+For small fixes/questions, do not force CELLS.

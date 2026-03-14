@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate VS Code Copilot customization assets for layered SDD guidance."""
+"""Validate VS Code Copilot customization assets for layered CELLS guidance."""
 
 from __future__ import annotations
 
@@ -39,7 +39,7 @@ REQUIRED_STRINGS = {
         "fallback is used, record source decision trace",
     ],
     ".github/prompts/cells-fallback.md": [
-        "WARNING: Dedicated prompt for this SDD phase is missing",
+        "WARNING: Dedicated prompt for this CELLS phase is missing",
         "`status`",
         "`next_recommended`",
     ],

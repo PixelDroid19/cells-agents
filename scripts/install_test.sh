@@ -566,7 +566,7 @@ test_pre_existing_dir_not_clobbered() {
     mkdir -p "$HOME/.claude/skills/my-custom-skill"
     echo "custom content" > "$HOME/.claude/skills/my-custom-skill/SKILL.md"
     bash "$INSTALL_SCRIPT" --agent claude-code > /dev/null 2>&1
-    # SDD skills should be installed
+    # CELLS skills should be installed
     assert_all_skills_installed "$HOME/.claude/skills" || return 1
     # Custom skill should still exist
     assert_file_exists "$HOME/.claude/skills/my-custom-skill/SKILL.md" || return 1
@@ -627,7 +627,7 @@ test_vscode_assets_exist_in_repo() {
 test_vscode_assets_contain_required_markers() {
     assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Layered Precedence" || return 1
     assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "fallback is used, record source decision trace" || return 1
-    assert_file_contains "$REPO_DIR/.github/prompts/cells-fallback.md" "WARNING: Dedicated prompt for this SDD phase is missing" || return 1
+    assert_file_contains "$REPO_DIR/.github/prompts/cells-fallback.md" "WARNING: Dedicated prompt for this CELLS phase is missing" || return 1
     assert_file_contains "$REPO_DIR/.github/docs/README.md" "Layered precedence" || return 1
 }
 
@@ -646,7 +646,7 @@ test_vscode_coverage_policy_exemption_behavior() {
 }
 
 test_vscode_baseline_applies_in_normal_session() {
-    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "You are the SDD orchestrator" || return 1
+    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "You are the CELLS orchestrator" || return 1
     assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Delegate-only" || return 1
     assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Response format for delegated phases MUST return" || return 1
 }
@@ -656,7 +656,7 @@ test_vscode_baseline_blocks_unsafe_automation() {
     assert_file_contains "$REPO_DIR/.github/docs/hooks.md" "Never default to force push, hard reset" || return 1
 }
 
-test_vscode_known_sdd_phase_prompts_are_usable() {
+test_vscode_known_cells_phase_prompts_are_usable() {
     local phase
     for phase in explore propose spec design tasks apply verify archive; do
         assert_file_exists "$REPO_DIR/.github/prompts/cells-$phase.md" || return 1
@@ -833,7 +833,7 @@ run_test "Scenario: Blocked/partial escalation behavior is executable" test_vsco
 run_test "Scenario: Coverage exemption policy behavior is executable" test_vscode_coverage_policy_exemption_behavior
 run_test "Scenario: Baseline applies in normal coding session" test_vscode_baseline_applies_in_normal_session
 run_test "Scenario: Baseline blocks unsafe automation" test_vscode_baseline_blocks_unsafe_automation
-run_test "Scenario: User invokes a known SDD phase" test_vscode_known_sdd_phase_prompts_are_usable
+run_test "Scenario: User invokes a known CELLS phase" test_vscode_known_cells_phase_prompts_are_usable
 run_test "Scenario: Specialized analysis/implementation/verification roles are available" test_vscode_specialized_roles_available
 run_test "Scenario: Agent output envelope stays deterministic" test_vscode_agent_output_envelope_deterministic
 run_test "Scenario: Hooks enforce non-destructive policy" test_vscode_hooks_define_non_destructive_policy

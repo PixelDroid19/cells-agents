@@ -36,7 +36,7 @@ Generate or refresh the **skill registry** used by sub-agents as Step 1, so they
 2. Skip workflow-only folders/skills:
    - `_shared`
    - `skill-registry`
-   - phase workflow skills (`cells-*` and Cells SDD phase skills: `cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`)
+   - phase workflow skills (`cells-*` and Cells CELLS phase skills: `cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`)
 3. Deduplicate by skill name (project-level wins over user-level).
 4. Read frontmatter only (first ~10 lines) to extract `name` and trigger text from `description`.
 
@@ -122,7 +122,7 @@ Sub-agents should load this registry as Step 1 on every run.
 
 ## Rules
 
-- ALWAYS write `.atl/skill-registry.md` regardless of SDD persistence mode.
+- ALWAYS write `.atl/skill-registry.md` regardless of CELLS persistence mode.
 - ALWAYS save to engram when `mem_save` is available.
 - Keep scan fast: frontmatter only for skills.
 - If no skills/conventions are found, still write an empty registry template.

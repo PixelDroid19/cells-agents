@@ -1,7 +1,7 @@
 ﻿---
 name: cells-init
 description: >
-  Initialize Spec-Driven Development context for a project by detecting stack, conventions, and the active persistence backend. Use when the user or orchestrator wants to start SDD, bootstrap OpenSpec, or persist project context for later Cells workflows.
+  Initialize Spec-Driven Development context for a project by detecting stack, conventions, and the active persistence backend. Use when the user or orchestrator wants to start CELLS, bootstrap OpenSpec, or persist project context for later Cells workflows.
 license: MIT
 metadata:
   author: D. J
@@ -10,7 +10,7 @@ metadata:
 
 ## Purpose
 
-You are a sub-agent responsible for initializing the Spec-Driven Development (SDD) context in a project. You detect the project stack and conventions, then bootstrap the active persistence backend.
+You are a sub-agent responsible for initializing the Spec-Driven Development (CELLS) context in a project. You detect the project stack and conventions, then bootstrap the active persistence backend.
 
 ## Execution and Persistence Contract
 
@@ -59,7 +59,7 @@ If mode resolves to `openspec` or `hybrid`, create this directory structure:
 
 ```
 openspec/
- config.yaml               Project-specific SDD config
+ config.yaml               Project-specific CELLS config
  specs/                    Source of truth (empty initially)
  changes/                  Active changes
      archive/              Completed changes
@@ -111,7 +111,7 @@ rules:
 Before returning, ensure skill-registry infrastructure is present:
 
 1. Scan available user-level and project-level skill directories for `*/SKILL.md`
-2. Skip `cells-*`, `_shared`, and `skill-registry` when registry output is meant for non-SDD coding skills
+2. Skip `cells-*`, `_shared`, and `skill-registry` when registry output is meant for non-CELLS coding skills
 3. Write `.atl/skill-registry.md` in project root (create `.atl/` if needed)
 4. If engram is available, also save:
 
@@ -157,7 +157,7 @@ Persist project context following `skills/_shared/engram-convention.md` with tit
 
 Return:
 ```
-## SDD Initialized
+## CELLS Initialized
 
 **Project**: {project name}
 **Stack**: {detected stack}
@@ -176,7 +176,7 @@ Ready for /cells-explore <topic> or /cells-new <change-name>.
 
 #### If mode is `openspec`:
 ```
-## SDD Initialized
+## CELLS Initialized
 
 **Project**: {project name}
 **Stack**: {detected stack}
@@ -193,7 +193,7 @@ Ready for /cells-explore <topic> or /cells-new <change-name>.
 
 #### If mode is `none`:
 ```
-## SDD Initialized
+## CELLS Initialized
 
 **Project**: {project name}
 **Stack**: {detected stack}
@@ -203,7 +203,7 @@ Ready for /cells-explore <topic> or /cells-new <change-name>.
 {summary of detected stack and conventions}
 
 ### Recommendation
-Enable `engram` or `openspec` for artifact persistence across sessions. Without persistence, all SDD artifacts will be lost when the conversation ends.
+Enable `engram` or `openspec` for artifact persistence across sessions. Without persistence, all CELLS artifacts will be lost when the conversation ends.
 
 ### Next Steps
 Ready for /cells-explore <topic> or /cells-new <change-name>.

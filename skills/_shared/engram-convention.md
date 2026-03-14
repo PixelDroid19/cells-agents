@@ -1,4 +1,4 @@
-# Engram Artifact Convention (shared across all SDD skills)
+# Engram Artifact Convention (shared across all CELLS skills)
 
 This is the canonical persistence architecture for this package.
 
@@ -6,7 +6,7 @@ This is the canonical persistence architecture for this package.
 
 ## Naming Rules
 
-ALL SDD artifacts persisted to Engram MUST follow this deterministic naming:
+ALL CELLS artifacts persisted to Engram MUST follow this deterministic naming:
 
 ```
 title:     cells/{change-name}/{artifact-type}
@@ -136,7 +136,7 @@ Use `mem_update` when you have the exact observation ID. Use `mem_save` with the
 
 - **Deterministic titles** → recovery works by exact match, not fuzzy search
 - **`topic_key`** → enables upserts (updating same artifact without creating duplicates)
-- **`cells/` prefix** → namespaces all SDD artifacts away from other Engram observations
+- **`cells/` prefix** → namespaces all CELLS artifacts away from other Engram observations
 - **Two-step recovery** → `mem_search` previews are always truncated; `mem_get_observation` is the only way to get full content
 - **Lineage** → archive-report includes all observation IDs for complete traceability
 - **Canonical recovery backend** → the orchestrator can recover state and artifacts without depending on project files

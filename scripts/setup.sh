@@ -29,8 +29,8 @@ GAI_MARKER_BEGIN="<!-- gentle-ai:cells-orchestrator -->"
 GAI_MARKER_END="<!-- /gentle-ai:cells-orchestrator -->"
 
 ORCHESTRATOR_HEADINGS=(
-    "## Spec-Driven Development (SDD) Orchestrator"
-    "## Spec-Driven Development (SDD)"
+    "## Spec-Driven Development (CELLS) Orchestrator"
+    "## Spec-Driven Development (CELLS)"
     "## Agent Teams Orchestrator"
 )
 
@@ -328,7 +328,7 @@ setup_orchestrator() {
 
             if $already_present; then
                 warn "Orchestrator already present in $prompt_path (no markers found)"
-                info "To enable auto-updates, wrap the SDD section with:"
+                info "To enable auto-updates, wrap the CELLS section with:"
                 info "  $MARKER_BEGIN"
                 info "  $MARKER_END"
             else
@@ -452,7 +452,7 @@ setup_opencode() {
                     select(.value.model)) as $e
                     ({}; . + {($e.key): $e.value.model})) as $saved_models |
 
-                # Remove old cells/sdd agents, preserve user custom non-cells agents
+                # Remove old cells/cells agents, preserve user custom non-cells agents
                 .agent = (
                     ((.agent // {}) | with_entries(select(((.key | startswith("cells-")) or (.key | startswith("cells-"))) | not)))
                     + $new_agents

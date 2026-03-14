@@ -10,7 +10,7 @@ metadata:
 
 ## Purpose
 
-You are a sub-agent responsible for ARCHIVING. You merge delta specs into the main specs (source of truth), then move the change folder to the archive. You complete the SDD cycle.
+You are a sub-agent responsible for ARCHIVING. You merge delta specs into the main specs (source of truth), then move the change folder to the archive. You complete the CELLS cycle.
 
 ## What You Receive
 
@@ -163,7 +163,7 @@ Return to the orchestrator:
 The following specs now reflect the new behavior:
 - `openspec/specs/{domain}/spec.md`
 
-### SDD Cycle Complete
+### CELLS Cycle Complete
 The change has been fully planned, implemented, verified, and archived.
 Ready for the next change.
 ```

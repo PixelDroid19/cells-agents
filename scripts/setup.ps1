@@ -57,8 +57,8 @@ $GaiMarkerBegin = '<!-- gentle-ai:cells-orchestrator -->'
 $GaiMarkerEnd = '<!-- /gentle-ai:cells-orchestrator -->'
 
 $OrchestratorHeadings = @(
-    '## Spec-Driven Development (SDD) Orchestrator',
-    '## Spec-Driven Development (SDD)',
+    '## Spec-Driven Development (CELLS) Orchestrator',
+    '## Spec-Driven Development (CELLS)',
     '## Agent Teams Orchestrator'
 )
 
@@ -267,7 +267,7 @@ function Set-Orchestrator {
 
             if ($alreadyPresent) {
                 Write-Warn "Orchestrator already present in $PromptPath (no markers found)"
-                Write-Info "To enable auto-updates, wrap the SDD section with:"
+                Write-Info "To enable auto-updates, wrap the CELLS section with:"
                 Write-Info "  $MarkerBegin"
                 Write-Info "  $MarkerEnd"
             }
@@ -390,7 +390,7 @@ function Set-OpenCode {
                         }
                     }
 
-                    # 2. Remove old cells/sdd agents
+                    # 2. Remove old cells/cells agents
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
                         if ($prop.Name -like 'cells-*' -or $prop.Name -like 'cells-*') {
                             $existing.agent.PSObject.Properties.Remove($prop.Name)

@@ -1,9 +1,9 @@
 ---
-description: Continue the next SDD phase in the dependency chain
+description: Continue the next CELLS phase in the dependency chain
 agent: cells-orchestrator
 ---
 
-Follow the SDD orchestrator workflow to continue the active change.
+Follow the CELLS orchestrator workflow to continue the active change.
 
 WORKFLOW:
 1. Check which artifacts already exist for the active change (proposal, specs, design, tasks)

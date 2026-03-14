@@ -248,7 +248,7 @@ In OpenCode, the intended operating loop is:
 3. switch to `cells-orchestrator`
 4. run `/cells-init`
 5. use specialist commands first when the task starts from research
-6. use SDD workflow commands when the task moves into planning and implementation
+6. use CELLS workflow commands when the task moves into planning and implementation
 
 A common flow looks like this:
 
@@ -263,7 +263,7 @@ A common flow looks like this:
 
 ## Skills
 
-### SDD Skills
+### CELLS Skills
 
 | Skill | Responsibility |
 |---|---|
@@ -368,7 +368,7 @@ Use the full setup script:
 OpenCode supports two modes:
 
 - `single` (default): one `cells-orchestrator` handles all phases.
-- `multi`: one hidden sub-agent per SDD phase (`cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`) plus the orchestrator.
+- `multi`: one hidden sub-agent per CELLS phase (`cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`) plus the orchestrator.
 
 Explicit mode selection:
 
@@ -391,7 +391,7 @@ Install normal mode:
 .\scripts\setup.ps1 -Agent opencode -OpenCodeMode single
 ```
 
-Multi-agent mode (`multi`) uses one orchestrator plus one hidden sub-agent per SDD phase.
+Multi-agent mode (`multi`) uses one orchestrator plus one hidden sub-agent per CELLS phase.
 
 Install multi-agent mode:
 
@@ -495,7 +495,7 @@ Troubleshooting (`database table is locked`):
 3. Skills act as context files rather than separate delegated runs.
 4. Apply the layered VS Code model documented in `.github/docs/README.md`:
    - baseline instructions (`copilot-instructions.md`)
-   - SDD prompt catalog (`.github/prompts/`)
+   - CELLS prompt catalog (`.github/prompts/`)
    - specialized agents (`.github/agents/`)
    - operational hooks (`.github/docs/hooks.md`)
    - model/fallback policy (`.github/docs/models.md`)

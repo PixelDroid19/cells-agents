@@ -1,4 +1,4 @@
-# Persistence Contract (shared across all SDD skills)
+# Persistence Contract (shared across all CELLS skills)
 
 This project uses an Engram-first storage architecture:
 - `engram` is the canonical backend for artifact and state recovery.
@@ -40,7 +40,7 @@ When falling back to `none`, recommend the user enable `engram` or `openspec` fo
 
 ## State Persistence (Orchestrator)
 
-The orchestrator persists DAG state after each phase transition. This enables SDD recovery after context compaction and keeps the main thread aligned with the delegate-only architecture.
+The orchestrator persists DAG state after each phase transition. This enables CELLS recovery after context compaction and keeps the main thread aligned with the delegate-only architecture.
 
 | Mode | Persist State | Recover State |
 |------|--------------|---------------|
@@ -72,13 +72,13 @@ Sub-agents launch with fresh context and no inherited memory protocol. The orche
 
 | Context | Who reads from backend | Who writes to backend |
 |---------|------------------------|-----------------------|
-| Non-SDD (general task) | **Orchestrator** searches engram and passes concise context | **Sub-agent** saves discoveries/decisions/bugfixes via `mem_save` |
-| Cells SDD (phase with dependencies) | **Sub-agent** reads artifacts directly from backend | **Sub-agent** saves its artifact |
-| Cells SDD (phase without dependencies) | Optional | **Sub-agent** saves its artifact |
+| Non-CELLS (general task) | **Orchestrator** searches engram and passes concise context | **Sub-agent** saves discoveries/decisions/bugfixes via `mem_save` |
+| Cells CELLS (phase with dependencies) | **Sub-agent** reads artifacts directly from backend | **Sub-agent** saves its artifact |
+| Cells CELLS (phase without dependencies) | Optional | **Sub-agent** saves its artifact |
 
-### Non-SDD knowledge persistence (mandatory)
+### Non-CELLS knowledge persistence (mandatory)
 
-When working outside SDD phases, sub-agents must persist meaningful learnings before returning:
+When working outside CELLS phases, sub-agents must persist meaningful learnings before returning:
 
 ```
 mem_save(
@@ -93,7 +93,7 @@ If important discoveries, decisions, or bug fixes were made, returning without `
 
 ## Skill Registry
 
-The skill registry is infrastructure (not an SDD artifact) that all sub-agents must load as Step 1.
+The skill registry is infrastructure (not an CELLS artifact) that all sub-agents must load as Step 1.
 
 ### Registry locations
 

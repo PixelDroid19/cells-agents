@@ -4,7 +4,7 @@
 .SYNOPSIS
     Agent Teams Lite installer for Windows
 .DESCRIPTION
-    Copies SDD skills to your AI coding assistant's skill directory.
+    Copies CELLS skills to your AI coding assistant's skill directory.
 .PARAMETER Agent
     Install for a specific agent (non-interactive).
     Valid values: claude-code, opencode, gemini-cli, codex, vscode, antigravity, cursor, project-local, all-global, custom
@@ -435,7 +435,7 @@ try {
 
     Write-Host ''
     Write-Host 'Done!' -ForegroundColor Green -NoNewline
-    Write-Host ' Start using SDD with: ' -NoNewline
+    Write-Host ' Start using CELLS with: ' -NoNewline
     Write-Host '/cells-init' -ForegroundColor Cyan -NoNewline
     Write-Host ' in your project'
 

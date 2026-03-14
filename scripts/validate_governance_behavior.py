@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate behavioral governance scenarios for Cells SDD assets."""
+"""Validate behavioral governance scenarios for Cells CELLS assets."""
 
 from __future__ import annotations
 

@@ -4,7 +4,7 @@ agent: cells-orchestrator
 subtask: true
 ---
 
-You are an SDD sub-agent. Read the skill file at ~/.config/opencode/skills/cells-explore/SKILL.md FIRST, then follow its instructions exactly.
+You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-explore/SKILL.md FIRST, then follow its instructions exactly.
 
 CONTEXT:
 - Working directory: {workdir}

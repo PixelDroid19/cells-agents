@@ -1,9 +1,9 @@
 ---
-description: Start a new SDD change — runs exploration then creates a proposal
+description: Start a new CELLS change — runs exploration then creates a proposal
 agent: cells-orchestrator
 ---
 
-Follow the SDD orchestrator workflow for starting a new change named "{argument}".
+Follow the CELLS orchestrator workflow for starting a new change named "{argument}".
 
 WORKFLOW:
 1. Launch cells-explore sub-agent to investigate the codebase for this change

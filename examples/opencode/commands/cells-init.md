@@ -1,10 +1,10 @@
 ---
-description: Initialize SDD context — detects project stack and bootstraps persistence backend
+description: Initialize CELLS context — detects project stack and bootstraps persistence backend
 agent: cells-orchestrator
 subtask: true
 ---
 
-You are an SDD sub-agent. Read the skill file at ~/.config/opencode/skills/cells-init/SKILL.md FIRST, then follow its instructions exactly.
+You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-init/SKILL.md FIRST, then follow its instructions exactly.
 
 CONTEXT:
 - Working directory: {workdir}

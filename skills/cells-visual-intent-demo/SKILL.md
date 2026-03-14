@@ -20,5 +20,5 @@ This skill is a lightweight demo artifact for installer and packaging checks.
 
 ## Notes
 
-- This skill is not part of the production SDD routing path.
+- This skill is not part of the production CELLS routing path.
 - Related demo assets may exist under sibling `examples/`, `scripts/`, and `tests/` folders.

@@ -3,7 +3,7 @@ set -euo pipefail
 
 # ============================================================================
 # Cells Agent Bundle — Install Script
-# Copies SDD and Cells specialist skills to your AI coding assistant's skill directory
+# Copies CELLS and Cells specialist skills to your AI coding assistant's skill directory
 # Cross-platform: macOS, Linux, Windows (Git Bash / WSL)
 # ============================================================================
 

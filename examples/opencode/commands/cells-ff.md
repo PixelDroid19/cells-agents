@@ -1,9 +1,9 @@
 ---
-description: Fast-forward all SDD planning phases — proposal through tasks
+description: Fast-forward all CELLS planning phases — proposal through tasks
 agent: cells-orchestrator
 ---
 
-Follow the SDD orchestrator workflow to fast-forward all planning phases for change "{argument}".
+Follow the CELLS orchestrator workflow to fast-forward all planning phases for change "{argument}".
 
 WORKFLOW:
 Run these sub-agents in sequence:

@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Define the canonical, reusable governance rules for Cells-oriented SDD work.
+Define the canonical, reusable governance rules for Cells-oriented CELLS work.
 
 This contract is the source of truth for:
 - catalog-first routing
