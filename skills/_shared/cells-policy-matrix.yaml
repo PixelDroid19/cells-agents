@@ -100,6 +100,18 @@ policy_rows:
       - "engram"
 
   - layer: shared-skills
+    file: skills/_shared/cells-workflow-contract.md
+    requirement_ids:
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CROSS-LAYER-PARITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Canonical Artifact Lineage"
+      - "Result Envelope"
+      - "Source Decisions"
+
+  - layer: shared-skills
     file: skills/_shared/cells-conventions.md
     requirement_ids:
       - REQ-CATALOG-FIRST

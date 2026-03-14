@@ -21,6 +21,7 @@ The orchestrator will give you:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the topic is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route the exploration to the exact official docs needed.
@@ -33,9 +34,11 @@ If the topic is Cells-oriented, use `skills/_shared/cells-official-reference.md`
 ### Retrieving Context
 
 Before starting, load any existing project context and specs per the active convention:
-- **engram**: Search for `cells-init/{project}` (project context) and `cells/` (existing artifacts).
+- **engram**: Search for `cells-init/{project}` and browse `cells/` artifacts only.
 - **openspec**: Read `openspec/config.yaml` and `openspec/specs/`.
 - **none**: Use whatever context the orchestrator passed in the prompt.
+
+If canonical project context is missing, stop and report the phase as `blocked` until `cells-init/{project}` exists.
 
 ## What to Do
 
@@ -57,6 +60,8 @@ When mode is `engram` or `hybrid`, load context with two-step recovery (search p
 1. `mem_search(query: "cells-init/{project}", project: "{project}")` to find project context
 2. If found, `mem_get_observation(id: {id})` to get full context
 3. Optional: `mem_search(query: "cells/", project: "{project}")` to discover related prior artifacts
+
+If the canonical project context is absent, return `status: blocked` with remediation to run `cells-init` first.
 
 Never use `mem_search` previews as full artifact content.
 
@@ -186,6 +191,15 @@ Use the following markdown as the `detailed_report` body. If you persist to `exp
 ### Risks
 - {Risk 1}
 - {Risk 2}
+
+### Source Decisions
+- intent: exploration-evidence-routing
+  primary_source: {canonical source used first}
+  fallback_used: false
+  fallback_source: null
+  fallback_reason: null
+  evidence_quality: high
+  status: ok
 
 ### Ready for Proposal
 {Yes/No - and what the orchestrator should tell the user}

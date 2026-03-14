@@ -21,11 +21,12 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the change is Cells-oriented, use `skills/_shared/cells-official-reference.md` to pull only the official architecture, component, testing, styling, or theming guidance needed for the design.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `design`. Retrieve `proposal` and `spec` as dependencies (spec may not exist yet if running in parallel with cells-spec  derive from proposal).
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `design`. Retrieve `proposal` and `spec` canonically, and derive from proposal when spec does not exist yet.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
 - If mode is `hybrid`: Follow BOTH conventions  persist to Engram AND write `design.md` to filesystem. Retrieve dependencies from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return result only. Never create or modify project files.
@@ -51,6 +52,8 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 2. `mem_get_observation(id: {proposal_id})` (REQUIRED)
 3. `mem_search(query: "cells/{change-name}/spec", project: "{project}")` (optional when running in parallel)
 4. If found: `mem_get_observation(id: {spec_id})`
+
+If the canonical proposal artifact is absent, return `status: blocked` and require it to be seeded before continuing.
 
 Do not use `mem_search` preview text as complete artifact content.
 
@@ -148,6 +151,16 @@ Use code blocks with the project's language.}
 {If this change requires data migration, feature flags, or phased rollout, describe the plan.
 If not applicable, state "No migration required."}
 
+## Source Decisions
+
+- intent: design-evidence-routing
+  primary_source: {canonical proposal or spec source}
+  fallback_used: false
+  fallback_source: null
+  fallback_reason: null
+  evidence_quality: high
+  status: ok
+
 ## Open Questions
 
 - [ ] {Any unresolved technical question}
@@ -207,6 +220,7 @@ Ready for tasks (cells-tasks).
 - Use the project's ACTUAL patterns and conventions, not generic best practices
 - For Cells projects, document `scopedElements`, emitted events, tests, and style overrides when they shape the implementation
 - When design content references JSDoc/comments, event names, payload keys, or public API naming, keep those technical names in English unless the user explicitly requests otherwise
+- Every design artifact MUST include a `Source Decisions` section and keep canonical `cells/*` refs as the active artifact names
 - If you find the codebase uses a pattern different from what you'd recommend, note it but FOLLOW the existing pattern unless the change specifically addresses it
 - Keep ASCII diagrams simple  clarity over beauty
 - Include source-decision trace when design choices required fallback evidence

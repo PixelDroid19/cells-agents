@@ -22,6 +22,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 For Cells implementation work, use `skills/_shared/cells-official-reference.md` to fetch only the official guidance needed for the touched area.
@@ -33,7 +34,7 @@ For Cells testing or test-execution decisions during implementation, apply this 
 
 Do not skip or reorder this stack. Do not use generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `apply-progress`. Retrieve `proposal`, `spec`, `design`, and `tasks` as dependencies. Also use `mem_update` to mark completed tasks in the `tasks` artifact.
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `apply-progress`. Retrieve `proposal`, `spec`, `design`, and `tasks` canonically, and use `mem_update` to mark completed tasks in the `tasks` artifact.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Update `tasks.md` with `[x]` marks.
 - If mode is `hybrid`: Follow BOTH conventions  persist progress to Engram (`mem_update` for tasks) AND update `tasks.md` with `[x]` marks on filesystem.
 - If mode is `none`: Return progress only. Do not update project artifacts.
@@ -63,6 +64,8 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 6. `mem_get_observation(id: {spec_id})`
 7. `mem_get_observation(id: {design_id})`
 8. `mem_get_observation(id: {tasks_id})`
+
+If any required canonical dependency is absent, return `status: blocked` and require canonical artifact seeding before implementation.
 
 Do not use `mem_search` preview text as complete artifact content.
 
@@ -256,6 +259,15 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 | `path/to/file.ext` | Created | {brief description} |
 | `path/to/other.ext` | Modified | {brief description} |
 
+### Source Decisions
+- intent: apply-dependency-recovery
+  primary_source: {canonical dependency used first}
+  fallback_used: false
+  fallback_source: null
+  fallback_reason: null
+  evidence_quality: high
+  status: ok
+
 ### Tests (TDD mode only)
 | Task | Test File | RED (fail) | GREEN (pass) | REFACTOR |
 |------|-----------|------------|--------------|----------|
@@ -302,6 +314,7 @@ If none, say "None."}
 - Do not run project-wide runtime or test commands for every small change; execute only what is needed to confirm the assigned task
 - If browser confirmation is needed, reuse the existing runtime, browser session, and port before starting a new one
 - When implementation changes browser-visible UI, run a minimal browser validation loop if a local runtime can be served safely
+- Every apply-progress artifact MUST include a `Source Decisions` section and refer to canonical `cells/*` artifacts as the active lineage
 - Record task-level source decision trace and fallback reason when non-primary evidence is used
 - If evidence minimums are unmet, return `status: partial | blocked` with remediation steps
 - Return the standard structured envelope with the markdown report above in `detailed_report`

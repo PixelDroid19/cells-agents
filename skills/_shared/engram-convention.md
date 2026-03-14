@@ -33,6 +33,13 @@ scope:     project
 
 **Exception**: `cells-init` uses `cells-init/{project-name}` as both title and topic_key (it's project-scoped, not change-scoped).
 
+## Canonical Recovery Protocol
+
+Canonical reads and writes MUST use `cells-init/{project-name}` and `cells/{change-name}/{artifact-type}` only.
+
+Historical legacy artifacts may remain in Engram as inactive history, but they MUST NOT be used to satisfy active prerequisites.
+If a required canonical artifact is missing, stop and report the phase as `blocked` until that canonical artifact is seeded.
+
 ### State Artifact
 
 The orchestrator persists DAG state after each phase transition to enable recovery after context compaction:
@@ -85,9 +92,9 @@ ALWAYS call `mem_get_observation` to get the complete content.
 When a skill needs multiple artifacts (e.g., cells-tasks needs proposal + spec + design):
 
 ```
-1. mem_search(query: "cells/{change-name}/proposal", project: "{project}") → get ID
-2. mem_search(query: "cells/{change-name}/spec", project: "{project}") → get ID
-3. mem_search(query: "cells/{change-name}/design", project: "{project}") → get ID
+1. mem_search(query: "cells/{change-name}/proposal", project: "{project}")
+2. mem_search(query: "cells/{change-name}/spec", project: "{project}")
+3. mem_search(query: "cells/{change-name}/design", project: "{project}")
 4. mem_get_observation(id) for EACH → full content
 ```
 

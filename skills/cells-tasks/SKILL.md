@@ -21,9 +21,10 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `tasks`. Retrieve `proposal`, `spec`, and `design` as dependencies.
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `tasks`. Retrieve `proposal`, `spec`, and `design` canonically.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
 - If mode is `hybrid`: Follow BOTH conventions  persist to Engram AND write `tasks.md` to filesystem. Retrieve dependencies from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return result only. Never create or modify project files.
@@ -51,6 +52,8 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 4. `mem_get_observation(id: {proposal_id})` (REQUIRED)
 5. `mem_get_observation(id: {spec_id})` (REQUIRED)
 6. `mem_get_observation(id: {design_id})` (REQUIRED)
+
+If any required canonical dependency is absent, return `status: blocked` and require canonical artifact seeding before task generation.
 
 Do not use `mem_search` preview text as complete artifact content.
 
@@ -103,6 +106,16 @@ If mode is `engram` or `none`, do not create project files and return the same t
 
 - [ ] 4.1 {Update docs/comments}
 - [ ] 4.2 {Remove temporary code}
+
+## Source Decisions
+
+- intent: task-planning-evidence
+  primary_source: {canonical proposal/spec/design source}
+  fallback_used: false
+  fallback_source: null
+  fallback_reason: null
+  evidence_quality: high
+  status: ok
 ```
 
 ### Task Writing Rules
@@ -194,6 +207,7 @@ Ready for implementation (cells-apply).
 - Each task should be completable in ONE session (if a task feels too big, split it)
 - Use hierarchical numbering: 1.1, 1.2, 2.1, 2.2, etc.
 - NEVER include vague tasks like "implement feature" or "add tests"
+- Every tasks artifact MUST include a `Source Decisions` section and keep canonical `cells/*` refs as the active artifact names
 - Include task-level source trace expectations (source used, fallback reason, blocked/partial condition)
 - If dependency evidence is incomplete, return `status: partial | blocked` and list remediation
 - If filesystem config exists, apply any `rules.tasks` from `openspec/config.yaml`

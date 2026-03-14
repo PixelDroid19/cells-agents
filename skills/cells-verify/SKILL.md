@@ -23,6 +23,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the project is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route verification to the right official testing, lifecycle, i18n, and CLI guidance.
@@ -37,7 +38,7 @@ For Cells testing and test-execution decisions, apply this mandatory stack first
 
 Do not skip or reorder this stack. Do not use generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `verify-report`. Retrieve `proposal`, `spec`, `design`, and `tasks` as dependencies.
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `verify-report`. Retrieve `proposal`, `spec`, `design`, and `tasks` canonically.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Save to `openspec/changes/{change-name}/verify-report.md`.
 - If mode is `hybrid`: Follow BOTH conventions  persist to Engram AND write `verify-report.md` to filesystem.
 - If mode is `none`: Return the verification report inline only. Never write files.
@@ -67,6 +68,8 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 6. `mem_get_observation(id: {spec_id})` (REQUIRED for compliance matrix)
 7. `mem_get_observation(id: {design_id})`
 8. `mem_get_observation(id: {tasks_id})`
+
+If any required canonical dependency is absent, return `status: blocked` and require canonical artifact seeding before verification.
 
 Do not use `mem_search` preview text as complete artifact content.
 
@@ -208,7 +211,21 @@ IF coverage_threshold is NOT configured:
   Report coverage field as `N/A (policy exemption)` rather than generic "Not configured"
 ```
 
-### Step 6e: Browser Functional And Visual Validation
+### Step 6e: Workflow Contract Validation (Deterministic)
+
+When the change modifies workflow skills, shared contracts, or persistence/reporting guidance instead of executable runtime code:
+
+```
+Run deterministic contract checks in addition to any targeted tests:
+ python scripts/validate_governance_behavior.py --scenario workflow-contract-parity
+ python scripts/validate_governance_behavior.py --scenario canonical-write-contract
+ python scripts/validate_governance_behavior.py --scenario canonical-lineage-only
+ python scripts/validate_governance_behavior.py --scenario source-decision-template
+
+Treat these passing checks as deterministic proof for canonical write behavior, canonical-only dependency guidance, and source_decisions template coverage when no runtime phase execution exists.
+```
+
+### Step 6f: Browser Functional And Visual Validation
 
 When the implemented change affects rendered UI, demos, routes, i18n-visible output, styling, or interaction flows:
 
@@ -302,6 +319,16 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 
 ---
 
+### Artifact Lineage
+- Active proposal artifact: `cells/{change-name}/proposal`
+- Active spec artifact: `cells/{change-name}/spec`
+- Active design artifact: `cells/{change-name}/design`
+- Active tasks artifact: `cells/{change-name}/tasks`
+- Active verify artifact: `cells/{change-name}/verify-report`
+- Historical legacy artifacts may be cited only as inactive archive context
+
+---
+
 ### Completeness
 | Metric | Value |
 |--------|-------|
@@ -364,6 +391,13 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 
 ---
 
+### Source Decisions
+| Intent | Primary Source | Fallback Used | Fallback Source | Fallback Reason | Evidence Quality | Status |
+|--------|----------------|---------------|-----------------|-----------------|------------------|--------|
+| {verification-path} | {canonical source} | {yes/no} | {source or null} | {reason or null} | {high/medium/low} | {ok/partial/blocked} |
+
+---
+
 ### Issues Found
 
 **CRITICAL** (must fix before archive):
@@ -414,6 +448,7 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - If filesystem config exists, apply any `rules.verify` from `openspec/config.yaml`
 - Do not escalate every small change into full-project execution; use targeted confirmation first and broaden only when required
 - If browser validation is needed, reuse the already running runtime, browser, and port before starting another one
+- Verification and archive-facing reporting MUST cite canonical `cells/*` artifact refs as the active lineage and treat historical legacy artifacts as inactive archive context only
 - Record source-decision trace and fallback reasons for verification path choices
 - If evidence minimums are unmet, verdict cannot claim full completion and status must be `partial` or `blocked`
 - Return the standard structured envelope with the markdown report above in `detailed_report`

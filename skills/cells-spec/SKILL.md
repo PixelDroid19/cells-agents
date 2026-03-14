@@ -21,9 +21,10 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `spec`. Retrieve `proposal` as dependency. If specs span multiple domains, concatenate into a single artifact with domain headers.
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `spec`. Retrieve `proposal` canonically and concatenate multi-domain specs into a single artifact.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
 - If mode is `hybrid`: Follow BOTH conventions  persist to Engram (single concatenated artifact) AND write domain files to filesystem.
 - If mode is `none`: Return result only. Never create or modify project files.
@@ -47,6 +48,8 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 
 1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
 2. `mem_get_observation(id: {proposal_id})` (REQUIRED)
+
+If the canonical proposal artifact is absent, return `status: blocked` and require it to be seeded before continuing.
 
 Do not use `mem_search` preview text as complete artifact content.
 
@@ -142,6 +145,16 @@ The system {MUST/SHALL/SHOULD} {behavior}.
 - GIVEN {precondition}
 - WHEN {action}
 - THEN {outcome}
+
+## Source Decisions
+
+- intent: spec-evidence-routing
+  primary_source: {canonical proposal or current spec source}
+  fallback_used: false
+  fallback_source: null
+  fallback_reason: null
+  evidence_quality: high
+  status: ok
 ```
 
 ### Step 6: Artifact Persistence (Mandatory)
@@ -200,6 +213,7 @@ Ready for design (cells-design). If design already exists, ready for tasks (cell
 - Keep scenarios TESTABLE  someone should be able to write an automated test from each one
 - DO NOT include implementation details in specs  specs describe WHAT, not HOW
 - Keep technical naming in specs in English (event names, payload keys, API names, and code-facing identifiers) unless the user explicitly requests another naming language
+- Every spec artifact MUST include a `Source Decisions` section and use canonical `cells/*` refs for active artifact names
 - Include source-decision trace when requirements depend on fallback evidence
 - If evidence minimums are not met, return `status: partial | blocked` and list remediation
 - If filesystem config exists, apply any `rules.specs` from `openspec/config.yaml`

@@ -5,6 +5,8 @@ This project uses an Engram-first storage architecture:
 - `openspec` is filesystem mode for local file artifacts.
 - `hybrid` keeps Engram as primary for recovery and writes an OpenSpec mirror alongside it.
 
+Read `skills/_shared/cells-workflow-contract.md` alongside this file for canonical CELLS artifact naming, compatibility-read order, dependency lookup expectations, and result-envelope fields.
+
 ## Mode Resolution
 
 The orchestrator passes `artifact_store.mode` with one of: `engram | openspec | hybrid | none`.
@@ -58,6 +60,7 @@ The orchestrator persists DAG state after each phase transition. This enables CE
 - NEVER force `openspec/` creation unless the orchestrator explicitly passed `openspec` or `hybrid` mode.
 - If you are unsure which mode to use, default to `none`.
 - Treat Engram as the source of truth for stateful recovery unless the active mode is strictly `openspec`.
+- When required canonical artifacts are missing in Engram, stop and report the phase as `blocked` or seed the canonical artifact first; do not recover active state from historical legacy artifacts.
 - For Cells-governed work, apply `skills/_shared/cells-governance-contract.md` and keep `skills/_shared/cells-policy-matrix.yaml` aligned with any cross-layer behavior changes.
 - If browser captures, snapshots, or diffs are produced, treat them as supporting evidence rather than standalone success criteria. Persist a compact summary plus any relevant paths only when the active mode allows it.
 - In `openspec` or `hybrid`, store optional browser evidence under `openspec/changes/{change-name}/ui-evidence/` when filesystem artifacts are required.

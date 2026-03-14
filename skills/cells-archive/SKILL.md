@@ -21,9 +21,10 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Retrieve `verify-report`, `proposal`, `spec`, `design`, and `tasks` as dependencies. Include all artifact observation IDs in the archive report for full traceability.
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Retrieve `verify-report`, `proposal`, `spec`, `design`, and `tasks` canonically, and include all artifact observation IDs in the archive report for full traceability.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Perform merge and archive folder moves.
 - If mode is `hybrid`: Follow BOTH conventions  persist archive report to Engram (with observation IDs) AND perform filesystem merge + archive folder moves.
 - If mode is `none`: Return closure summary only. Do not perform archive file operations.
@@ -55,6 +56,8 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 8. `mem_get_observation(id: {design_id})`
 9. `mem_get_observation(id: {tasks_id})`
 10. `mem_get_observation(id: {verify_report_id})`
+
+If any required canonical dependency is absent, return `status: blocked` and require canonical artifact seeding before archive work.
 
 Do not use `mem_search` preview text as complete artifact content.
 
@@ -147,6 +150,14 @@ Return to the orchestrator:
 **Change**: {change-name}
 **Archived to**: openspec/changes/archive/{YYYY-MM-DD}-{change-name}/
 
+### Artifact Lineage
+- Active proposal artifact: `cells/{change-name}/proposal`
+- Active spec artifact: `cells/{change-name}/spec`
+- Active design artifact: `cells/{change-name}/design`
+- Active tasks artifact: `cells/{change-name}/tasks`
+- Active verify artifact: `cells/{change-name}/verify-report`
+- Historical legacy artifacts may be cited only as inactive archive context
+
 ### Specs Synced
 | Domain | Action | Details |
 |--------|--------|---------|
@@ -166,6 +177,15 @@ The following specs now reflect the new behavior:
 ### CELLS Cycle Complete
 The change has been fully planned, implemented, verified, and archived.
 Ready for the next change.
+
+### Source Decisions
+- intent: archive-lineage-recovery
+  primary_source: {canonical artifact lineage}
+  fallback_used: false
+  fallback_source: null
+  fallback_reason: null
+  evidence_quality: high
+  status: ok
 ```
 
 ## Rules
@@ -178,6 +198,7 @@ Ready for the next change.
 - The archive is an AUDIT TRAIL  never delete or modify archived changes
 - If `openspec/changes/archive/` doesn't exist, create it
 - Preserve optional `ui-evidence/` browser artifacts during archive moves when they exist
+- Archive summaries MUST cite canonical `cells/*` artifact refs as the active lineage and treat historical legacy artifacts as inactive archive context only
 - Include source-decision trace lineage and fallback reasons in archive summary when applicable
 - If evidence minimums are unmet, return `status: partial | blocked` and do not claim full closure
 - If filesystem config exists, apply any `rules.archive` from `openspec/config.yaml`

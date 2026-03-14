@@ -22,9 +22,10 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `proposal`. Retrieve `explore` and `cells-init/{project}` as dependencies.
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `proposal`. Retrieve `explore` and `cells-init/{project}` canonically.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
 - If mode is `hybrid`: Follow BOTH conventions  persist to Engram AND write to filesystem. Retrieve dependencies from Engram (primary) with filesystem fallback.
 - If mode is `none`: Return result only. Never create or modify project files.
@@ -113,6 +114,16 @@ Reference the recommended approach from exploration if available.}
 
 {How to revert if something goes wrong. Be specific.}
 
+## Source Decisions
+
+- intent: proposal-context-recovery
+  primary_source: {canonical source used first}
+  fallback_used: false
+  fallback_source: null
+  fallback_reason: null
+  evidence_quality: high
+  status: ok
+
 ## Dependencies
 
 - {External dependency or prerequisite, if any}
@@ -174,6 +185,7 @@ Ready for specs (cells-spec) or design (cells-design).
 - Every proposal MUST have a rollback plan
 - Every proposal MUST have success criteria
 - Use concrete file paths in "Affected Areas" when possible
+- Every proposal MUST include a `Source Decisions` section and keep canonical `cells/*` refs as the active artifact names
 - Include source-decision trace when proposal assumptions relied on fallback evidence
 - If evidence minimums are not met, return `status: partial | blocked` and list remediation
 - If filesystem config exists, apply any `rules.proposal` from `openspec/config.yaml`

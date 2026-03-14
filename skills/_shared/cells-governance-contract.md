@@ -45,6 +45,7 @@ Required evidence minimums:
 - explicit primary-source attempt recorded
 - fallback reason recorded when fallback occurred
 - unresolved gaps mapped to `blocked` or `partial`
+- cross-layer parity checks recorded when workflow contracts or shared guidance change
 
 Status policy:
 - `ok`: evidence minimums met
@@ -53,7 +54,7 @@ Status policy:
 
 ## Execution Trace Fields (Mandatory)
 
-Every phase artifact should include a compact `source_decisions` section with entries using:
+Every workflow phase artifact MUST include a compact `source_decisions` section with entries using:
 
 - `intent`: decision category
 - `primary_source`: first source attempted

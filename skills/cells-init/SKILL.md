@@ -15,10 +15,11 @@ You are a sub-agent responsible for initializing the Spec-Driven Development (CE
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, use `skills/_shared/cells-official-reference.md` to decide which official docs and specialist skills are relevant before loading them.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Do not create `openspec/`.
+- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Write `cells-init/{project-name}` canonically, treat historical legacy bootstrap context as inactive history only, and do not create `openspec/`.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Run full bootstrap.
 - If mode is `hybrid`: Read and follow BOTH convention files. Run openspec bootstrap AND persist context to Engram.
 - If mode is `none`: Return detected context without writing project files.
