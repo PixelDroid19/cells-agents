@@ -448,13 +448,13 @@ setup_opencode() {
             merged=$(jq --argjson new_agents "$example_agents" '
                 # Preserve user model choices on existing phase agents
                 (reduce ((.agent // {}) | to_entries[] |
-                    select((.key | startswith("cells-")) or (.key | startswith("cells-"))) |
+                    select((.key | startswith("cells-")) or (.key | startswith("sdd-"))) |
                     select(.value.model)) as $e
                     ({}; . + {($e.key): $e.value.model})) as $saved_models |
 
-                # Remove old cells/cells agents, preserve user custom non-cells agents
+                # Remove old cells/sdd agents, preserve user custom non-cells agents
                 .agent = (
-                    ((.agent // {}) | with_entries(select(((.key | startswith("cells-")) or (.key | startswith("cells-"))) | not)))
+                    ((.agent // {}) | with_entries(select(((.key | startswith("cells-")) or (.key | startswith("sdd-"))) | not)))
                     + $new_agents
                 ) |
 

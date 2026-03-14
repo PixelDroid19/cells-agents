@@ -73,8 +73,8 @@ Sub-agents launch with fresh context and no inherited memory protocol. The orche
 | Context | Who reads from backend | Who writes to backend |
 |---------|------------------------|-----------------------|
 | Non-CELLS (general task) | **Orchestrator** searches engram and passes concise context | **Sub-agent** saves discoveries/decisions/bugfixes via `mem_save` |
-| Cells CELLS (phase with dependencies) | **Sub-agent** reads artifacts directly from backend | **Sub-agent** saves its artifact |
-| Cells CELLS (phase without dependencies) | Optional | **Sub-agent** saves its artifact |
+| Cells SDD (phase with dependencies) | **Sub-agent** reads artifacts directly from backend | **Sub-agent** saves its artifact |
+| Cells SDD (phase without dependencies) | Optional | **Sub-agent** saves its artifact |
 
 ### Non-CELLS knowledge persistence (mandatory)
 

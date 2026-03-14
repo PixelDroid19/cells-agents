@@ -385,14 +385,14 @@ function Set-OpenCode {
                     # 1. Save existing model fields from phase agents
                     $savedModels = @{}
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if (($prop.Name -like 'cells-*' -or $prop.Name -like 'cells-*') -and $prop.Value.PSObject.Properties['model']) {
+                        if (($prop.Name -like 'cells-*' -or $prop.Name -like 'sdd-*') -and $prop.Value.PSObject.Properties['model']) {
                             $savedModels[$prop.Name] = $prop.Value.model
                         }
                     }
 
-                    # 2. Remove old cells/cells agents
+                    # 2. Remove old cells/sdd agents
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if ($prop.Name -like 'cells-*' -or $prop.Name -like 'cells-*') {
+                        if ($prop.Name -like 'cells-*' -or $prop.Name -like 'sdd-*') {
                             $existing.agent.PSObject.Properties.Remove($prop.Name)
                         }
                     }
