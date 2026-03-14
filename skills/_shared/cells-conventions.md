@@ -15,15 +15,36 @@ When the task touches rendered UI, demos, routes, screenshots, or functional/vis
 Apply `_shared` guidance in this strict order when rules overlap:
 
 1. `skills/_shared/persistence-contract.md` (mode, write permissions, backend authority)
-2. `skills/_shared/engram-convention.md` and `skills/_shared/openspec-convention.md` (artifact paths/naming)
-3. `skills/_shared/cells-conventions.md` (Cells routing, command policy, testing stack, language)
-4. `skills/_shared/cells-official-reference.md` (topic map and source-routing details)
-5. `skills/_shared/browser-testing-convention.md` (browser evidence workflow for UI-visible claims)
+2. `skills/_shared/cells-governance-contract.md` (catalog-first routing, fallback/escalation, trace fields)
+3. `skills/_shared/cells-policy-matrix.yaml` (machine-checkable cross-layer parity matrix)
+4. `skills/_shared/engram-convention.md` and `skills/_shared/openspec-convention.md` (artifact paths/naming)
+5. `skills/_shared/cells-conventions.md` (Cells routing, command policy, testing stack, language)
+6. `skills/_shared/cells-official-reference.md` (topic map and source-routing details)
+7. `skills/_shared/browser-testing-convention.md` (browser evidence workflow for UI-visible claims)
 
 Tie-breakers:
 - If persistence mode/file-write rules conflict with any Cells/browser rule, `persistence-contract.md` wins.
+- If routing/fallback behavior conflicts across layers, `cells-governance-contract.md` wins.
 - If command or testing guidance differs between shared docs, `cells-conventions.md` wins.
 - If browser evidence is required for a UI-visible claim, `browser-testing-convention.md` adds required validation steps and does not override persistence mode rules.
+
+## Governance Contract (Mandatory)
+
+For Cells-oriented orchestration and phase execution, treat the following as mandatory companion artifacts:
+
+- `skills/_shared/cells-governance-contract.md`
+- `skills/_shared/cells-policy-matrix.yaml`
+
+All routing and fallback decisions must be deterministic and traceable.
+At minimum, record:
+
+- `intent`
+- `primary_source`
+- `fallback_used`
+- `fallback_source`
+- `fallback_reason`
+- `evidence_quality`
+- `status` (`ok` | `partial` | `blocked`)
 
 ## Source Priority
 

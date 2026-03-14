@@ -3,6 +3,8 @@
 Thumbs.db
 
 # Editors
+.github/
+.atl/
 .vscode/
 .idea/
 *.swp
@@ -11,3 +13,9 @@ Thumbs.db
 
 # Node (in case anyone adds tooling later)
 node_modules/
+.ruff_cache/
+.pytest_cache/
+__pycache__/
+# Agent tooling cache/artifacts
+.atl/
+build/

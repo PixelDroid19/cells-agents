@@ -22,6 +22,7 @@ From the orchestrator:
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
+If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the change is Cells-oriented, use `skills/_shared/cells-official-reference.md` to pull only the official architecture, component, testing, styling, or theming guidance needed for the design.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `design`. Retrieve `proposal` and `spec` as dependencies (spec may not exist yet if running in parallel with cells-spec  derive from proposal).
@@ -31,7 +32,29 @@ If the change is Cells-oriented, use `skills/_shared/cells-official-reference.md
 
 ## What to Do
 
-### Step 1: Read the Codebase
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` for the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load only the skills and convention files relevant to design work.
+
+### Step 2: Load Dependencies (Engram / Hybrid)
+
+When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
+
+1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
+2. `mem_get_observation(id: {proposal_id})` (REQUIRED)
+3. `mem_search(query: "cells/{change-name}/spec", project: "{project}")` (optional when running in parallel)
+4. If found: `mem_get_observation(id: {spec_id})`
+
+Do not use `mem_search` preview text as complete artifact content.
+
+### Step 3: Read the Codebase
 
 Before designing, read the actual code that will be affected:
 - Entry points and module structure
@@ -47,7 +70,7 @@ For Cells projects, explicitly map:
 - `scopedElements`, mixins, shared styles, and emitted events
 - whether the change belongs in a base component, a feature widget, or a data manager/helper
 
-### Step 2: Write The Design Content
+### Step 4: Write The Design Content
 
 If mode is `openspec` or `hybrid`, create or update the design document at:
 
@@ -131,7 +154,29 @@ If not applicable, state "No migration required."}
 - [ ] {Any decision that needs team input}
 ```
 
-### Step 3: Return Summary
+### Step 5: Artifact Persistence (Mandatory)
+
+If mode is `engram`, persist the design artifact in Engram:
+
+```
+mem_save(
+  title: "cells/{change-name}/design",
+  topic_key: "cells/{change-name}/design",
+  type: "architecture",
+  project: "{project}",
+  content: "{your full design markdown from Step 4}"
+)
+```
+
+If mode is `openspec` or `hybrid`, `design.md` was already written in Step 4.
+
+If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
+
+If mode is `none`, return inline only.
+
+Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the design artifact.
+
+### Step 6: Return Summary
 
 Use the following markdown as the `detailed_report` body and wrap the overall reply in the standard structured envelope:
 
@@ -164,6 +209,8 @@ Ready for tasks (cells-tasks).
 - When design content references JSDoc/comments, event names, payload keys, or public API naming, keep those technical names in English unless the user explicitly requests otherwise
 - If you find the codebase uses a pattern different from what you'd recommend, note it but FOLLOW the existing pattern unless the change specifically addresses it
 - Keep ASCII diagrams simple  clarity over beauty
+- Include source-decision trace when design choices required fallback evidence
+- If evidence minimums are not met, return `status: partial | blocked` and list remediation
 - If filesystem config exists, apply any `rules.design` from `openspec/config.yaml`
 - If you have open questions that BLOCK the design, say so clearly  don't guess
 - Return the standard structured envelope with the markdown report above in `detailed_report`

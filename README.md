@@ -317,14 +317,34 @@ These files keep repeated logic out of individual skills and make routing determ
 On Unix-like shells:
 
 ```bash
-./scripts/install.sh
+./scripts/setup.sh
 ```
 
 On Windows PowerShell:
 
 ```powershell
-.\scripts\install.ps1
+.\scripts\setup.ps1
 ```
+
+Setup options:
+
+```bash
+./scripts/setup.sh --all
+./scripts/setup.sh --agent claude-code
+./scripts/setup.sh --agent opencode --opencode-mode single
+./scripts/setup.sh --agent opencode --opencode-mode multi
+./scripts/setup.sh --non-interactive
+```
+
+```powershell
+.\scripts\setup.ps1 -All
+.\scripts\setup.ps1 -Agent claude-code
+.\scripts\setup.ps1 -Agent opencode -OpenCodeMode single
+.\scripts\setup.ps1 -Agent opencode -OpenCodeMode multi
+.\scripts\setup.ps1 -NonInteractive
+```
+
+If you only want to copy skills (without prompt/config orchestration), use `./scripts/install.sh` or `.\scripts\install.ps1`.
 
 ### Supported Hosts
 
@@ -339,11 +359,109 @@ On Windows PowerShell:
 
 ### OpenCode
 
-1. Install skills to `~/.config/opencode/skills/`.
-2. Install commands to `~/.config/opencode/commands/`.
-3. Merge the `cells-orchestrator` agent block from `examples/opencode/opencode.json` into your OpenCode config.
-4. Start OpenCode and switch to `cells-orchestrator`.
-5. Run `/cells-init`.
+Use the full setup script:
+
+```bash
+./scripts/setup.sh --agent opencode
+```
+
+OpenCode supports two modes:
+
+- `single` (default): one `cells-orchestrator` handles all phases.
+- `multi`: one hidden sub-agent per SDD phase (`cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`) plus the orchestrator.
+
+Explicit mode selection:
+
+```bash
+./scripts/setup.sh --agent opencode --opencode-mode single
+./scripts/setup.sh --agent opencode --opencode-mode multi
+```
+
+#### Install mode: normal (single) vs multi-agent
+
+Normal mode (`single`) uses one orchestrator agent for all phases.
+
+Install normal mode:
+
+```bash
+./scripts/setup.sh --agent opencode --opencode-mode single
+```
+
+```powershell
+.\scripts\setup.ps1 -Agent opencode -OpenCodeMode single
+```
+
+Multi-agent mode (`multi`) uses one orchestrator plus one hidden sub-agent per SDD phase.
+
+Install multi-agent mode:
+
+```bash
+./scripts/setup.sh --agent opencode --opencode-mode multi
+```
+
+```powershell
+.\scripts\setup.ps1 -Agent opencode -OpenCodeMode multi
+```
+
+Defaults and switching:
+
+- If you run setup without `--opencode-mode` / `-OpenCodeMode`, the default mode is `single`.
+- You can switch modes anytime by re-running setup with the other mode.
+- Re-running setup is safe and idempotent; existing `model` values are preserved during config merge.
+
+The setup script installs:
+
+1. skills to `~/.config/opencode/skills/`
+2. commands to `~/.config/opencode/commands/`
+3. merged agent config in `~/.config/opencode/opencode.json` (preserving your existing `model` fields)
+
+Manual merge templates are provided at:
+
+- `examples/opencode/opencode.single.json`
+- `examples/opencode/opencode.multi.json`
+
+#### Configure models per agent (single and multi mode)
+
+After setup, assign models in your OpenCode config file:
+
+- macOS/Linux/WSL: `~/.config/opencode/opencode.json`
+- Windows: `C:\Users\<you>\.config\opencode\opencode.json`
+
+Inside `agent`, add or edit the `model` field for each agent using `provider/model-id`.
+
+Single mode example:
+
+```json
+{
+  "agent": {
+    "cells-orchestrator": {
+      "mode": "all",
+      "model": "anthropic/claude-sonnet-4-6"
+    }
+  }
+}
+```
+
+Multi mode example:
+
+```json
+{
+  "agent": {
+    "cells-orchestrator": { "mode": "primary", "model": "anthropic/claude-sonnet-4-6" },
+    "cells-explore": { "mode": "subagent", "model": "google/gemini-2.5-flash" },
+    "cells-spec": { "mode": "subagent", "model": "anthropic/claude-opus-4-6" },
+    "cells-design": { "mode": "subagent", "model": "anthropic/claude-opus-4-6" },
+    "cells-apply": { "mode": "subagent", "model": "anthropic/claude-sonnet-4-6" },
+    "cells-verify": { "mode": "subagent", "model": "openai/o3" }
+  }
+}
+```
+
+Notes:
+
+- Do not remove required agent fields (`prompt`, `tools`, `permission`) when editing.
+- In multi mode, phases without explicit `model` use your OpenCode default model.
+- Re-running `setup.sh` / `setup.ps1` preserves existing `model` fields for Cells phase agents.
 
 Troubleshooting (`database table is locked`):
 
@@ -372,9 +490,21 @@ Troubleshooting (`database table is locked`):
 
 ### VS Code Copilot
 
-1. Copy the bundle to workspace or user instruction locations.
-2. Use `examples/vscode/copilot-instructions.md` as the orchestrator instructions source.
+1. Keep Copilot runtime assets under `.github/` in the project root.
+2. Use `.github/instructions/copilot-instructions.md` as the orchestrator instructions source.
 3. Skills act as context files rather than separate delegated runs.
+4. Apply the layered VS Code model documented in `.github/docs/README.md`:
+   - baseline instructions (`copilot-instructions.md`)
+   - SDD prompt catalog (`.github/prompts/`)
+   - specialized agents (`.github/agents/`)
+   - operational hooks (`.github/docs/hooks.md`)
+   - model/fallback policy (`.github/docs/models.md`)
+   - shared convention mirrors (`.github/skills/`)
+5. Validate VS Code customization assets before release:
+
+```bash
+python scripts/validate_vscode_copilot_assets.py
+```
 
 ### Antigravity
 
@@ -427,8 +557,19 @@ Troubleshooting (`database table is locked`):
 |   |-- cursor/
 |   |-- gemini-cli/
 |   |-- opencode/
-|   `-- vscode/
+|   |   |-- opencode.json
+|   |   |-- opencode.single.json
+|   |   |-- opencode.multi.json
+|   |   `-- commands/
+|-- .github/
+|   |-- instructions/
+|   |-- prompts/
+|   |-- agents/
+|   |-- docs/
+|   `-- skills/
 `-- scripts/
+  |-- setup.ps1
+  |-- setup.sh
     |-- install.ps1
     `-- install.sh
 ```

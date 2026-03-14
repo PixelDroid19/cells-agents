@@ -2,6 +2,8 @@
 
 This is the canonical persistence architecture for this package.
 
+> **NOTE**: Critical engram calls (`mem_search`, `mem_get_observation`, `mem_save`) are inlined directly in the numbered steps of each `cells-*` skill. This file remains supplementary reference and naming authority.
+
 ## Naming Rules
 
 ALL SDD artifacts persisted to Engram MUST follow this deterministic naming:

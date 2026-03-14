@@ -104,6 +104,20 @@ assert_file_not_empty() {
     return 0
 }
 
+assert_file_contains() {
+    local file="$1"
+    local pattern="$2"
+    if [[ ! -f "$file" ]]; then
+        echo "  File not found: $file"
+        return 1
+    fi
+    if grep -q "$pattern" "$file"; then
+        return 0
+    fi
+    echo "  Pattern '$pattern' not found in: $file"
+    return 1
+}
+
 assert_all_skills_installed() {
     local base_dir="$1"
     for skill in "${EXPECTED_SKILLS[@]}"; do
@@ -263,14 +277,14 @@ test_codex_skill_count() {
 }
 
 # ============================================================================
-# Tests — VS Code (project-local .vscode/)
+# Tests — VS Code (project-local .github/)
 # ============================================================================
 
 test_install_vscode() {
     local project="$TEST_TMPDIR/vscode-project"
     mkdir -p "$project"
     (cd "$project" && bash "$INSTALL_SCRIPT" --agent vscode > /dev/null 2>&1)
-    assert_all_skills_installed "$project/.vscode/skills"
+    assert_all_skills_installed "$project/.github/skills"
 }
 
 test_vscode_skill_count() {
@@ -278,7 +292,7 @@ test_vscode_skill_count() {
     mkdir -p "$project"
     (cd "$project" && bash "$INSTALL_SCRIPT" --agent vscode > /dev/null 2>&1)
     local count
-    count=$(find "$project/.vscode/skills" -name "SKILL.md" | wc -l | tr -d ' ')
+    count=$(find "$project/.github/skills" -name "SKILL.md" | wc -l | tr -d ' ')
     assert_eq "$EXPECTED_SKILL_COUNT" "$count" "Expected exactly $EXPECTED_SKILL_COUNT skills for VS Code"
 }
 
@@ -583,6 +597,136 @@ test_nested_custom_path() {
 }
 
 # ============================================================================
+# Tests — VS Code Copilot assets
+# ============================================================================
+
+test_vscode_assets_exist_in_repo() {
+    assert_file_exists "$REPO_DIR/.github/instructions/copilot-instructions.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/docs/README.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/docs/hooks.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/docs/models.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/README.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-explore.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-propose.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-spec.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-design.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-tasks.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-apply.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-verify.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-archive.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/sdd-fallback.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/agents/analysis-agent.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/agents/implementation-agent.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/agents/verification-agent.md" || return 1
+    assert_dir_exists "$REPO_DIR/.github/skills" || return 1
+    assert_file_exists "$REPO_DIR/.github/skills/cells-governance-contract.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/skills/cells-policy-matrix.yaml" || return 1
+    assert_file_exists "$REPO_DIR/scripts/validate_vscode_copilot_assets.py" || return 1
+}
+
+test_vscode_assets_contain_required_markers() {
+    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Layered Precedence" || return 1
+    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "fallback is used, record source decision trace" || return 1
+    assert_file_contains "$REPO_DIR/.github/prompts/sdd-fallback.md" "WARNING: Dedicated prompt for this SDD phase is missing" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" "Layered precedence" || return 1
+}
+
+test_vscode_catalog_first_and_fallback_order_behavior() {
+    python "$REPO_DIR/scripts/validate_governance_behavior.py" --scenario catalog-first-available > /dev/null 2>&1 || return 1
+    python "$REPO_DIR/scripts/validate_governance_behavior.py" --scenario primary-catalog-unavailable > /dev/null 2>&1 || return 1
+    python "$REPO_DIR/scripts/validate_governance_behavior.py" --scenario fallback-order-respected > /dev/null 2>&1 || return 1
+}
+
+test_vscode_blocked_partial_escalation_behavior() {
+    python "$REPO_DIR/scripts/validate_governance_behavior.py" --scenario escalation-blocked-partial > /dev/null 2>&1 || return 1
+}
+
+test_vscode_coverage_policy_exemption_behavior() {
+    python "$REPO_DIR/scripts/validate_governance_behavior.py" --scenario coverage-policy-exemption > /dev/null 2>&1 || return 1
+}
+
+test_vscode_baseline_applies_in_normal_session() {
+    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "You are the SDD orchestrator" || return 1
+    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Delegate-only" || return 1
+    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Response format for delegated phases MUST return" || return 1
+}
+
+test_vscode_baseline_blocks_unsafe_automation() {
+    assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Do not suggest or default to generic external commands" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/hooks.md" "Never default to force push, hard reset" || return 1
+}
+
+test_vscode_known_sdd_phase_prompts_are_usable() {
+    local phase
+    for phase in explore propose spec design tasks apply verify archive; do
+        assert_file_exists "$REPO_DIR/.github/prompts/sdd-$phase.md" || return 1
+        assert_file_contains "$REPO_DIR/.github/prompts/sdd-$phase.md" "## Goal" || return 1
+        assert_file_contains "$REPO_DIR/.github/prompts/sdd-$phase.md" "## Output envelope" || return 1
+    done
+}
+
+test_vscode_specialized_roles_available() {
+    assert_file_contains "$REPO_DIR/.github/agents/analysis-agent.md" "## Responsibility" || return 1
+    assert_file_contains "$REPO_DIR/.github/agents/implementation-agent.md" "## Responsibility" || return 1
+    assert_file_contains "$REPO_DIR/.github/agents/verification-agent.md" "## Responsibility" || return 1
+}
+
+test_vscode_agent_output_envelope_deterministic() {
+    local agent
+    for agent in analysis-agent implementation-agent verification-agent; do
+        assert_file_contains "$REPO_DIR/.github/agents/$agent.md" '^Return: `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`\.$' || return 1
+    done
+}
+
+test_vscode_hooks_define_non_destructive_policy() {
+    assert_file_contains "$REPO_DIR/.github/docs/hooks.md" "Prefer validation checks over destructive automation" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/hooks.md" "Never default to force push, hard reset" || return 1
+}
+
+test_vscode_hooks_define_failure_behavior() {
+    assert_file_contains "$REPO_DIR/.github/docs/hooks.md" 'status: warning | blocked' || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/hooks.md" "Do not continue to archive/closeout when critical checks fail" || return 1
+}
+
+test_vscode_model_policy_matches_task_profile() {
+    assert_file_contains "$REPO_DIR/.github/docs/models.md" "Use smaller/faster models for low-risk" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/models.md" "Use deeper-reasoning models for architecture" || return 1
+}
+
+test_vscode_model_fallback_is_explicit() {
+    assert_file_contains "$REPO_DIR/.github/docs/models.md" "Keep fallback path explicit" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/models.md" '^\- If fallback is used, note it in `risks` or `executive_summary` when relevant\.$' || return 1
+}
+
+test_vscode_docs_describe_layered_runtime_layout() {
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" "Apply layers in this exact order" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" '../instructions/copilot-instructions.md' || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" '../prompts/sdd-' || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" '../agents/' || return 1
+}
+
+test_vscode_docs_include_maintenance_guidance() {
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" "## Maintenance checklist" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" "Keep prompts aligned with current Cells command canon" || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" "python scripts/validate_vscode_copilot_assets.py" || return 1
+}
+
+test_vscode_assets_validator_passes() {
+    if command -v python3 > /dev/null 2>&1; then
+        if python3 "$REPO_DIR/scripts/validate_vscode_copilot_assets.py" > /dev/null 2>&1; then
+            return 0
+        fi
+    fi
+
+    if command -v python > /dev/null 2>&1; then
+        python "$REPO_DIR/scripts/validate_vscode_copilot_assets.py" > /dev/null 2>&1
+    else
+        echo "  Python interpreter not available for validator"
+        return 1
+    fi
+}
+
+# ============================================================================
 # Run all tests
 # ============================================================================
 
@@ -621,7 +765,7 @@ run_test "Exactly 9 SKILL.md files" test_codex_skill_count
 echo ""
 
 echo -e "${BOLD}VS Code (project-local)${NC}"
-run_test "Installs all 9 skills to .vscode/skills/" test_install_vscode
+run_test "Installs all 9 skills to .github/skills/" test_install_vscode
 run_test "Exactly 9 SKILL.md files" test_vscode_skill_count
 echo ""
 
@@ -679,6 +823,26 @@ echo ""
 echo -e "${BOLD}Edge cases${NC}"
 run_test "Pre-existing custom skill not clobbered" test_pre_existing_dir_not_clobbered
 run_test "Stale SKILL.md is overwritten" test_overwrite_stale_skill
+echo ""
+
+echo -e "${BOLD}VS Code Copilot assets${NC}"
+run_test "VS Code asset files exist" test_vscode_assets_exist_in_repo
+run_test "VS Code assets include required markers" test_vscode_assets_contain_required_markers
+run_test "Scenario: Catalog-first and fallback order behavior is executable" test_vscode_catalog_first_and_fallback_order_behavior
+run_test "Scenario: Blocked/partial escalation behavior is executable" test_vscode_blocked_partial_escalation_behavior
+run_test "Scenario: Coverage exemption policy behavior is executable" test_vscode_coverage_policy_exemption_behavior
+run_test "Scenario: Baseline applies in normal coding session" test_vscode_baseline_applies_in_normal_session
+run_test "Scenario: Baseline blocks unsafe automation" test_vscode_baseline_blocks_unsafe_automation
+run_test "Scenario: User invokes a known SDD phase" test_vscode_known_sdd_phase_prompts_are_usable
+run_test "Scenario: Specialized analysis/implementation/verification roles are available" test_vscode_specialized_roles_available
+run_test "Scenario: Agent output envelope stays deterministic" test_vscode_agent_output_envelope_deterministic
+run_test "Scenario: Hooks enforce non-destructive policy" test_vscode_hooks_define_non_destructive_policy
+run_test "Scenario: Hook failures produce actionable blocked/warning behavior" test_vscode_hooks_define_failure_behavior
+run_test "Scenario: Model policy applies to task profile" test_vscode_model_policy_matches_task_profile
+run_test "Scenario: Model fallback remains explicit and safe" test_vscode_model_fallback_is_explicit
+run_test "Scenario: Layered runtime documentation is explicit" test_vscode_docs_describe_layered_runtime_layout
+run_test "Scenario: Maintenance guidance is explicit" test_vscode_docs_include_maintenance_guidance
+run_test "VS Code assets validator passes" test_vscode_assets_validator_passes
 echo ""
 
 # ============================================================================

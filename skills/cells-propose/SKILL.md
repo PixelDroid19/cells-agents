@@ -22,6 +22,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `proposal`. Retrieve `explore` and `cells-init/{project}` as dependencies.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
@@ -31,7 +32,29 @@ Read and follow `skills/_shared/persistence-contract.md` for mode resolution rul
 
 ## What to Do
 
-### Step 1: Prepare Persistence Target
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` for the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load only the skills and convention files relevant to proposal writing.
+
+### Step 2: Load Dependencies (Engram / Hybrid)
+
+When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
+
+1. `mem_search(query: "cells/{change-name}/explore", project: "{project}")` (optional)
+2. If found: `mem_get_observation(id: {explore_id})`
+3. `mem_search(query: "cells-init/{project}", project: "{project}")` (optional)
+4. If found: `mem_get_observation(id: {init_id})`
+
+Never use `mem_search` previews as full content.
+
+### Step 3: Prepare Persistence Target
 
 If mode is `openspec` or `hybrid`, create or reuse the change folder structure:
 
@@ -42,11 +65,11 @@ openspec/changes/{change-name}/
 
 If mode is `engram` or `none`, do not create project files. Use the orchestrator context and any retrieved artifacts instead.
 
-### Step 2: Read Existing Specs
+### Step 4: Read Existing Specs
 
 If mode includes filesystem access and `openspec/specs/` has relevant specs, read them to understand current behavior that this change might affect.
 
-### Step 3: Write The Proposal Content
+### Step 5: Write The Proposal Content
 
 Write the proposal content below. Persist it to `proposal.md` only when mode is `openspec` or `hybrid`.
 
@@ -100,7 +123,29 @@ Reference the recommended approach from exploration if available.}
 - [ ] {Measurable outcome}
 ```
 
-### Step 4: Return Summary
+### Step 6: Artifact Persistence (Mandatory)
+
+If mode is `engram`, persist the proposal in Engram:
+
+```
+mem_save(
+  title: "cells/{change-name}/proposal",
+  topic_key: "cells/{change-name}/proposal",
+  type: "architecture",
+  project: "{project}",
+  content: "{your full proposal markdown from Step 5}"
+)
+```
+
+If mode is `openspec` or `hybrid`, the proposal file is already written in Step 5.
+
+If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
+
+If mode is `none`, return inline only.
+
+Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the artifact.
+
+### Step 7: Return Summary
 
 Use the following markdown as the `detailed_report` body and wrap the overall reply in the standard structured envelope:
 
@@ -129,6 +174,8 @@ Ready for specs (cells-spec) or design (cells-design).
 - Every proposal MUST have a rollback plan
 - Every proposal MUST have success criteria
 - Use concrete file paths in "Affected Areas" when possible
+- Include source-decision trace when proposal assumptions relied on fallback evidence
+- If evidence minimums are not met, return `status: partial | blocked` and list remediation
 - If filesystem config exists, apply any `rules.proposal` from `openspec/config.yaml`
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 

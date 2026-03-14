@@ -22,6 +22,7 @@ The orchestrator will give you:
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
+If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the topic is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route the exploration to the exact official docs needed.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `explore`. If no change name (standalone explore), use slug: `cells/explore/{topic-slug}`.
@@ -38,13 +39,34 @@ Before starting, load any existing project context and specs per the active conv
 
 ## What to Do
 
-### Step 1: Understand the Request
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` to load the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load only the skills and convention files relevant to this exploration topic.
+
+### Step 2: Load Context Dependencies (Engram / Hybrid)
+
+When mode is `engram` or `hybrid`, load context with two-step recovery (search preview + full fetch):
+
+1. `mem_search(query: "cells-init/{project}", project: "{project}")` to find project context
+2. If found, `mem_get_observation(id: {id})` to get full context
+3. Optional: `mem_search(query: "cells/", project: "{project}")` to discover related prior artifacts
+
+Never use `mem_search` previews as full artifact content.
+
+### Step 3: Understand the Request
 
 Parse what the user wants to explore:
 - Is this a new feature? A bug fix? A refactor?
 - What domain does it touch?
 
-### Step 2: Investigate the Codebase
+### Step 4: Investigate the Codebase
 
 Read relevant code to understand:
 - Current architecture and patterns
@@ -77,7 +99,7 @@ INVESTIGATE:
  Identify dependencies and coupling
 ```
 
-### Step 3: Analyze Options
+### Step 5: Analyze Options
 
 If there are multiple approaches, compare them:
 
@@ -91,7 +113,7 @@ When the topic touches Cells components, compare approaches such as:
 - compose multiple existing components in a feature/widget
 - extend or wrap a component only if reuse/composition is insufficient
 
-### Step 4: Persist Only If The Mode Allows It
+### Step 6: Artifact Persistence (Mandatory)
 
 If the orchestrator provided a change name and mode is `openspec` or `hybrid`, save your analysis to:
 
@@ -100,10 +122,36 @@ openspec/changes/{change-name}/
  exploration.md           You create this
 ```
 
-If mode is `engram`, persist the exploration there and do not create project files.
+If mode is `engram`, persist the exploration in Engram and do not create project files:
+
+```
+mem_save(
+  title: "cells/{change-name}/explore",
+  topic_key: "cells/{change-name}/explore",
+  type: "architecture",
+  project: "{project}",
+  content: "{your full exploration markdown}"
+)
+```
+
+If this is standalone exploration (no change name), use:
+
+```
+mem_save(
+  title: "cells/explore/{topic-slug}",
+  topic_key: "cells/explore/{topic-slug}",
+  type: "architecture",
+  project: "{project}",
+  content: "{your full exploration markdown}"
+)
+```
+
+If mode is `hybrid`, do BOTH filesystem persistence and `mem_save`.
 If mode is `none`, or no change name was provided (standalone `/cells-explore`), skip file creation and return the analysis inline.
 
-### Step 5: Return Structured Analysis
+Do not skip this step when running in `engram` or `hybrid`, or downstream phases lose context.
+
+### Step 7: Return Structured Analysis
 
 Use the following markdown as the `detailed_report` body. If you persist to `exploration.md`, write this markdown body there. Wrap the overall reply in the standard structured envelope.
 
@@ -154,6 +202,8 @@ Use the following markdown as the `detailed_report` body. If you persist to `exp
 - Keep your analysis CONCISE - the orchestrator needs a summary, not a novel
 - If you can't find enough information, say so clearly
 - If the request is too vague to explore, say what clarification is needed
+- Record source decision trace when fallback is used (`intent`, `primary_source`, `fallback_source`, `fallback_reason`, `evidence_quality`, `status`)
+- If evidence minimums are not met, return `status: partial | blocked` with concrete remediation
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
 ## Browser Integration

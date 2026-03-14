@@ -21,6 +21,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `tasks`. Retrieve `proposal`, `spec`, and `design` as dependencies.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
@@ -29,14 +30,38 @@ Read and follow `skills/_shared/persistence-contract.md` for mode resolution rul
 
 ## What to Do
 
-### Step 1: Analyze the Design
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` for the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load only the skills and convention files relevant to task decomposition.
+
+### Step 2: Load Dependencies (Engram / Hybrid)
+
+When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
+
+1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
+2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
+3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
+4. `mem_get_observation(id: {proposal_id})` (REQUIRED)
+5. `mem_get_observation(id: {spec_id})` (REQUIRED)
+6. `mem_get_observation(id: {design_id})` (REQUIRED)
+
+Do not use `mem_search` preview text as complete artifact content.
+
+### Step 3: Analyze the Design
 
 From the design document, identify:
 - All files that need to be created/modified/deleted
 - The dependency order (what must come first)
 - Testing requirements per component
 
-### Step 2: Write The Task Content
+### Step 4: Write The Task Content
 
 If mode is `openspec` or `hybrid`, create or update the task file:
 
@@ -114,7 +139,29 @@ Phase 5: Cleanup (if needed)
    Documentation, remove dead code, polish
 ```
 
-### Step 3: Return Summary
+### Step 5: Artifact Persistence (Mandatory)
+
+If mode is `engram`, persist the tasks artifact in Engram:
+
+```
+mem_save(
+   title: "cells/{change-name}/tasks",
+   topic_key: "cells/{change-name}/tasks",
+   type: "architecture",
+   project: "{project}",
+   content: "{your full tasks markdown from Step 4}"
+)
+```
+
+If mode is `openspec` or `hybrid`, `tasks.md` was already written in Step 4.
+
+If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
+
+If mode is `none`, return inline only.
+
+Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the tasks artifact.
+
+### Step 6: Return Summary
 
 Use the following markdown as the `detailed_report` body and wrap the overall reply in the standard structured envelope:
 
@@ -147,6 +194,8 @@ Ready for implementation (cells-apply).
 - Each task should be completable in ONE session (if a task feels too big, split it)
 - Use hierarchical numbering: 1.1, 1.2, 2.1, 2.2, etc.
 - NEVER include vague tasks like "implement feature" or "add tests"
+- Include task-level source trace expectations (source used, fallback reason, blocked/partial condition)
+- If dependency evidence is incomplete, return `status: partial | blocked` and list remediation
 - If filesystem config exists, apply any `rules.tasks` from `openspec/config.yaml`
 - If the project uses TDD, integrate test-first tasks: RED task (write failing test)  GREEN task (make it pass)  REFACTOR task (clean up)
 - Return the standard structured envelope with the markdown report above in `detailed_report`

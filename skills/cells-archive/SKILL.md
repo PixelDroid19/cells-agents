@@ -21,6 +21,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Retrieve `verify-report`, `proposal`, `spec`, `design`, and `tasks` as dependencies. Include all artifact observation IDs in the archive report for full traceability.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Perform merge and archive folder moves.
@@ -29,7 +30,35 @@ Read and follow `skills/_shared/persistence-contract.md` for mode resolution rul
 
 ## What to Do
 
-### Step 1: Sync Delta Specs To Main Specs
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` for the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load only the skills and convention files relevant to archive/merge work.
+
+### Step 2: Load Dependencies (Engram / Hybrid)
+
+When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
+
+1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
+2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
+3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
+4. `mem_search(query: "cells/{change-name}/tasks", project: "{project}")`
+5. `mem_search(query: "cells/{change-name}/verify-report", project: "{project}")`
+6. `mem_get_observation(id: {proposal_id})`
+7. `mem_get_observation(id: {spec_id})`
+8. `mem_get_observation(id: {design_id})`
+9. `mem_get_observation(id: {tasks_id})`
+10. `mem_get_observation(id: {verify_report_id})`
+
+Do not use `mem_search` preview text as complete artifact content.
+
+### Step 3: Sync Delta Specs To Main Specs
 
 Only perform filesystem merge work when mode is `openspec` or `hybrid`.
 If mode is `engram`, persist an `archive-report` with lineage only and explicitly report that filesystem archive steps were skipped.
@@ -66,7 +95,7 @@ openspec/changes/{change-name}/specs/{domain}/spec.md
   -> openspec/specs/{domain}/spec.md
 ```
 
-### Step 2: Move To Archive
+### Step 4: Move To Archive
 
 Move the entire change folder to archive with date prefix:
 
@@ -77,7 +106,7 @@ openspec/changes/{change-name}/
 
 Use today's date in ISO format (e.g., `2026-02-16`).
 
-### Step 3: Verify Archive
+### Step 5: Verify Archive
 
 Confirm:
 - [ ] Main specs updated correctly
@@ -86,7 +115,29 @@ Confirm:
 - [ ] Optional `ui-evidence/` is preserved when browser evidence was produced
 - [ ] Active changes directory no longer has this change
 
-### Step 4: Return Summary
+### Step 6: Artifact Persistence (Mandatory)
+
+If mode is `engram`, persist archive lineage with explicit Engram call:
+
+```
+mem_save(
+  title: "cells/{change-name}/archive-report",
+  topic_key: "cells/{change-name}/archive-report",
+  type: "architecture",
+  project: "{project}",
+  content: "{your archive report with dependency observation IDs and closure summary}"
+)
+```
+
+If mode is `openspec`, perform filesystem archive operations as documented.
+
+If mode is `hybrid`, do BOTH filesystem archive operations and `mem_save`.
+
+If mode is `none`, return inline only.
+
+Do not skip this step in `engram` or `hybrid`, or closure traceability is incomplete.
+
+### Step 7: Return Summary
 
 Return to the orchestrator:
 
@@ -127,6 +178,8 @@ Ready for the next change.
 - The archive is an AUDIT TRAIL  never delete or modify archived changes
 - If `openspec/changes/archive/` doesn't exist, create it
 - Preserve optional `ui-evidence/` browser artifacts during archive moves when they exist
+- Include source-decision trace lineage and fallback reasons in archive summary when applicable
+- If evidence minimums are unmet, return `status: partial | blocked` and do not claim full closure
 - If filesystem config exists, apply any `rules.archive` from `openspec/config.yaml`
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 

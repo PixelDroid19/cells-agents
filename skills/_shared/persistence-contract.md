@@ -58,10 +58,80 @@ The orchestrator persists DAG state after each phase transition. This enables SD
 - NEVER force `openspec/` creation unless the orchestrator explicitly passed `openspec` or `hybrid` mode.
 - If you are unsure which mode to use, default to `none`.
 - Treat Engram as the source of truth for stateful recovery unless the active mode is strictly `openspec`.
+- For Cells-governed work, apply `skills/_shared/cells-governance-contract.md` and keep `skills/_shared/cells-policy-matrix.yaml` aligned with any cross-layer behavior changes.
 - If browser captures, snapshots, or diffs are produced, treat them as supporting evidence rather than standalone success criteria. Persist a compact summary plus any relevant paths only when the active mode allows it.
 - In `openspec` or `hybrid`, store optional browser evidence under `openspec/changes/{change-name}/ui-evidence/` when filesystem artifacts are required.
 - In `none`, return browser evidence inline and avoid leaving extra files unless the user explicitly asked for them.
 - If the repo is Cells-oriented, load `skills/_shared/cells-conventions.md` before analyzing, designing, implementing, verifying, or generating component knowledge.
+
+## Sub-Agent Context Rules
+
+Sub-agents launch with fresh context and no inherited memory protocol. The orchestrator controls what context is passed in, and sub-agents are responsible for persisting what they produce.
+
+### Who reads, who writes
+
+| Context | Who reads from backend | Who writes to backend |
+|---------|------------------------|-----------------------|
+| Non-SDD (general task) | **Orchestrator** searches engram and passes concise context | **Sub-agent** saves discoveries/decisions/bugfixes via `mem_save` |
+| Cells SDD (phase with dependencies) | **Sub-agent** reads artifacts directly from backend | **Sub-agent** saves its artifact |
+| Cells SDD (phase without dependencies) | Optional | **Sub-agent** saves its artifact |
+
+### Non-SDD knowledge persistence (mandatory)
+
+When working outside SDD phases, sub-agents must persist meaningful learnings before returning:
+
+```
+mem_save(
+  title: "{short description}",
+  type: "{decision|bugfix|discovery|pattern}",
+  project: "{project}",
+  content: "**What**: ...\n**Why**: ...\n**Where**: ...\n**Learned**: ..."
+)
+```
+
+If important discoveries, decisions, or bug fixes were made, returning without `mem_save` is considered incomplete.
+
+## Skill Registry
+
+The skill registry is infrastructure (not an SDD artifact) that all sub-agents must load as Step 1.
+
+### Registry locations
+
+| Source | Location | Priority |
+|--------|----------|----------|
+| Engram | `topic_key: "skill-registry"` | Read FIRST |
+| File | `.atl/skill-registry.md` | Fallback |
+
+### Mandatory sub-agent loading protocol
+
+Every sub-agent must start with:
+
+1. `mem_search(query: "skill-registry", project: "{project}")`
+2. If found: `mem_get_observation(id: {id})`
+3. If unavailable/not found: read `.atl/skill-registry.md`
+4. If neither exists: continue without registry (not an error)
+
+Then load only the skills and convention files relevant to the task.
+
+### Orchestrator prompt block (required)
+
+Include this in all delegated prompts:
+
+```
+SKILL LOADING (do this FIRST):
+Check for available skills:
+  1. Try: mem_search(query: "skill-registry", project: "{project}")
+  2. Fallback: read .atl/skill-registry.md
+Load and follow any skills relevant to your task.
+```
+
+## Evidence Minimum Behavior
+
+When governance evidence minimums are not met (for example missing primary-source attempt trace, undocumented fallback, or unresolved evidence gaps), phase output status MUST NOT claim full completion.
+
+- Use `blocked` when required evidence is unavailable and safe continuation is not possible.
+- Use `partial` when implementation can progress but one or more evidence minimums remain unmet.
+- Include explicit remediation steps in `risks` and `next_recommended`.
 
 ## Detail Level
 

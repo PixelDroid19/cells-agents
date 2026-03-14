@@ -21,6 +21,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `spec`. Retrieve `proposal` as dependency. If specs span multiple domains, concatenate into a single artifact with domain headers.
 - If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
@@ -29,15 +30,35 @@ Read and follow `skills/_shared/persistence-contract.md` for mode resolution rul
 
 ## What to Do
 
-### Step 1: Identify Affected Domains
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` for the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load only the skills and convention files relevant to specification work.
+
+### Step 2: Load Dependencies (Engram / Hybrid)
+
+When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
+
+1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
+2. `mem_get_observation(id: {proposal_id})` (REQUIRED)
+
+Do not use `mem_search` preview text as complete artifact content.
+
+### Step 3: Identify Affected Domains
 
 From the proposal's "Affected Areas", determine which spec domains are touched. Group changes by domain (e.g., `auth/`, `payments/`, `ui/`).
 
-### Step 2: Read Existing Specs
+### Step 4: Read Existing Specs
 
 If `openspec/specs/{domain}/spec.md` exists, read it to understand CURRENT behavior. Your delta specs describe CHANGES to this behavior.
 
-### Step 3: Write Delta Specs
+### Step 5: Write Delta Specs
 
 If mode is `openspec` or `hybrid`, create or update specs inside the change folder:
 
@@ -123,7 +144,29 @@ The system {MUST/SHALL/SHOULD} {behavior}.
 - THEN {outcome}
 ```
 
-### Step 4: Return Summary
+### Step 6: Artifact Persistence (Mandatory)
+
+If mode is `engram`, persist the complete spec artifact in Engram (concatenate domains when needed):
+
+```
+mem_save(
+  title: "cells/{change-name}/spec",
+  topic_key: "cells/{change-name}/spec",
+  type: "architecture",
+  project: "{project}",
+  content: "{your full spec markdown from Step 5}"
+)
+```
+
+If mode is `openspec` or `hybrid`, spec files were already written in Step 5.
+
+If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
+
+If mode is `none`, return inline only.
+
+Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the spec artifact.
+
+### Step 7: Return Summary
 
 Use the following markdown as the `detailed_report` body and wrap the overall reply in the standard structured envelope:
 
@@ -157,6 +200,8 @@ Ready for design (cells-design). If design already exists, ready for tasks (cell
 - Keep scenarios TESTABLE  someone should be able to write an automated test from each one
 - DO NOT include implementation details in specs  specs describe WHAT, not HOW
 - Keep technical naming in specs in English (event names, payload keys, API names, and code-facing identifiers) unless the user explicitly requests another naming language
+- Include source-decision trace when requirements depend on fallback evidence
+- If evidence minimums are not met, return `status: partial | blocked` and list remediation
 - If filesystem config exists, apply any `rules.specs` from `openspec/config.yaml`
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 

@@ -23,6 +23,7 @@ From the orchestrator:
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
+If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 For Cells implementation work, use `skills/_shared/cells-official-reference.md` to fetch only the official guidance needed for the touched area.
 
 For Cells testing or test-execution decisions during implementation, apply this mandatory stack first and in order:
@@ -39,7 +40,33 @@ Do not skip or reorder this stack. Do not use generic fallback commands (`npm te
 
 ## What to Do
 
-### Step 1: Read Context
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` for the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load only the coding skills and convention files relevant to the assigned implementation batch.
+
+### Step 2: Load Dependencies (Engram / Hybrid)
+
+When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
+
+1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
+2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
+3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
+4. `mem_search(query: "cells/{change-name}/tasks", project: "{project}")`
+5. `mem_get_observation(id: {proposal_id})`
+6. `mem_get_observation(id: {spec_id})`
+7. `mem_get_observation(id: {design_id})`
+8. `mem_get_observation(id: {tasks_id})`
+
+Do not use `mem_search` preview text as complete artifact content.
+
+### Step 3: Read Context
 
 Before writing ANY code:
 1. Read the specs  understand WHAT the code must do
@@ -58,7 +85,7 @@ For Cells projects, also inspect:
 12. `skills/cells-cli-usage/` when you need the correct local lint, docs, locales, or serve command
 13. `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` when the task changes rendered UI, demos, routes, interaction flows, or visual states
 
-### Step 1b: Scope Restriction Gate (Mandatory)
+### Step 3b: Scope Restriction Gate (Mandatory)
 
 Before editing any file, enforce the assigned scope explicitly:
 
@@ -78,7 +105,7 @@ Use this one-line gate evidence in `detailed_report`:
 - `Scope gate: tests-only enforced (no src/** or demo/locales/** edits)`
 - or `Scope gate: transitioned to source edits after explicit confirmation`
 
-### Step 2: Detect Implementation Mode
+### Step 4: Detect Implementation Mode
 
 Before writing code, determine if the project uses TDD:
 
@@ -93,7 +120,7 @@ IF TDD mode is detected  use Step 2a (TDD Workflow)
 IF standard mode  use Step 2b (Standard Workflow)
 ```
 
-### Step 2a: Implement Tasks (TDD Workflow  RED  GREEN  REFACTOR)
+### Step 4a: Implement Tasks (TDD Workflow  RED  GREEN  REFACTOR)
 
 When TDD is active, EVERY task follows this cycle:
 
@@ -140,7 +167,7 @@ Detect test runner from:
 
 **Important**: If any user coding skills are installed (e.g., `tdd/SKILL.md`, `pytest/SKILL.md`, `vitest/SKILL.md`), read and follow those skill patterns for writing tests.
 
-### Step 2b: Implement Tasks (Standard Workflow)
+### Step 4b: Implement Tasks (Standard Workflow)
 
 When TDD is not active:
 
@@ -161,7 +188,7 @@ For small, low-risk changes:
 - do not automatically run the full test suite
 - prefer code-local reasoning, targeted edits, and minimal confirmation only when the change needs proof
 
-### Step 2c: Browser Validation For Visible UI Changes
+### Step 4c: Browser Validation For Visible UI Changes
 
 When a task changes rendered UI, demos, routes, interaction flows, styling, or other browser-visible states:
 
@@ -178,11 +205,28 @@ If runtime validation cannot be executed locally, report it as blocked evidence
 
 This browser step complements implementation confidence for UI work and does not replace full verification in `cells-verify`.
 
-### Step 3: Persist Task Progress Correctly
+### Step 5: Artifact Persistence (Mandatory)
 
 If mode is `openspec` or `hybrid`, update `tasks.md` and change `- [ ]` to `- [x]` for completed tasks.
 If mode is `engram`, update the Engram `tasks` artifact and the `apply-progress` artifact, but do not modify project files.
 If mode is `none`, report completed tasks inline only.
+
+For Engram persistence use explicit calls:
+
+```
+mem_update(id: {tasks_observation_id}, content: "{updated tasks markdown with [x] marks}")
+mem_save(
+   title: "cells/{change-name}/apply-progress",
+   topic_key: "cells/{change-name}/apply-progress",
+   type: "architecture",
+   project: "{project}",
+   content: "{implementation progress report}"
+)
+```
+
+If mode is `hybrid`, do BOTH filesystem updates and Engram calls.
+
+Do not skip this step in `engram` or `hybrid`, or `cells-verify` will not have complete execution lineage.
 
 ```markdown
 ## Phase 1: Foundation
@@ -192,7 +236,7 @@ If mode is `none`, report completed tasks inline only.
 - [ ] 1.3 Add auth routes to `internal/server/server.go`   still pending
 ```
 
-### Step 4: Return Summary
+### Step 6: Return Summary
 
 Use the following markdown as the `detailed_report` body and wrap the overall reply in the standard structured envelope:
 
@@ -258,6 +302,8 @@ If none, say "None."}
 - Do not run project-wide runtime or test commands for every small change; execute only what is needed to confirm the assigned task
 - If browser confirmation is needed, reuse the existing runtime, browser session, and port before starting a new one
 - When implementation changes browser-visible UI, run a minimal browser validation loop if a local runtime can be served safely
+- Record task-level source decision trace and fallback reason when non-primary evidence is used
+- If evidence minimums are unmet, return `status: partial | blocked` with remediation steps
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
 

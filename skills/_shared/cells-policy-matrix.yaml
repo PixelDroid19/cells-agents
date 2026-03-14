@@ -1,0 +1,199 @@
+version: 1
+change_scope: generic-cells-governance
+policy_rows:
+  - layer: instructions
+    file: .github/instructions/copilot-instructions.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CROSS-LAYER-PARITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Apply intent routing before choosing Cells skills"
+      - "fallback"
+      - "structured result envelope"
+      - "non-destructive"
+
+  - layer: prompts
+    file: .github/prompts/sdd-explore.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-DETERMINISTIC-FALLBACK
+    required_tokens:
+      - "Output envelope"
+      - "Stop conditions"
+
+  - layer: prompts
+    file: .github/prompts/sdd-propose.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-DETERMINISTIC-FALLBACK
+    required_tokens:
+      - "Output envelope"
+      - "Stop conditions"
+
+  - layer: prompts
+    file: .github/prompts/sdd-spec.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Quality checks"
+      - "testable scenarios"
+
+  - layer: prompts
+    file: .github/prompts/sdd-design.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Quality checks"
+      - "constraints"
+
+  - layer: prompts
+    file: .github/prompts/sdd-tasks.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Quality checks"
+      - "Dependencies"
+
+  - layer: prompts
+    file: .github/prompts/sdd-apply.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Dependencies"
+      - "Output envelope"
+
+  - layer: prompts
+    file: .github/prompts/sdd-verify.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Evidence requirements"
+      - "Stop conditions"
+
+  - layer: prompts
+    file: .github/prompts/sdd-archive.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Closeout criteria"
+      - "Stop conditions"
+
+  - layer: shared-skills
+    file: skills/_shared/persistence-contract.md
+    requirement_ids:
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Behavior Per Mode"
+      - "none"
+      - "engram"
+
+  - layer: shared-skills
+    file: skills/_shared/cells-conventions.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Intent Routing Rules"
+      - "Source Priority"
+      - "Mandatory Testing Stack"
+
+  - layer: phase-skills
+    file: skills/cells-explore/SKILL.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+    required_tokens:
+      - "Read relevant code"
+      - "SQL/database-backed lookup"
+      - "structured envelope"
+
+  - layer: phase-skills
+    file: skills/cells-propose/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Affected Areas"
+      - "Risks"
+      - "Rollback Plan"
+
+  - layer: phase-skills
+    file: skills/cells-spec/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Given/When/Then"
+      - "RFC 2119"
+
+  - layer: phase-skills
+    file: skills/cells-design/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Architecture Decisions"
+      - "File Changes"
+
+  - layer: phase-skills
+    file: skills/cells-tasks/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Task Writing Rules"
+      - "ordered by dependency"
+
+  - layer: phase-skills
+    file: skills/cells-apply/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Scope Restriction Gate"
+      - "Mark the task as complete"
+
+  - layer: phase-skills
+    file: skills/cells-verify/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Spec Compliance Matrix"
+      - "Fixed Compliance Checklist"
+
+  - layer: phase-skills
+    file: skills/cells-archive/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "sync"
+      - "archive"
+
+requirements_catalog:
+  REQ-CATALOG-FIRST: "Catalog-first evidence routing must be applied before fallback."
+  REQ-DETERMINISTIC-FALLBACK: "Fallback order and escalation criteria must be deterministic and justified."
+  REQ-TRACEABILITY: "Source decisions and evidence quality must be traceable in outputs."
+  REQ-EVIDENCE-QUALITY-GATES: "Outputs must express blocked/partial when evidence minimums are not met."
+  REQ-CROSS-LAYER-PARITY: "Instructions, prompts, shared skills, and phase skills must remain policy-consistent."
+  REQ-NON-DESTRUCTIVE-ENFORCEMENT: "Operational guidance must default to safe, non-destructive behavior."

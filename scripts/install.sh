@@ -101,7 +101,7 @@ get_tool_path() {
                 *)        echo "$HOME/.codex/skills" ;;
             esac
             ;;
-        vscode)      echo "./.vscode/skills" ;;
+        vscode)      echo "./.github/skills" ;;
         antigravity)
             case "$OS" in
                 windows)  echo "$USERPROFILE/.gemini/antigravity/skills" ;;
@@ -391,8 +391,8 @@ install_for_agent() {
             ;;
         vscode)
             install_skills "$(get_tool_path vscode)" "VS Code (Copilot)"
-            print_next_step ".github/copilot-instructions.md" "examples/vscode/copilot-instructions.md"
-            echo -e "  ${YELLOW}Note:${NC} Skills installed in current project (.vscode/skills/)"
+            print_next_step ".github/copilot-instructions.md" ".github/instructions/copilot-instructions.md"
+            echo -e "  ${YELLOW}Note:${NC} Skills installed in current project (.github/skills/)"
             ;;
         antigravity)
             target="$(get_tool_path antigravity)"

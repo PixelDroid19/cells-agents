@@ -25,7 +25,18 @@ If the project is Cells-oriented, use `skills/_shared/cells-official-reference.m
 
 ## What to Do
 
-### Step 1: Detect Project Context
+### Step 1: Load Skill Registry (Mandatory)
+
+Do this FIRST, before any other work.
+
+1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
+2. If found, call `mem_get_observation(id: {id})` for the full registry
+3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
+4. If neither exists, proceed without skills (this is not an error)
+
+From the registry, load project conventions relevant to initialization context.
+
+### Step 2: Detect Project Context
 
 Read the project to understand:
 - Tech stack (check package.json, go.mod, pyproject.toml, etc.)
@@ -42,7 +53,7 @@ For Cells projects, explicitly inspect:
 - whether the workspace exposes a local serve, demo, or route path suitable for browser validation via `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md`
 - whether there is evidence of an already running dev server, existing preview URL, or known browser/CDP reuse path that should be preferred later
 
-### Step 2: Initialize Persistence Backend
+### Step 3: Initialize Persistence Backend
 
 If mode resolves to `openspec` or `hybrid`, create this directory structure:
 
@@ -56,7 +67,7 @@ openspec/
 
 If mode resolves to `engram` or `none`, skip filesystem bootstrap.
 
-### Step 3: Generate Config (openspec or hybrid mode)
+### Step 4: Generate Config (openspec or hybrid mode)
 
 Based on what you detected, create the config when mode includes OpenSpec filesystem persistence:
 
@@ -95,7 +106,48 @@ rules:
     - Warn before merging destructive deltas (large removals)
 ```
 
-### Step 4: Return Summary
+### Step 5: Build or Refresh Skill Registry
+
+Before returning, ensure skill-registry infrastructure is present:
+
+1. Scan available user-level and project-level skill directories for `*/SKILL.md`
+2. Skip `cells-*`, `_shared`, and `skill-registry` when registry output is meant for non-SDD coding skills
+3. Write `.atl/skill-registry.md` in project root (create `.atl/` if needed)
+4. If engram is available, also save:
+
+```
+mem_save(
+  title: "skill-registry",
+  topic_key: "skill-registry",
+  type: "config",
+  project: "{project}",
+  content: "{registry markdown}"
+)
+```
+
+### Step 6: Artifact Persistence (Mandatory)
+
+If mode is `engram`, persist initialization context explicitly:
+
+```
+mem_save(
+  title: "cells-init/{project-name}",
+  topic_key: "cells-init/{project-name}",
+  type: "architecture",
+  project: "{project-name}",
+  content: "{detected project context markdown}"
+)
+```
+
+If mode is `openspec` or `hybrid`, `openspec/config.yaml` was already written in Step 4.
+
+If mode is `hybrid`, do BOTH filesystem bootstrap and the `mem_save` above.
+
+If mode is `none`, return inline only.
+
+Do not skip this step in `engram` or `hybrid`, or later phases cannot recover initialization context.
+
+### Step 7: Return Summary
 
 Return a structured summary adapted to the resolved mode:
 

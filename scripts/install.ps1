@@ -45,7 +45,7 @@ $ToolPaths = @{
     'opencode-commands' = Join-Path $env:USERPROFILE '.config\opencode\commands'
     'gemini-cli'        = Join-Path $env:USERPROFILE '.gemini\skills'
     'codex'             = Join-Path $env:USERPROFILE '.codex\skills'
-    'vscode'            = Join-Path '.' '.vscode\skills'
+    'vscode'            = Join-Path '.' '.github\skills'
     'antigravity'       = Join-Path $env:USERPROFILE '.gemini\antigravity\skills'
     'cursor'            = Join-Path $env:USERPROFILE '.cursor\skills'
     'project-local'     = Join-Path '.' 'skills'
@@ -311,8 +311,8 @@ function Install-ForAgent {
         }
         'vscode' {
             Install-Skills -TargetDir $ToolPaths['vscode'] -ToolName 'VS Code (Copilot)'
-            Write-NextStep '.github\copilot-instructions.md' 'examples\vscode\copilot-instructions.md'
-            Write-Warn 'Skills installed in current project (.vscode\skills\)'
+            Write-NextStep '.github\copilot-instructions.md' '.github\instructions\copilot-instructions.md'
+            Write-Warn 'Skills installed in current project (.github\skills\)'
         }
         'antigravity' {
             Install-Skills -TargetDir $ToolPaths['antigravity'] -ToolName 'Antigravity'
