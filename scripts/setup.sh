@@ -25,8 +25,8 @@ MARKER_END="<!-- END:cells-agent-bundle -->"
 # Backward-compat markers we can upgrade in place
 OLD_MARKER_BEGIN="<!-- BEGIN:agent-teams-lite -->"
 OLD_MARKER_END="<!-- END:agent-teams-lite -->"
-GAI_MARKER_BEGIN="<!-- gentle-ai:sdd-orchestrator -->"
-GAI_MARKER_END="<!-- /gentle-ai:sdd-orchestrator -->"
+GAI_MARKER_BEGIN="<!-- gentle-ai:cells-orchestrator -->"
+GAI_MARKER_END="<!-- /gentle-ai:cells-orchestrator -->"
 
 ORCHESTRATOR_HEADINGS=(
     "## Spec-Driven Development (SDD) Orchestrator"
@@ -448,13 +448,13 @@ setup_opencode() {
             merged=$(jq --argjson new_agents "$example_agents" '
                 # Preserve user model choices on existing phase agents
                 (reduce ((.agent // {}) | to_entries[] |
-                    select((.key | startswith("cells-")) or (.key | startswith("sdd-"))) |
+                    select((.key | startswith("cells-")) or (.key | startswith("cells-"))) |
                     select(.value.model)) as $e
                     ({}; . + {($e.key): $e.value.model})) as $saved_models |
 
                 # Remove old cells/sdd agents, preserve user custom non-cells agents
                 .agent = (
-                    ((.agent // {}) | with_entries(select(((.key | startswith("cells-")) or (.key | startswith("sdd-"))) | not)))
+                    ((.agent // {}) | with_entries(select(((.key | startswith("cells-")) or (.key | startswith("cells-"))) | not)))
                     + $new_agents
                 ) |
 

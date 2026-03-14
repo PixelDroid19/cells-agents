@@ -606,15 +606,15 @@ test_vscode_assets_exist_in_repo() {
     assert_file_exists "$REPO_DIR/.github/docs/hooks.md" || return 1
     assert_file_exists "$REPO_DIR/.github/docs/models.md" || return 1
     assert_file_exists "$REPO_DIR/.github/prompts/README.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-explore.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-propose.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-spec.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-design.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-tasks.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-apply.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-verify.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-archive.md" || return 1
-    assert_file_exists "$REPO_DIR/.github/prompts/sdd-fallback.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-explore.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-propose.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-spec.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-design.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-tasks.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-apply.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-verify.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-archive.md" || return 1
+    assert_file_exists "$REPO_DIR/.github/prompts/cells-fallback.md" || return 1
     assert_file_exists "$REPO_DIR/.github/agents/analysis-agent.md" || return 1
     assert_file_exists "$REPO_DIR/.github/agents/implementation-agent.md" || return 1
     assert_file_exists "$REPO_DIR/.github/agents/verification-agent.md" || return 1
@@ -627,7 +627,7 @@ test_vscode_assets_exist_in_repo() {
 test_vscode_assets_contain_required_markers() {
     assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "Layered Precedence" || return 1
     assert_file_contains "$REPO_DIR/.github/instructions/copilot-instructions.md" "fallback is used, record source decision trace" || return 1
-    assert_file_contains "$REPO_DIR/.github/prompts/sdd-fallback.md" "WARNING: Dedicated prompt for this SDD phase is missing" || return 1
+    assert_file_contains "$REPO_DIR/.github/prompts/cells-fallback.md" "WARNING: Dedicated prompt for this SDD phase is missing" || return 1
     assert_file_contains "$REPO_DIR/.github/docs/README.md" "Layered precedence" || return 1
 }
 
@@ -659,9 +659,9 @@ test_vscode_baseline_blocks_unsafe_automation() {
 test_vscode_known_sdd_phase_prompts_are_usable() {
     local phase
     for phase in explore propose spec design tasks apply verify archive; do
-        assert_file_exists "$REPO_DIR/.github/prompts/sdd-$phase.md" || return 1
-        assert_file_contains "$REPO_DIR/.github/prompts/sdd-$phase.md" "## Goal" || return 1
-        assert_file_contains "$REPO_DIR/.github/prompts/sdd-$phase.md" "## Output envelope" || return 1
+        assert_file_exists "$REPO_DIR/.github/prompts/cells-$phase.md" || return 1
+        assert_file_contains "$REPO_DIR/.github/prompts/cells-$phase.md" "## Goal" || return 1
+        assert_file_contains "$REPO_DIR/.github/prompts/cells-$phase.md" "## Output envelope" || return 1
     done
 }
 
@@ -701,7 +701,7 @@ test_vscode_model_fallback_is_explicit() {
 test_vscode_docs_describe_layered_runtime_layout() {
     assert_file_contains "$REPO_DIR/.github/docs/README.md" "Apply layers in this exact order" || return 1
     assert_file_contains "$REPO_DIR/.github/docs/README.md" '../instructions/copilot-instructions.md' || return 1
-    assert_file_contains "$REPO_DIR/.github/docs/README.md" '../prompts/sdd-' || return 1
+    assert_file_contains "$REPO_DIR/.github/docs/README.md" '../prompts/cells-' || return 1
     assert_file_contains "$REPO_DIR/.github/docs/README.md" '../agents/' || return 1
 }
 

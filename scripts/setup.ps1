@@ -53,8 +53,8 @@ $MarkerEnd = '<!-- END:cells-agent-bundle -->'
 # Backward-compat markers we can upgrade in place
 $OldMarkerBegin = '<!-- BEGIN:agent-teams-lite -->'
 $OldMarkerEnd = '<!-- END:agent-teams-lite -->'
-$GaiMarkerBegin = '<!-- gentle-ai:sdd-orchestrator -->'
-$GaiMarkerEnd = '<!-- /gentle-ai:sdd-orchestrator -->'
+$GaiMarkerBegin = '<!-- gentle-ai:cells-orchestrator -->'
+$GaiMarkerEnd = '<!-- /gentle-ai:cells-orchestrator -->'
 
 $OrchestratorHeadings = @(
     '## Spec-Driven Development (SDD) Orchestrator',
@@ -385,14 +385,14 @@ function Set-OpenCode {
                     # 1. Save existing model fields from phase agents
                     $savedModels = @{}
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if (($prop.Name -like 'cells-*' -or $prop.Name -like 'sdd-*') -and $prop.Value.PSObject.Properties['model']) {
+                        if (($prop.Name -like 'cells-*' -or $prop.Name -like 'cells-*') -and $prop.Value.PSObject.Properties['model']) {
                             $savedModels[$prop.Name] = $prop.Value.model
                         }
                     }
 
                     # 2. Remove old cells/sdd agents
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if ($prop.Name -like 'cells-*' -or $prop.Name -like 'sdd-*') {
+                        if ($prop.Name -like 'cells-*' -or $prop.Name -like 'cells-*') {
                             $existing.agent.PSObject.Properties.Remove($prop.Name)
                         }
                     }

@@ -16,7 +16,7 @@ policy_rows:
       - "non-destructive"
 
   - layer: prompts
-    file: .github/prompts/sdd-explore.md
+    file: .github/prompts/cells-explore.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-DETERMINISTIC-FALLBACK
@@ -25,7 +25,7 @@ policy_rows:
       - "Stop conditions"
 
   - layer: prompts
-    file: .github/prompts/sdd-propose.md
+    file: .github/prompts/cells-propose.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-DETERMINISTIC-FALLBACK
@@ -34,7 +34,7 @@ policy_rows:
       - "Stop conditions"
 
   - layer: prompts
-    file: .github/prompts/sdd-spec.md
+    file: .github/prompts/cells-spec.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-EVIDENCE-QUALITY-GATES
@@ -43,7 +43,7 @@ policy_rows:
       - "testable scenarios"
 
   - layer: prompts
-    file: .github/prompts/sdd-design.md
+    file: .github/prompts/cells-design.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-EVIDENCE-QUALITY-GATES
@@ -52,7 +52,7 @@ policy_rows:
       - "constraints"
 
   - layer: prompts
-    file: .github/prompts/sdd-tasks.md
+    file: .github/prompts/cells-tasks.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-EVIDENCE-QUALITY-GATES
@@ -61,7 +61,7 @@ policy_rows:
       - "Dependencies"
 
   - layer: prompts
-    file: .github/prompts/sdd-apply.md
+    file: .github/prompts/cells-apply.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-EVIDENCE-QUALITY-GATES
@@ -70,7 +70,7 @@ policy_rows:
       - "Output envelope"
 
   - layer: prompts
-    file: .github/prompts/sdd-verify.md
+    file: .github/prompts/cells-verify.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-EVIDENCE-QUALITY-GATES
@@ -80,7 +80,7 @@ policy_rows:
       - "Stop conditions"
 
   - layer: prompts
-    file: .github/prompts/sdd-archive.md
+    file: .github/prompts/cells-archive.md
     requirement_ids:
       - REQ-TRACEABILITY
       - REQ-NON-DESTRUCTIVE-ENFORCEMENT
