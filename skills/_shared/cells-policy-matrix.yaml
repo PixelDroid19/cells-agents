@@ -9,11 +9,15 @@ policy_rows:
       - REQ-TRACEABILITY
       - REQ-CROSS-LAYER-PARITY
       - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-DELEGATE-FIRST
+      - REQ-CONTRIBUTION-GATES
     required_tokens:
       - "Apply intent routing before choosing Cells skills"
       - "fallback"
       - "structured result envelope"
       - "non-destructive"
+      - "delegate-first"
+      - "issue -> approved issue -> PR -> review -> merge"
 
   - layer: prompts
     file: .github/prompts/cells-explore.md
@@ -68,6 +72,7 @@ policy_rows:
     required_tokens:
       - "Dependencies"
       - "Output envelope"
+      - "delegate"
 
   - layer: prompts
     file: .github/prompts/cells-verify.md
@@ -78,6 +83,7 @@ policy_rows:
     required_tokens:
       - "Evidence requirements"
       - "Stop conditions"
+      - "Cells-native"
 
   - layer: prompts
     file: .github/prompts/cells-archive.md
@@ -98,6 +104,7 @@ policy_rows:
       - "Behavior Per Mode"
       - "none"
       - "engram"
+      - "SKILL: Load"
 
   - layer: shared-skills
     file: skills/_shared/cells-workflow-contract.md
@@ -110,6 +117,7 @@ policy_rows:
       - "Canonical Artifact Lineage"
       - "Result Envelope"
       - "Source Decisions"
+      - "delegate-first"
 
   - layer: shared-skills
     file: skills/_shared/cells-conventions.md
@@ -122,6 +130,17 @@ policy_rows:
       - "Intent Routing Rules"
       - "Source Priority"
       - "Mandatory Testing Stack"
+
+  - layer: shared-skills
+    file: skills/_shared/cells-governance-contract.md
+    requirement_ids:
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CONTRIBUTION-GATES
+    required_tokens:
+      - "Contribution Lifecycle Enforcement"
+      - "Non-SDD Specialist Routing"
+      - "cells-cli-usage` -> `cells-coverage` -> `cells-test-creator"
 
   - layer: phase-skills
     file: skills/cells-explore/SKILL.md
@@ -181,6 +200,7 @@ policy_rows:
     required_tokens:
       - "Scope Restriction Gate"
       - "Mark the task as complete"
+      - "Source Decisions"
 
   - layer: phase-skills
     file: skills/cells-verify/SKILL.md
@@ -192,6 +212,38 @@ policy_rows:
     required_tokens:
       - "Spec Compliance Matrix"
       - "Fixed Compliance Checklist"
+      - "Coverage policy exemption"
+
+  - layer: docs
+    file: README.md
+    requirement_ids:
+      - REQ-DELEGATE-FIRST
+      - REQ-CONTRIBUTION-GATES
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "delegate-first"
+      - "background delegation"
+      - "issue -> approved issue -> PR -> review -> merge"
+
+  - layer: host-config
+    file: examples/opencode/opencode.multi.json
+    requirement_ids:
+      - REQ-DELEGATE-FIRST
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "delegate"
+      - "delegation_read"
+      - "delegation_list"
+
+  - layer: host-config
+    file: examples/opencode/opencode.single.json
+    requirement_ids:
+      - REQ-DELEGATE-FIRST
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "delegate"
+      - "delegation_read"
+      - "delegation_list"
 
   - layer: phase-skills
     file: skills/cells-archive/SKILL.md
@@ -209,3 +261,5 @@ requirements_catalog:
   REQ-EVIDENCE-QUALITY-GATES: "Outputs must express blocked/partial when evidence minimums are not met."
   REQ-CROSS-LAYER-PARITY: "Instructions, prompts, shared skills, and phase skills must remain policy-consistent."
   REQ-NON-DESTRUCTIVE-ENFORCEMENT: "Operational guidance must default to safe, non-destructive behavior."
+  REQ-DELEGATE-FIRST: "Delegate-first orchestration with delegate-when-available and task fallback must remain explicit."
+  REQ-CONTRIBUTION-GATES: "Issue approval, PR, review, and merge gates must remain explicit in contributor-facing guidance."

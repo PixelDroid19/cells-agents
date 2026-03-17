@@ -57,9 +57,11 @@ $GaiMarkerBegin = '<!-- gentle-ai:cells-orchestrator -->'
 $GaiMarkerEnd = '<!-- /gentle-ai:cells-orchestrator -->'
 
 $OrchestratorHeadings = @(
+    '## CELLS Orchestrator',
+    '## Agent Teams Orchestrator',
+    # Compatibility-only legacy headings for in-place upgrades.
     '## Spec-Driven Development (CELLS) Orchestrator',
-    '## Spec-Driven Development (CELLS)',
-    '## Agent Teams Orchestrator'
+    '## Spec-Driven Development (CELLS)'
 )
 
 $SkillsPaths = @{
@@ -215,7 +217,7 @@ function Get-OrchestratorContent {
     param([string]$ExampleFile)
 
     $rawContent = Get-Content -Path $ExampleFile -Raw
-    if ($rawContent -match '(?s)(## (Spec-Driven Development|Agent Teams).*)') {
+    if ($rawContent -match '(?s)(## (CELLS Orchestrator|Spec-Driven Development|Agent Teams).*)') {
         return $Matches[1]
     }
 
@@ -331,6 +333,8 @@ function Set-OpenCode {
     $commandsSrc = Join-Path $ExamplesDir 'opencode\commands'
     $commandsTarget = Join-Path $env:USERPROFILE '.config\opencode\commands'
     $configFile = Join-Path $env:USERPROFILE '.config\opencode\opencode.json'
+    $pluginsSrc = Join-Path $ExamplesDir 'opencode\plugins'
+    $pluginsTarget = Join-Path $env:USERPROFILE '.config\opencode\plugins'
 
     Ask-OpenCodeMode
 
@@ -382,17 +386,20 @@ function Set-OpenCode {
                         $existing | Add-Member -NotePropertyName 'agent' -NotePropertyValue ([PSCustomObject]@{})
                     }
 
-                    # 1. Save existing model fields from phase agents
+                    $legacyPhasePattern = (('s', 'd', 'd' -join '') + '-*')
+
+                    # 1. Save existing model fields from phase agents.
+                    # Compatibility-only: preserve legacy pre-Cells phase keys during upgrades.
                     $savedModels = @{}
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if (($prop.Name -like 'cells-*' -or $prop.Name -like 'sdd-*') -and $prop.Value.PSObject.Properties['model']) {
+                        if (($prop.Name -like 'cells-*' -or $prop.Name -like $legacyPhasePattern) -and $prop.Value.PSObject.Properties['model']) {
                             $savedModels[$prop.Name] = $prop.Value.model
                         }
                     }
 
-                    # 2. Remove old cells/sdd agents
+                    # 2. Remove old phase agents, including compatibility-only legacy phase keys.
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if ($prop.Name -like 'cells-*' -or $prop.Name -like 'sdd-*') {
+                        if ($prop.Name -like 'cells-*' -or $prop.Name -like $legacyPhasePattern) {
                             $existing.agent.PSObject.Properties.Remove($prop.Name)
                         }
                     }
@@ -431,6 +438,14 @@ function Set-OpenCode {
             Copy-Item -Path $exampleConfig -Destination $configFile
             Write-Ok "Config created at $configFile ($($script:OpenCodeMode) mode)"
         }
+    }
+
+    if (Test-Path $pluginsSrc) {
+        New-Item -ItemType Directory -Path $pluginsTarget -Force | Out-Null
+        Copy-Item -Path (Join-Path $pluginsSrc 'background-agents.ts') -Destination (Join-Path $pluginsTarget 'background-agents.ts') -Force
+        Copy-Item -Path (Join-Path $pluginsSrc 'BACKGROUND-AGENTS-README.md') -Destination (Join-Path $pluginsTarget 'BACKGROUND-AGENTS-README.md') -Force
+        Write-Ok "Optional background delegation assets installed ($pluginsTarget)"
+        Write-Info 'OpenCode will still use synchronous task fallback if background delegation is unavailable'
     }
 }
 

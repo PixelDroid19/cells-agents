@@ -17,4 +17,7 @@ Archive the active CELLS change. Read the verification report first to confirm t
 2. Move the change folder to archive with date prefix
 3. Verify the archive is complete
 
+Delegation note:
+- This command may be launched through `delegate` when background delegation is available, but archive status must still cite canonical `cells/*` artifacts.
+
 Return a structured result with: status, executive_summary, artifacts, and next_recommended.

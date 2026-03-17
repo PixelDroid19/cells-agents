@@ -74,45 +74,24 @@ def scenario_workflow_contract_parity() -> dict:
 
 
 def scenario_canonical_lineage_only() -> dict:
+    legacy_prefix = "".join(["s", "d", "d"])
     targets = {
-        "cells-init/SKILL.md": [
-            "sdd-init/{project}",
-            "superseded lineage",
+        "../README.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "_shared/persistence-contract.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "_shared/engram-convention.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "_shared/cells-workflow-contract.md": [
+            f"{legacy_prefix}/",
+            f"{legacy_prefix}-",
         ],
-        "cells-explore/SKILL.md": [
-            "sdd-init/{project}",
-            "superseded lineage",
-        ],
-        "cells-propose/SKILL.md": [
-            "sdd/{change-name}/explore",
-            "sdd-init/{project}",
-            "superseded lineage",
-        ],
-        "cells-spec/SKILL.md": [
-            "sdd/{change-name}/proposal",
-            "superseded lineage",
-        ],
-        "cells-design/SKILL.md": [
-            "sdd/{change-name}/proposal",
-            "sdd/{change-name}/spec",
-            "superseded lineage",
-        ],
-        "cells-tasks/SKILL.md": [
-            "sdd/{change-name}/{artifact}",
-            "superseded lineage",
-        ],
-        "cells-apply/SKILL.md": [
-            "sdd/{change-name}/{artifact}",
-            "superseded lineage",
-        ],
-        "cells-verify/SKILL.md": [
-            "sdd/{change-name}/{artifact}",
-            "superseded lineage",
-        ],
-        "cells-archive/SKILL.md": [
-            "sdd/{change-name}/{artifact}",
-            "superseded lineage",
-        ],
+        "cells-init/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-explore/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-propose/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-spec/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-design/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-tasks/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-apply/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-verify/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
+        "cells-archive/SKILL.md": [f"{legacy_prefix}/", f"{legacy_prefix}-"],
     }
     unexpected = {}
     for path, tokens in targets.items():

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate behavioral governance scenarios for Cells SDD assets."""
+"""Validate behavioral governance scenarios for CELLS assets."""
 
 from __future__ import annotations
 
@@ -121,6 +121,77 @@ SCENARIOS = {
     "escalation-blocked-partial": scenario_escalation_blocked_partial,
     "coverage-policy-exemption": scenario_coverage_policy_exemption,
 }
+
+
+def scenario_workflow_contract_parity() -> tuple[bool, str]:
+    workflow = _read(ROOT / "skills/_shared/cells-workflow-contract.md")
+    persistence = _read(PERSISTENCE)
+    policy = _read(ROOT / "skills/_shared/cells-policy-matrix.yaml")
+    required = (
+        "delegate-first",
+        "Compatibility reads",
+        "SKILL: Load",
+        "REQ-DELEGATE-FIRST",
+    )
+    if all(token in f"{workflow}\n{persistence}\n{policy}" for token in required):
+        return True, "Workflow contract parity tokens are aligned across shared assets."
+    return False, "Workflow contract parity tokens are missing across shared assets."
+
+
+def scenario_canonical_write_contract() -> tuple[bool, str]:
+    workflow = _read(ROOT / "skills/_shared/cells-workflow-contract.md")
+    engram = _read(ROOT / "skills/_shared/engram-convention.md")
+    required = (
+        "cells/{change}/{artifact}",
+        "MUST use only `cells-init/{project}` and `cells/{change}/{artifact}` for writes",
+        "MUST NOT replace canonical `cells/...` writes",
+    )
+    if all(token in f"{workflow}\n{engram}" for token in required):
+        return True, "Canonical write contract remains explicit."
+    return False, "Canonical write contract is missing or weakened."
+
+
+def scenario_canonical_lineage_only() -> tuple[bool, str]:
+    workflow = _read(ROOT / "skills/_shared/cells-workflow-contract.md")
+    if (
+        "Compatibility reads MUST NOT replace canonical `cells/...` writes" in workflow
+        and "`/cells-*` commands remain canonical" in workflow
+    ):
+        return (
+            True,
+            "Canonical lineage remains authoritative with compatibility-only legacy reads.",
+        )
+    return False, "Canonical lineage guidance is incomplete."
+
+
+def scenario_source_decision_template() -> tuple[bool, str]:
+    workflow = _read(ROOT / "skills/_shared/cells-workflow-contract.md")
+    apply_skill = _read(ROOT / "skills/cells-apply/SKILL.md")
+    required = (
+        "intent",
+        "primary_source",
+        "fallback_used",
+        "fallback_source",
+        "fallback_reason",
+        "evidence_quality",
+        "status",
+    )
+    if all(token in workflow and token in apply_skill for token in required):
+        return (
+            True,
+            "Source decision template coverage is present in workflow and apply guidance.",
+        )
+    return False, "Source decision template coverage is incomplete."
+
+
+SCENARIOS.update(
+    {
+        "workflow-contract-parity": scenario_workflow_contract_parity,
+        "canonical-write-contract": scenario_canonical_write_contract,
+        "canonical-lineage-only": scenario_canonical_lineage_only,
+        "source-decision-template": scenario_source_decision_template,
+    }
+)
 
 
 def main() -> int:

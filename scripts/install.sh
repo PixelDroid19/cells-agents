@@ -119,6 +119,10 @@ get_tool_path() {
     esac
 }
 
+get_project_local_root() {
+    pwd
+}
+
 # ============================================================================
 # Helpers
 # ============================================================================
@@ -132,8 +136,8 @@ make_writable() {
 print_header() {
     echo ""
     echo -e "${CYAN}${BOLD}╔══════════════════════════════════════════╗${NC}"
-    echo -e "${CYAN}${BOLD}║      Agent Teams Lite — Installer        ║${NC}"
-    echo -e "${CYAN}${BOLD}║   Spec-Driven Development for AI Agents  ║${NC}"
+    echo -e "${CYAN}${BOLD}║      Cells Agent Bundle — Installer      ║${NC}"
+    echo -e "${CYAN}${BOLD}║    CELLS workflows for AI assistants     ║${NC}"
     echo -e "${CYAN}${BOLD}╚══════════════════════════════════════════╝${NC}"
     echo ""
     echo -e "  ${BOLD}Detected:${NC} $(os_label)"
@@ -282,6 +286,14 @@ install_skills() {
         fi
     fi
 
+    if [ -d "$SKILLS_SRC/skill-registry" ] && [ -f "$SKILLS_SRC/skill-registry/SKILL.md" ]; then
+        local registry_target="$target_dir/skill-registry"
+        rm -rf "$registry_target"
+        cp -R "$SKILLS_SRC/skill-registry" "$registry_target"
+        print_skill "skill-registry"
+        count=$((count + 1))
+    fi
+
     echo -e "\n  ${GREEN}${BOLD}$count skills installed${NC} → $target_dir"
 }
 
@@ -295,7 +307,25 @@ get_opencode_config_path() {
             esac
             ;;
         project)
-            echo "$REPO_DIR/.opencode/opencode.json"
+            echo "$(get_project_local_root)/.opencode/opencode.json"
+            ;;
+        *)
+            return 1
+            ;;
+    esac
+}
+
+get_opencode_plugins_path() {
+    local mode="$1"
+    case "$mode" in
+        global)
+            case "$OS" in
+                windows)  echo "$USERPROFILE/.config/opencode/plugins" ;;
+                *)        echo "$HOME/.config/opencode/plugins" ;;
+            esac
+            ;;
+        project)
+            echo "$(get_project_local_root)/.opencode/plugins"
             ;;
         *)
             return 1
@@ -353,6 +383,23 @@ install_opencode_config() {
     print_skill "opencode.json ($(dirname "$config_target"))"
 }
 
+install_opencode_plugins() {
+    local mode="$1"
+    local plugins_src="$REPO_DIR/examples/opencode/plugins"
+    local plugins_target
+    plugins_target="$(get_opencode_plugins_path "$mode")"
+
+    if [ ! -d "$plugins_src" ]; then
+        print_warn "Skipping OpenCode plugin assets (source not found: $plugins_src)"
+        return
+    fi
+
+    mkdir -p "$plugins_target"
+    cp "$plugins_src/background-agents.ts" "$plugins_target/background-agents.ts"
+    cp "$plugins_src/BACKGROUND-AGENTS-README.md" "$plugins_target/BACKGROUND-AGENTS-README.md"
+    print_skill "OpenCode optional background delegation assets"
+}
+
 # ============================================================================
 # Agent install dispatcher
 # ============================================================================
@@ -369,6 +416,7 @@ install_for_agent() {
             install_skills "$(get_tool_path opencode)" "OpenCode"
             install_opencode_commands
             install_opencode_config "global"
+            install_opencode_plugins "global"
             echo ""
             echo -e "${YELLOW}${BOLD}╔══════════════════════════════════════════════════════════════╗${NC}"
             echo -e "${YELLOW}${BOLD}║  ACTION REQUIRED: Add the cells-orchestrator agent config     ║${NC}"
@@ -406,6 +454,7 @@ install_for_agent() {
         project-local)
             install_skills "$(get_tool_path project-local)" "Project-local"
             install_opencode_config "project"
+            install_opencode_plugins "project"
             echo -e "\n${YELLOW}Note:${NC} Skills installed in ${BOLD}./skills/${NC} — relative to this project"
             ;;
         all-global)
@@ -413,6 +462,7 @@ install_for_agent() {
             install_skills "$(get_tool_path opencode)" "OpenCode"
             install_opencode_commands
             install_opencode_config "global"
+            install_opencode_plugins "global"
             install_skills "$(get_tool_path gemini-cli)" "Gemini CLI"
             install_skills "$(get_tool_path codex)" "Codex"
             install_skills "$(get_tool_path cursor)" "Cursor"

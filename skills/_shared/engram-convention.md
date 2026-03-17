@@ -37,7 +37,7 @@ scope:     project
 
 Canonical reads and writes MUST use `cells-init/{project-name}` and `cells/{change-name}/{artifact-type}` only.
 
-Historical legacy artifacts may remain in Engram as inactive history, but they MUST NOT be used to satisfy active prerequisites.
+Historical pre-Cells artifacts may remain in Engram as inactive history. During explicit migration or backport work, those legacy topics MAY be inspected as compatibility evidence only, but they MUST NOT replace canonical `cells/...` writes or readiness checks.
 If a required canonical artifact is missing, stop and report the phase as `blocked` until that canonical artifact is seeded.
 
 ### State Artifact
@@ -57,6 +57,16 @@ mem_save(
 ```
 
 Recovery: `mem_search("cells/{change-name}/state")` → `mem_get_observation(id)` → parse YAML → restore orchestrator state.
+
+### Pre-resolved Skill Loading
+
+When a delegated prompt includes a concrete skill path, use it directly and record that route in `source_decisions`.
+
+```
+SKILL: Load `{resolved-path}` before starting.
+```
+
+This avoids repeated registry lookups and keeps non-SDD delegated specialist routing deterministic.
 
 ### Example
 

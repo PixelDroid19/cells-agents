@@ -2,7 +2,7 @@
 
 <#
 .SYNOPSIS
-    Agent Teams Lite installer for Windows
+    Cells Agent Bundle installer for Windows
 .DESCRIPTION
     Copies CELLS skills to your AI coding assistant's skill directory.
 .PARAMETER Agent
@@ -51,6 +51,10 @@ $ToolPaths = @{
     'project-local'     = Join-Path '.' 'skills'
 }
 
+function Get-ProjectLocalRoot {
+    (Get-Location).Path
+}
+
 # ============================================================================
 # Display Helpers
 # ============================================================================
@@ -58,8 +62,8 @@ $ToolPaths = @{
 function Write-Header {
     Write-Host ''
     Write-Host ([char]0x2554 + ([string][char]0x2550 * 42) + [char]0x2557) -ForegroundColor Cyan
-    Write-Host ([char]0x2551 + '      Agent Teams Lite - Installer        ' + [char]0x2551) -ForegroundColor Cyan
-    Write-Host ([char]0x2551 + '   Spec-Driven Development for AI Agents  ' + [char]0x2551) -ForegroundColor Cyan
+    Write-Host ([char]0x2551 + '      Cells Agent Bundle - Installer      ' + [char]0x2551) -ForegroundColor Cyan
+    Write-Host ([char]0x2551 + '    CELLS workflows for AI assistants     ' + [char]0x2551) -ForegroundColor Cyan
     Write-Host ([char]0x255A + ([string][char]0x2550 * 42) + [char]0x255D) -ForegroundColor Cyan
     Write-Host ''
     Write-Host "  Detected: Windows (PowerShell $($PSVersionTable.PSVersion))" -ForegroundColor White
@@ -244,6 +248,17 @@ function Install-Skills {
         }
     }
 
+    $registryDir = Join-Path $SkillsSrc 'skill-registry'
+    if (Test-Path (Join-Path $registryDir 'SKILL.md')) {
+        $targetRegistryDir = Join-Path $TargetDir 'skill-registry'
+        if (Test-Path $targetRegistryDir) {
+            Remove-Item -Path $targetRegistryDir -Recurse -Force
+        }
+        Copy-Item -Path $registryDir -Destination $TargetDir -Recurse -Force
+        Write-Skill 'skill-registry'
+        $count++
+    }
+
     Write-Host ''
     Write-Host "  $count skills installed" -ForegroundColor Green -NoNewline
     Write-Host " -> $TargetDir"
@@ -274,6 +289,27 @@ function Install-OpenCodeCommands {
     Write-Host " -> $commandsTarget"
 }
 
+function Install-OpenCodePlugins {
+    param([ValidateSet('global', 'project')][string]$Mode)
+
+    $pluginsSrc = Join-Path $RepoDir 'examples\opencode\plugins'
+    if (-not (Test-Path $pluginsSrc)) {
+        Write-Warn "Skipping OpenCode plugin assets (source not found: $pluginsSrc)"
+        return
+    }
+
+    $pluginsTarget = if ($Mode -eq 'project') {
+        Join-Path (Get-ProjectLocalRoot) '.opencode\plugins'
+    } else {
+        Join-Path $env:USERPROFILE '.config\opencode\plugins'
+    }
+
+    New-Item -ItemType Directory -Path $pluginsTarget -Force | Out-Null
+    Copy-Item -Path (Join-Path $pluginsSrc 'background-agents.ts') -Destination (Join-Path $pluginsTarget 'background-agents.ts') -Force
+    Copy-Item -Path (Join-Path $pluginsSrc 'BACKGROUND-AGENTS-README.md') -Destination (Join-Path $pluginsTarget 'BACKGROUND-AGENTS-README.md') -Force
+    Write-Skill 'OpenCode optional background delegation assets'
+}
+
 # ============================================================================
 # Agent Install Dispatcher
 # ============================================================================
@@ -289,6 +325,7 @@ function Install-ForAgent {
         'opencode' {
             Install-Skills -TargetDir $ToolPaths['opencode'] -ToolName 'OpenCode'
             Install-OpenCodeCommands
+            Install-OpenCodePlugins -Mode global
             Write-Host ''
             Write-Host ([char]0x2554 + ([string][char]0x2550 * 62) + [char]0x2557) -ForegroundColor Yellow
             Write-Host ([char]0x2551 + '  ACTION REQUIRED: Add the cells-orchestrator agent config     ' + [char]0x2551) -ForegroundColor Yellow
@@ -324,6 +361,7 @@ function Install-ForAgent {
         }
         'project-local' {
             Install-Skills -TargetDir $ToolPaths['project-local'] -ToolName 'Project-local'
+            Install-OpenCodePlugins -Mode project
             Write-Host ''
             Write-Warn "Skills installed in .\skills\ - relative to this project"
         }
@@ -331,6 +369,7 @@ function Install-ForAgent {
             Install-Skills -TargetDir $ToolPaths['claude-code'] -ToolName 'Claude Code'
             Install-Skills -TargetDir $ToolPaths['opencode'] -ToolName 'OpenCode'
             Install-OpenCodeCommands
+            Install-OpenCodePlugins -Mode global
             Install-Skills -TargetDir $ToolPaths['gemini-cli'] -ToolName 'Gemini CLI'
             Install-Skills -TargetDir $ToolPaths['codex'] -ToolName 'Codex'
             Install-Skills -TargetDir $ToolPaths['cursor'] -ToolName 'Cursor'

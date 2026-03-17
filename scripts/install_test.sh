@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # ============================================================================
-# Agent Teams Lite — Install Script Tests
+# Cells Agent Bundle — Install Script Tests
 # Run: bash scripts/install_test.sh
 # ============================================================================
 
@@ -244,6 +244,20 @@ test_opencode_commands() {
     assert_eq "$EXPECTED_COMMAND_COUNT" "$count" "Expected exactly $EXPECTED_COMMAND_COUNT OpenCode commands"
 }
 
+test_opencode_background_delegation_assets() {
+    bash "$INSTALL_SCRIPT" --agent opencode > /dev/null 2>&1
+    assert_file_exists "$HOME/.config/opencode/plugins/background-agents.ts" || return 1
+    assert_file_exists "$HOME/.config/opencode/plugins/BACKGROUND-AGENTS-README.md" || return 1
+}
+
+test_project_local_background_delegation_assets() {
+    local project="$TEST_TMPDIR/local-project"
+    mkdir -p "$project"
+    (cd "$project" && bash "$INSTALL_SCRIPT" --agent project-local > /dev/null 2>&1)
+    assert_file_exists "$project/.opencode/plugins/background-agents.ts" || return 1
+    assert_file_exists "$project/.opencode/plugins/BACKGROUND-AGENTS-README.md" || return 1
+}
+
 # ============================================================================
 # Tests — Gemini CLI
 # ============================================================================
@@ -409,6 +423,12 @@ test_all_global_opencode_commands() {
     local count
     count=$(find "$commands_dir" -name "cells-*.md" | wc -l | tr -d ' ')
     assert_eq "$EXPECTED_COMMAND_COUNT" "$count" "Expected $EXPECTED_COMMAND_COUNT OpenCode commands with all-global"
+}
+
+test_all_global_background_delegation_assets() {
+    bash "$INSTALL_SCRIPT" --agent all-global > /dev/null 2>&1
+    assert_file_exists "$HOME/.config/opencode/plugins/background-agents.ts" || return 1
+    assert_file_exists "$HOME/.config/opencode/plugins/BACKGROUND-AGENTS-README.md" || return 1
 }
 
 # ============================================================================
@@ -732,7 +752,7 @@ test_vscode_assets_validator_passes() {
 
 echo ""
 echo -e "${CYAN}${BOLD}╔══════════════════════════════════════════╗${NC}"
-echo -e "${CYAN}${BOLD}║    Agent Teams Lite — Install Tests      ║${NC}"
+echo -e "${CYAN}${BOLD}║    Cells Agent Bundle — Install Tests    ║${NC}"
 echo -e "${CYAN}${BOLD}╚══════════════════════════════════════════╝${NC}"
 echo ""
 
@@ -752,6 +772,7 @@ echo -e "${BOLD}OpenCode${NC}"
 run_test "Installs all 9 skills to ~/.config/opencode/skills" test_install_opencode
 run_test "Exactly 9 SKILL.md files" test_opencode_skill_count
 run_test "Installs 8 command files" test_opencode_commands
+run_test "Installs optional background delegation assets" test_opencode_background_delegation_assets
 echo ""
 
 echo -e "${BOLD}Gemini CLI${NC}"
@@ -782,6 +803,7 @@ echo ""
 echo -e "${BOLD}Project-local${NC}"
 run_test "Installs all 9 skills to ./skills/" test_install_project_local
 run_test "Exactly 9 SKILL.md files" test_project_local_skill_count
+run_test "Installs project-local background delegation assets" test_project_local_background_delegation_assets
 echo ""
 
 echo -e "${BOLD}Custom path${NC}"
@@ -794,6 +816,7 @@ echo -e "${BOLD}All-global${NC}"
 run_test "Installs to all 5 global targets" test_all_global
 run_test "45 total SKILL.md files (5×9)" test_all_global_total_skill_count
 run_test "Also installs OpenCode commands" test_all_global_opencode_commands
+run_test "Also installs background delegation assets" test_all_global_background_delegation_assets
 echo ""
 
 echo -e "${BOLD}Idempotency${NC}"

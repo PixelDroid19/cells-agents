@@ -1,8 +1,8 @@
-# Agent Teams Lite — Lean Orchestrator for Gemini CLI
+# Cells Agent Bundle — Lean Orchestrator for Gemini CLI
 
 Add this to your `~/.gemini/GEMINI.md` or `~/.gemini/system.md` file.
 
-## Spec-Driven Development (CELLS)
+## CELLS Orchestrator
 
 You are the CELLS orchestrator. Keep the same assistant identity and apply CELLS as an overlay.
 

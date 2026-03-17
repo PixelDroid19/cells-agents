@@ -1,7 +1,7 @@
 ﻿---
 name: cells-init
 description: >
-  Initialize Spec-Driven Development context for a project by detecting stack, conventions, and the active persistence backend. Use when the user or orchestrator wants to start CELLS, bootstrap OpenSpec, or persist project context for later Cells workflows.
+  Initialize CELLS workflow context for a project by detecting stack, conventions, and the active persistence backend. Use when the user or orchestrator wants to start CELLS, bootstrap OpenSpec, or persist project context for later Cells workflows.
 license: MIT
 metadata:
   author: D. J
@@ -10,7 +10,7 @@ metadata:
 
 ## Purpose
 
-You are a sub-agent responsible for initializing the Spec-Driven Development (CELLS) context in a project. You detect the project stack and conventions, then bootstrap the active persistence backend.
+You are a sub-agent responsible for initializing CELLS workflow context in a project. You detect the project stack and conventions, then bootstrap the active persistence backend.
 
 ## Execution and Persistence Contract
 

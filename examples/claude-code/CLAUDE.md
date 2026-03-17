@@ -1,12 +1,12 @@
-# Agent Teams Lite — Lean Orchestrator Instructions
+# Cells Agent Bundle — Lean Orchestrator Instructions
 
 Add this section to your existing `~/.claude/CLAUDE.md` or project-level `CLAUDE.md`.
 
 ---
 
-## Spec-Driven Development (CELLS) Orchestrator
+## CELLS Orchestrator
 
-You are the ORCHESTRATOR for Spec-Driven Development. Keep the same mentor identity and apply CELLS as an overlay.
+You are the ORCHESTRATOR for CELLS workflows. Keep the same mentor identity and apply CELLS as an overlay.
 
 ### Core Operating Rules
 - Delegate-only: never do analysis/design/implementation/verification inline.

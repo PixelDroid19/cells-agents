@@ -5,7 +5,7 @@ This project uses an Engram-first storage architecture:
 - `openspec` is filesystem mode for local file artifacts.
 - `hybrid` keeps Engram as primary for recovery and writes an OpenSpec mirror alongside it.
 
-Read `skills/_shared/cells-workflow-contract.md` alongside this file for canonical CELLS artifact naming, compatibility-read order, dependency lookup expectations, and result-envelope fields.
+Read `skills/_shared/cells-workflow-contract.md` alongside this file for canonical CELLS artifact naming, compatibility-read order, dependency lookup expectations, delegate-first fallback rules, and result-envelope fields.
 
 ## Mode Resolution
 
@@ -61,6 +61,7 @@ The orchestrator persists DAG state after each phase transition. This enables CE
 - If you are unsure which mode to use, default to `none`.
 - Treat Engram as the source of truth for stateful recovery unless the active mode is strictly `openspec`.
 - When required canonical artifacts are missing in Engram, stop and report the phase as `blocked` or seed the canonical artifact first; do not recover active state from historical legacy artifacts.
+- Historical pre-Cells artifact reads are compatibility-only for explicit migration/backport work and MUST be recorded as non-canonical evidence.
 - For Cells-governed work, apply `skills/_shared/cells-governance-contract.md` and keep `skills/_shared/cells-policy-matrix.yaml` aligned with any cross-layer behavior changes.
 - If browser captures, snapshots, or diffs are produced, treat them as supporting evidence rather than standalone success criteria. Persist a compact summary plus any relevant paths only when the active mode allows it.
 - In `openspec` or `hybrid`, store optional browser evidence under `openspec/changes/{change-name}/ui-evidence/` when filesystem artifacts are required.
@@ -76,8 +77,8 @@ Sub-agents launch with fresh context and no inherited memory protocol. The orche
 | Context | Who reads from backend | Who writes to backend |
 |---------|------------------------|-----------------------|
 | Non-CELLS (general task) | **Orchestrator** searches engram and passes concise context | **Sub-agent** saves discoveries/decisions/bugfixes via `mem_save` |
-| Cells SDD (phase with dependencies) | **Sub-agent** reads artifacts directly from backend | **Sub-agent** saves its artifact |
-| Cells SDD (phase without dependencies) | Optional | **Sub-agent** saves its artifact |
+| CELLS phase (with dependencies) | **Sub-agent** reads artifacts directly from backend | **Sub-agent** saves its artifact |
+| CELLS phase (without dependencies) | Optional | **Sub-agent** saves its artifact |
 
 ### Non-CELLS knowledge persistence (mandatory)
 
@@ -127,6 +128,20 @@ Check for available skills:
   2. Fallback: read .atl/skill-registry.md
 Load and follow any skills relevant to your task.
 ```
+
+When the orchestrator already resolved a concrete path, delegated prompts SHOULD pass it directly in this exact form:
+
+```
+SKILL: Load `{resolved-path}` before starting.
+```
+
+### Optional Background Delegation
+
+If the OpenCode host exposes `delegate`, `delegation_read`, and `delegation_list`, the orchestrator SHOULD prefer background delegation for non-blocking or parallel work.
+
+- `delegate` is preferred when the next user-visible step does not require an immediate result.
+- `task` remains the safe fallback when background delegation is unavailable, unsupported, or immediate results are required.
+- This affects orchestration strategy only; artifact lineage, persistence mode, and `/cells-*` command canon do not change.
 
 ## Evidence Minimum Behavior
 

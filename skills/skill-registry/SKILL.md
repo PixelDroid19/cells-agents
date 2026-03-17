@@ -36,7 +36,7 @@ Generate or refresh the **skill registry** used by sub-agents as Step 1, so they
 2. Skip workflow-only folders/skills:
    - `_shared`
    - `skill-registry`
-    - phase workflow skills (`cells-*` and Cells SDD phase skills: `cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`)
+    - phase workflow skills (`cells-*` and CELLS phase skills: `cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`)
 3. Deduplicate by skill name (project-level wins over user-level).
 4. Read frontmatter only (first ~10 lines) to extract `name` and trigger text from `description`.
 

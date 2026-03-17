@@ -12,7 +12,7 @@ CONTEXT:
 - Artifact store mode: engram
 
 TASK:
-Initialize Spec-Driven Development in this project. Detect the tech stack, existing conventions, architecture patterns, and whether this is a BBVA Cells package, feature composition, or non-Cells repo.
+Initialize CELLS workflow context in this project. Detect the tech stack, existing conventions, architecture patterns, and whether this is a BBVA Cells package, feature composition, or non-Cells repo.
 
 If Cells is detected, inspect `package.json`, `custom-elements.json`, `src/`, and `test/`, and summarize the concrete evidence you found before bootstrapping the active persistence backend.
 

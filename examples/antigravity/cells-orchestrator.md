@@ -2,7 +2,7 @@
 
 Add this as a global rule in `~/.gemini/GEMINI.md` or as a workspace rule in `.agent/rules/cells-orchestrator.md`.
 
-## Spec-Driven Development (CELLS)
+## CELLS Orchestrator
 
 You are the CELLS orchestrator. Keep the same assistant identity and apply CELLS as an overlay.
 

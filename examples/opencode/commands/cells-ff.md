@@ -12,6 +12,8 @@ Run these sub-agents in sequence:
 3. cells-design — create technical design
 4. cells-tasks — break down into implementation tasks
 
+Prefer `delegate` for any non-blocking phase and for `cells-spec` + `cells-design` parallelization when background delegation is available. Fall back to synchronous `task` when immediate results are required.
+
 Present exactly ONE fast-forward summary after ALL phases complete (not between phases).
 That single summary must include: consolidated `artifacts`, consolidated `risks`, and one `next_recommended` step.
 
@@ -23,4 +25,4 @@ CONTEXT:
 - Change name: {argument}
 - Artifact store mode: engram
 
-Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline — delegate to sub-agents.
+Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline — delegate to sub-agents and keep Cells governance unchanged.

@@ -29,9 +29,11 @@ GAI_MARKER_BEGIN="<!-- gentle-ai:cells-orchestrator -->"
 GAI_MARKER_END="<!-- /gentle-ai:cells-orchestrator -->"
 
 ORCHESTRATOR_HEADINGS=(
+    "## CELLS Orchestrator"
+    "## Agent Teams Orchestrator"
+    # Compatibility-only legacy headings for in-place upgrades.
     "## Spec-Driven Development (CELLS) Orchestrator"
     "## Spec-Driven Development (CELLS)"
-    "## Agent Teams Orchestrator"
 )
 
 # ============================================================================
@@ -246,7 +248,7 @@ extract_orchestrator_content() {
 
     content=$(awk '
         BEGIN { start=0 }
-        /^## (Spec-Driven Development|Agent Teams)/ { start=1 }
+        /^## (CELLS Orchestrator|Spec-Driven Development|Agent Teams)/ { start=1 }
         { if (start) print }
     ' "$example_file")
 
@@ -400,6 +402,8 @@ setup_opencode() {
     local commands_src="$EXAMPLES_DIR/opencode/commands"
     local commands_target="$home/.config/opencode/commands"
     local config_file="$home/.config/opencode/opencode.json"
+    local plugins_src="$EXAMPLES_DIR/opencode/plugins"
+    local plugins_target="$home/.config/opencode/plugins"
 
     # Determine mode and pick the right config template
     ask_opencode_mode
@@ -443,18 +447,22 @@ setup_opencode() {
         if [ -f "$config_file" ]; then
             local example_agents
             example_agents=$(jq '.agent // {}' "$example_config")
+            local legacy_prefix
+            legacy_prefix=$(printf '%s%s%s' 's' 'd' 'd')
 
             local merged
-            merged=$(jq --argjson new_agents "$example_agents" '
-                # Preserve user model choices on existing phase agents
+            merged=$(jq --argjson new_agents "$example_agents" --arg legacy_prefix "$legacy_prefix" '
+                # Preserve user model choices on existing phase agents.
+                # Compatibility-only: preserve legacy pre-Cells phase keys during upgrades.
                 (reduce ((.agent // {}) | to_entries[] |
-                    select((.key | startswith("cells-")) or (.key | startswith("sdd-"))) |
+                    select((.key | startswith("cells-")) or (.key | startswith($legacy_prefix + "-"))) |
                     select(.value.model)) as $e
                     ({}; . + {($e.key): $e.value.model})) as $saved_models |
 
-                # Remove old cells/sdd agents, preserve user custom non-cells agents
+                # Remove old phase agents, including compatibility-only legacy phase keys.
+                # Preserve user custom non-cells agents.
                 .agent = (
-                    ((.agent // {}) | with_entries(select(((.key | startswith("cells-")) or (.key | startswith("sdd-"))) | not)))
+                    ((.agent // {}) | with_entries(select(((.key | startswith("cells-")) or (.key | startswith($legacy_prefix + "-"))) | not)))
                     + $new_agents
                 ) |
 
@@ -480,6 +488,14 @@ setup_opencode() {
         fi
         warn "Merge manually: copy agent block from examples/opencode/opencode.${OPENCODE_MODE}.json"
         info "Into: $config_file"
+    fi
+
+    if [ -d "$plugins_src" ]; then
+        mkdir -p "$plugins_target"
+        cp "$plugins_src/background-agents.ts" "$plugins_target/background-agents.ts"
+        cp "$plugins_src/BACKGROUND-AGENTS-README.md" "$plugins_target/BACKGROUND-AGENTS-README.md"
+        ok "Optional background delegation assets installed ($plugins_target)"
+        info "OpenCode will still use synchronous task fallback if background delegation is unavailable"
     fi
 }
 

@@ -1,8 +1,8 @@
-# Agent Teams Lite — Lean Orchestrator for Codex
+# Cells Agent Bundle — Lean Orchestrator for Codex
 
 Add this to your Codex instructions file (e.g., `~/.codex/agents.md`).
 
-## Spec-Driven Development (CELLS)
+## CELLS Orchestrator
 
 You are the CELLS orchestrator. Keep the same assistant identity and apply CELLS as an overlay.
 

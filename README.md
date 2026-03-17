@@ -25,7 +25,7 @@
 
 The bundle is designed for these jobs:
 
-- plan and execute Spec-Driven Development flows
+- plan and execute CELLS workflows
 - research existing BBVA components before inventing new APIs
 - compose features from existing Cells building blocks
 - query official Cells guidance without loading full docs trees into context
@@ -40,7 +40,7 @@ The key design goal is simple: keep the orchestrator lean, keep documentation in
 The bundle uses a four-layer architecture:
 
 1. Host integration layer: `examples/*` contains prompts, rules, and OpenCode commands for each supported host.
-2. Orchestrator layer: a single lean orchestrator routes work, resolves persistence mode, tracks state, and asks for approvals.
+2. Orchestrator layer: a single lean orchestrator routes work, resolves persistence mode, prefers background delegation when the host supports it, tracks state, and asks for approvals.
 3. Skill layer: specialist behavior lives in `skills/cells-*/SKILL.md`.
 4. Knowledge layer: shared conventions plus bundled catalogs provide deterministic retrieval and evidence.
 
@@ -51,11 +51,22 @@ The canonical flow is:
 1. The user selects the orchestrator, usually `cells-orchestrator`.
 2. The user runs a workflow or research command such as `/cells-init` or `/cells-component bbva-button-default`.
 3. The host command or prompt hands control to the orchestrator.
-4. The orchestrator launches a generic delegated run.
+4. The orchestrator launches a delegated run.
+   - Prefer `delegate` for non-blocking or parallel work when the optional OpenCode background-delegation plugin is installed.
+   - Fall back to synchronous `task` when immediate results are required or the plugin is unavailable.
 5. That delegated run starts by reading the relevant `SKILL.md`.
 6. The skill decides which evidence to inspect: code, tests, package docs, official docs, indexed catalogs, or persistence artifacts.
 7. The skill returns a structured result envelope.
 8. The orchestrator summarizes, asks for approval if needed, and selects the next step.
+
+### Delegate-First Orchestration Policy
+
+The orchestrator stays thin and coordination-only:
+
+- delegate-first for SDD and non-SDD work
+- prefer `delegate` when host/plugin support exists
+- fall back to `task` without weakening Cells governance, evidence gates, or specialist routing
+- keep `/cells-*` commands canonical even when migration work inspects historical pre-Cells artifacts as compatibility-only history
 
 ### Conservative Execution Policy
 
@@ -370,6 +381,12 @@ OpenCode supports two modes:
 - `single` (default): one `cells-orchestrator` handles all phases.
 - `multi`: one hidden sub-agent per CELLS phase (`cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`) plus the orchestrator.
 
+Optional background delegation:
+
+- `setup.sh` / `setup.ps1` also surface optional OpenCode background-delegation assets when bundled.
+- When those assets are available, the orchestrator may use `delegate`, `delegation_read`, and `delegation_list` for non-blocking work.
+- If the plugin is absent, the workflow still works through synchronous `task` fallback.
+
 Explicit mode selection:
 
 ```bash
@@ -598,6 +615,16 @@ To improve an existing skill:
 1. edit the `SKILL.md`
 2. validate the result in a real Cells-oriented repo
 3. update shared conventions if the behavior is cross-cutting
+
+Contribution flow remains mandatory:
+
+1. open or reference an issue
+2. wait for approval on that issue
+3. open a PR linked to the approved issue
+4. complete review
+5. merge only after review gates pass
+
+Short form: `issue -> approved issue -> PR -> review -> merge`
 
 ## License
 

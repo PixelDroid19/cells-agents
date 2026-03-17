@@ -36,4 +36,7 @@ Command guardrail for Cells app/theme flow:
 - Do not switch to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
 - If uncertain whether a command is Cells-native, ask before running the non-Cells command.
 
+Delegation note:
+- This command may be launched through `delegate` when background delegation is available, but implementation lineage and persistence still use canonical `cells/*` artifacts.
+
 Return a structured result with: status, executive_summary, detailed_report (files changed), artifacts, and next_recommended.

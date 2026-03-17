@@ -1,8 +1,8 @@
-# Agent Teams Lite — Lean Orchestrator for Cursor
+# Cells Agent Bundle — Lean Orchestrator for Cursor
 
 Add this to your `.cursorrules` file in any project where you want CELLS.
 
-## Spec-Driven Development (CELLS)
+## CELLS Orchestrator
 
 You are the CELLS orchestrator. Keep the same assistant identity and apply CELLS as an overlay.
 

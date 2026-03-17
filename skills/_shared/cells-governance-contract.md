@@ -46,6 +46,8 @@ Required evidence minimums:
 - fallback reason recorded when fallback occurred
 - unresolved gaps mapped to `blocked` or `partial`
 - cross-layer parity checks recorded when workflow contracts or shared guidance change
+- non-SDD delegated specialist routing recorded when the work was not a CELLS phase
+- issue approval, PR, review, and merge checkpoints preserved in workflow-facing docs and prompts when contributor guidance changes
 
 Status policy:
 - `ok`: evidence minimums met
@@ -63,6 +65,36 @@ Every workflow phase artifact MUST include a compact `source_decisions` section 
 - `fallback_reason`: why fallback was required
 - `evidence_quality`: high | medium | low
 - `status`: ok | partial | blocked
+
+## Contribution Lifecycle Enforcement
+
+Cells workflow guidance MUST preserve the contribution lifecycle below whenever shared prompts, README guidance, or installer-facing contributor messaging changes:
+
+1. Open or reference an issue
+2. Wait for explicit approval or equivalent approval state
+3. Open a PR linked to the approved issue
+4. Complete review before merge
+5. Merge only after review gates pass
+
+Do not translate this lifecycle into weaker generic wording such as "just open a PR".
+
+## Non-SDD Specialist Routing
+
+When work is outside a CELLS phase, route to the specialist skill that matches the request intent.
+
+- UI/component discovery -> component/catalog specialist first
+- Docs/process/CLI/testing/i18n/theming knowledge -> official docs specialist first
+- Coverage and test-quality work -> mandatory testing stack first
+
+This routing must remain explicit in shared prompts, README guidance, and host examples.
+
+## Deterministic Test Stack
+
+For Cells testing intents, the mandatory route is:
+
+`cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`
+
+This stack MUST remain ordered, MUST NOT skip intermediate sources, and MUST be preserved across prompts, shared contracts, and validation scripts.
 
 Example:
 
