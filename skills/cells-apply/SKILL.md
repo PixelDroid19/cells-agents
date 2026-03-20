@@ -101,20 +101,32 @@ Before coding real Cells UI/component work, enforce these implementation checks:
 Before editing any file, enforce the assigned scope explicitly:
 
 ```
+For every assigned batch:
+ - Identify the exact module, feature slice, or task boundary requested by the user/orchestrator
+ - Touch only files directly required to complete that assigned work
+ - Do not fix unrelated errors, neighboring modules, or "while I'm here" issues by default
+
+If another file or module must be touched:
+ - Prove it is a direct dependency of the assigned task
+ - Keep the edit limited to the minimum surface needed for the requested outcome
+ - Record the reason in the implementation report
+
+If safe completion requires broader edits than the assigned scope:
+ - STOP before making those extra changes
+ - Request an explicit scope expansion confirmation
+ - Resume only after that confirmation is recorded
+
 If the assigned batch is tests-only:
  - Allowed paths: `test/**`, `test/mocks/**`, and test-only fixtures
  - Forbidden paths: `src/**`, `demo/locales/**`, and any runtime source path
  - Do not "just fix source quickly" during this batch
-
-If you identify a source-code fix is required while in tests-only mode:
- - STOP before editing `src/**`
- - Request an explicit mid-session scope transition confirmation
- - Resume source edits only after confirmation is recorded
 ```
 
-Use this one-line gate evidence in `detailed_report`:
+Use one of these one-line gate evidence entries in `detailed_report`:
+- `Scope gate: strict task scope enforced; only directly affected files were touched`
+- `Scope gate: direct dependency edit justified for assigned task`
 - `Scope gate: tests-only enforced (no src/** or demo/locales/** edits)`
-- or `Scope gate: transitioned to source edits after explicit confirmation`
+- `Scope gate: transitioned after explicit scope expansion confirmation`
 
 ### Step 4: Detect Implementation Mode
 
@@ -320,6 +332,7 @@ If none, say "None."}
 - If you discover the design is wrong or incomplete, NOTE IT in your return summary  don't silently deviate
 - If a task is blocked by something unexpected, STOP and report back
 - NEVER implement tasks that weren't assigned to you
+- Do not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the assigned task unless the user explicitly expands scope
 - When the assigned scope is tests-only, do not edit `src/**` or `demo/locales/**` unless an explicit mid-session scope transition is confirmed
 - Load and follow any relevant coding skills for the project stack (e.g., react-19, typescript, django-drf, tdd, pytest, vitest) if available in the user's skill set
 - If filesystem config exists, apply any `rules.apply` from `openspec/config.yaml`

@@ -82,6 +82,24 @@ For i18n-related tasks:
 - enforce locale-path policy (`demo/locales`) when in Cells context
 - if translation source-of-truth cannot be verified, return `partial` with the missing evidence list
 
+## Task Scope Isolation (Mandatory)
+
+Work must stay strictly inside the user-assigned task scope.
+
+Minimum rules:
+
+- analyze and modify only the files, modules, errors, and behaviors directly required to complete the assigned task
+- do not perform opportunistic refactors, adjacent cleanups, unrelated bug fixes, or cross-module rewrites unless the user explicitly expands scope
+- if another module must be touched for the task to work, limit the change to the direct dependency surface required by the assigned task
+- if you discover unrelated defects while working, report them in `risks`, `issues found`, or `next_recommended`, but do not fix them by default
+- if safe completion requires broader changes than originally assigned, pause and request explicit scope expansion instead of silently continuing
+
+Scope policy:
+
+- `ok`: all touched files are directly justified by the assigned task or its required dependency surface
+- `partial`: the requested task progressed, but scope justification for one or more touched areas is incomplete
+- `blocked`: safe completion would require out-of-scope edits that were not explicitly authorized
+
 ## Execution Trace Fields (Mandatory)
 
 Every workflow phase artifact MUST include a compact `source_decisions` section with entries using:

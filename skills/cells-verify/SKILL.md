@@ -279,7 +279,7 @@ A spec scenario is only considered COMPLIANT when there is a test that passed pr
 Before issuing a verdict, complete this exact checklist:
 
 1. Restriction compliance confirmed
-   - Scope restrictions respected for the verified batch (for example, tests-only batches did not edit `src/**` or `demo/locales/**`)
+   - Scope restrictions respected for the verified batch; touched files stay inside the requested task/module boundary or are justified as direct dependencies (for example, tests-only batches did not edit `src/**` or `demo/locales/**`)
 2. No private assertions
    - Test evidence shows no private member access/assertions (`._*` or `#*`) in changed tests
 3. Native Cells command evidence
@@ -455,6 +455,7 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - Verify visible Cells changes have browser evidence before claiming closure
 - Verify no unnecessary placeholder comments, TODOs, commented-out code, or formatting noise remain in changed files
 - Verify responsibilities stay separated across data-manager/pages/shared-components/utils/styles when that architecture applies
+- Verify the implementation did not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the requested task unless explicit scope expansion was requested
 - For Cells app/theme verification, do NOT default to generic external runners (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
 - If uncertain whether a command is Cells-native, ask the user before running a non-Cells command
 - Be objective  report what IS, not what should be

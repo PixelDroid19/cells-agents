@@ -244,6 +244,21 @@ def scenario_code_hygiene_enforced() -> tuple[bool, str]:
     return False, "Code hygiene and responsibility-separation rules are missing."
 
 
+def scenario_task_scope_isolation_enforced() -> tuple[bool, str]:
+    governance = _read(GOVERNANCE)
+    apply_skill = _read(ROOT / "skills/cells-apply/SKILL.md")
+    verify_skill = _read(VERIFY_SKILL)
+    required = (
+        "Task Scope Isolation (Mandatory)",
+        "do not perform opportunistic refactors, adjacent cleanups, unrelated bug fixes, or cross-module rewrites unless the user explicitly expands scope",
+        "Do not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the assigned task unless the user explicitly expands scope",
+        "Verify the implementation did not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the requested task unless explicit scope expansion was requested",
+    )
+    if all(token in f"{governance}\n{apply_skill}\n{verify_skill}" for token in required):
+        return True, "Task-scope isolation is enforced across governance/apply/verify."
+    return False, "Task-scope isolation guidance is missing or incomplete."
+
+
 SCENARIOS.update(
     {
         "workflow-contract-parity": scenario_workflow_contract_parity,
@@ -254,6 +269,7 @@ SCENARIOS.update(
         "i18n-routing-enforced": scenario_i18n_routing_enforced,
         "real-cells-rules-enforced": scenario_real_cells_rules_enforced,
         "code-hygiene-enforced": scenario_code_hygiene_enforced,
+        "task-scope-isolation-enforced": scenario_task_scope_isolation_enforced,
     }
 )
 
