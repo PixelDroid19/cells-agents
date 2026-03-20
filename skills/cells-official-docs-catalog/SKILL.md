@@ -85,6 +85,36 @@ Do not dump large documentation blocks into the report.
 - `application-testing`
 - `theming`
 
+## Canonical Component Construction Coverage
+
+For real component authoring/review flows, use this reference coverage matrix before concluding:
+
+| Official area | Internal topic/route |
+| --- | --- |
+| Web Components overview and reference | `web-components-foundations` |
+| Packaging | `component-api` + `cli` |
+| Custom elements | `component-api` |
+| Class and properties | `component-api` + `lit-authoring` |
+| Lifecycle | `lit-authoring` |
+| Reuse and composition | `composition` |
+| Component API | `component-api` |
+| Templating in Lit | `lit-authoring` |
+| Styles | `lit-authoring` + `theming` |
+| Theming | `theming` |
+| Demo | `demo-docs-i18n-assets` |
+| Internationalization (i18n) | `demo-docs-i18n-assets` + `skills/cells-i18n/` |
+| Documentation | `demo-docs-i18n-assets` + `component-api` |
+| Images and icons | `demo-docs-i18n-assets` |
+| Spherica integration | `composition` + project package evidence |
+| Context | `architecture` + `application-runtime` |
+| Testing | `testing` + `application-testing` |
+| CI/CD | `cli` + project-local pipeline/config evidence |
+
+Minimum rule:
+
+- If a task claims production-ready component guidance, include explicit coverage of the relevant areas from this matrix.
+- If any required area is missing evidence, return `partial` instead of `ok`.
+
 ## Rules
 
 - Prefer this internal catalog over direct references to folders outside this package

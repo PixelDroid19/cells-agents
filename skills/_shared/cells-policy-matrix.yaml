@@ -133,6 +133,9 @@ policy_rows:
 
   - layer: shared-skills
     file: skills/_shared/cells-governance-contract.md
+
+  - layer: shared-skills
+    file: skills/_shared/cells-source-routing-contract.md
     requirement_ids:
       - REQ-DETERMINISTIC-FALLBACK
       - REQ-TRACEABILITY

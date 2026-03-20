@@ -22,6 +22,7 @@ The orchestrator will give you:
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
+Read and follow `skills/_shared/cells-source-routing-contract.md` for deterministic source selection and minimum evidence.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the topic is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route the exploration to the exact official docs needed.
@@ -88,12 +89,21 @@ For Cells or BBVA component work, always gather evidence from:
 - `skills/cells-official-docs-catalog/` when the topic needs official Cells design, testing, lifecycle, or authoring guidance
 - real feature repos when the request is about composition, behavior, or best practices
 
+Enforce intent routing exactly as defined in `skills/_shared/cells-source-routing-contract.md`:
+- component/package/API discovery -> components catalog SQL first
+- Cells process/docs/CLI/testing/i18n/theming guidance -> official docs catalog first
+- fallback only in deterministic order, with explicit source decision trace
+
 For Cells testing-related exploration topics, apply this mandatory stack before any other testing source:
 1. `skills/cells-cli-usage/`
 2. `skills/cells-coverage/`
 3. `skills/cells-test-creator/`
 
 Do not skip or reorder this stack. Do not introduce generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
+
+Minimum evidence gate:
+- If exploration does not include at least one routed catalog source plus project-local runtime evidence, return `status: partial` (never `ok`).
+- If required primary source is unavailable and deterministic fallback is also unavailable, return `status: blocked`.
 
 ```
 INVESTIGATE:

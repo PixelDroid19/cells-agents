@@ -41,6 +41,7 @@ For every decision, resolve source intent first and query the primary source bef
 When evidence minimums are not met, do not claim full completion.
 
 Required evidence minimums:
+
 - at least one source decision trace per major requirement/task group
 - explicit primary-source attempt recorded
 - fallback reason recorded when fallback occurred
@@ -49,10 +50,37 @@ Required evidence minimums:
 - non-SDD delegated specialist routing recorded when the work was not a CELLS phase
 - issue approval, PR, review, and merge checkpoints preserved in workflow-facing docs and prompts when contributor guidance changes
 
+Additional quality minimums (anti-hallucination):
+
+- do not claim a file/path exists without direct repository evidence (directory listing or file read)
+- do not claim a component API/event/prop exists without catalog or code evidence
+- do not claim command validity without Cells-native command evidence (`cells-cli-usage` or project command mapping)
+- when evidence is missing or ambiguous, downgrade to `partial` or `blocked` (never infer by memory)
+
 Status policy:
+
 - `ok`: evidence minimums met
 - `partial`: work progressed but at least one evidence minimum unmet
 - `blocked`: required evidence unavailable and progress cannot safely continue
+
+## File and Path Verification (Mandatory)
+
+Before reporting or editing a path, verify it exists in the active workspace.
+
+Minimum rule:
+
+- references to paths/files in outputs must be backed by observed repo evidence
+- if an expected path is missing, report it explicitly and provide remediation
+- never relocate files conceptually (for example locale paths) without checking project conventions first
+
+## Translation and i18n Reliability
+
+For i18n-related tasks:
+
+- route through official Cells docs and `cells-i18n` guidance before proposing changes
+- keep technical/public API naming in English unless the user explicitly requests otherwise
+- enforce locale-path policy (`demo/locales`) when in Cells context
+- if translation source-of-truth cannot be verified, return `partial` with the missing evidence list
 
 ## Execution Trace Fields (Mandatory)
 

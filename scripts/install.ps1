@@ -45,6 +45,17 @@ $ToolPaths = @{
     'project-local'     = Join-Path '.' 'skills'
 }
 
+$CoreWorkflowCommands = @(
+    'cells-init.md',
+    'cells-explore.md',
+    'cells-new.md',
+    'cells-continue.md',
+    'cells-ff.md',
+    'cells-apply.md',
+    'cells-verify.md',
+    'cells-archive.md'
+)
+
 # ============================================================================
 # Display Helpers
 # ============================================================================
@@ -264,14 +275,16 @@ function Install-OpenCodeCommands {
     New-Item -ItemType Directory -Path $commandsTarget -Force | Out-Null
 
     $count = 0
-    $cmdFiles = Get-ChildItem -Path $commandsSrc -File -Filter 'cells-*.md'
-
-    foreach ($cmdFile in $cmdFiles) {
-        $cmdName = $cmdFile.BaseName
-        Copy-Item -Path $cmdFile.FullName -Destination (Join-Path $commandsTarget $cmdFile.Name) -Force
-
-        Write-Skill $cmdName
-        $count++
+    foreach ($cmdName in $CoreWorkflowCommands) {
+        $sourceFile = Join-Path $commandsSrc $cmdName
+        if (Test-Path $sourceFile) {
+            Copy-Item -Path $sourceFile -Destination (Join-Path $commandsTarget $cmdName) -Force
+            Write-Skill ([System.IO.Path]::GetFileNameWithoutExtension($cmdName))
+            $count++
+        }
+        else {
+            Write-Warn "Skipping missing workflow command: $([System.IO.Path]::GetFileNameWithoutExtension($cmdName))"
+        }
     }
 
     Write-Host ''

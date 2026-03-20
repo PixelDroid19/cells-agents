@@ -192,6 +192,66 @@ Before acting, run this checklist in order:
 5. Keep technical artifacts in English (JSDoc, event names, API names, payload keys).
 6. Validate claims with strongest available evidence (code first, then routed catalogs/skills, then browser evidence when UI-visible).
 
+## Reliability Guardrails (Mandatory)
+
+- Never invent file paths, APIs, events, or command names.
+- Verify file paths before citing or editing them.
+- For component/API claims, use catalog/code evidence first; otherwise return `partial`.
+- For i18n claims, verify locale path and runtime setup before proposing fixes.
+- When command ownership is uncertain, resolve with `cells-cli-usage` first.
+
+### Command Allowlist Behavior (Cells contexts)
+
+By default, use only:
+
+- `/cells-*` workflow commands
+- `cells app:*`
+- `cells lit-component:*`
+
+If a requested command is outside this set and not explicitly requested by the user, stop and report `blocked` with an approved Cells-native alternative.
+
+## Real Cells Component Rules (Mandatory)
+
+When building, modifying, or reviewing a real Cells component or feature UI, apply these rules unless the user explicitly asks for a different pattern and the project evidence supports it:
+
+1. Use existing BBVA components first
+   - Reuse existing BBVA components before creating new UI primitives or wrappers.
+   - Use `skills/cells-components-catalog/` SQL lookup as the required first discovery step.
+
+2. Register everything in `scopedElements`
+   - Every local/custom element dependency used in templates must be imported and registered in `static get scopedElements()`.
+   - Do not rely on implicit global registration for feature-local composition.
+
+3. Use `WidgetMixin` and `this.emitEvent(...)` for business/component events when the feature architecture requires it
+   - For Cells feature/data-manager patterns, prefer `WidgetMixin(ScopedElementsMixin(LitElement))` when consistent with surrounding architecture.
+   - Use `this.emitEvent(...)` for business events and bridge-facing communication instead of ad hoc event dispatch patterns when the feature convention already uses `WidgetMixin`.
+
+4. i18n through `this.t(...)` with locale parity
+   - Route component-owned literals through `this.t(...)`.
+   - Keep key parity in `demo/locales/locales.json`.
+   - Do not create or reference locale files outside `demo/locales`.
+
+5. SCSS is the visual source; runtime styles stay aligned
+   - Treat SCSS as the visual source of truth when the component scaffold uses it.
+   - Keep generated/aligned runtime styling (`.css.js`) consistent with SCSS-backed styling rules and Cells toolchain expectations.
+   - Do not introduce manual style flows that bypass Cells component tooling.
+
+6. Browser validation before closure for visible changes
+   - If a change is browser-visible, perform browser validation with `agent-browser` before claiming closure.
+   - Reuse existing runtime/session when possible.
+
+## Code Hygiene Rules (Mandatory)
+
+- Use JSDoc for public API, emitted events, or non-obvious contracts that need durable documentation.
+- Do not leave placeholder comments, TODO comments, commented-out code, or narrative inline comments when clear naming and extracted methods are enough.
+- Do not leave unnecessary blank lines, trailing whitespace, or formatting noise unrelated to the change.
+- Prefer separation of responsibilities:
+  - data/business orchestration in data managers
+  - page/view composition in pages
+  - reusable feature UI in shared components
+  - pure helpers in utils
+  - visual styling in styles/SCSS and runtime style artifacts
+
 ## What To Extract
 
 For components, always extract:

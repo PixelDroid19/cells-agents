@@ -56,6 +56,30 @@ Produce an authoring plan covering:
 - public API shape: properties, events, slots, CSS custom properties
 - verification plan using `skills/cells-test-creator/`
 
+Before finalizing, validate coverage against the official construction checklist from `skills/_shared/cells-official-reference.md`:
+- packaging
+- custom elements
+- class/properties/lifecycle
+- reuse/composition
+- component API and templating
+- styles/theming
+- demo/docs/i18n/assets
+- context, testing, and CI/CD expectations relevant to the requested scope
+
+If relevant checklist items are missing evidence, return `status: partial` and list the gaps.
+
+Also validate these implementation rules when they apply to the requested scope:
+- reuse existing BBVA components before authoring new UI
+- register template dependencies in `scopedElements`
+- use `WidgetMixin` + `this.emitEvent(...)` when following Cells feature/data-manager architecture
+- route literals through `this.t(...)` and keep locale parity in `demo/locales/locales.json`
+- keep SCSS as visual source and runtime style artifacts aligned
+- require browser validation targets for visible changes before closure
+- use JSDoc for public API contracts, but do not leave placeholder or narrative inline comments
+- keep responsibilities separated across data-manager/pages/shared-components/utils/styles
+
+If these rules are violated by the proposed plan, return `status: partial` with remediation.
+
 ### 3. If Modifying An Existing Component
 
 Produce an evolution plan covering:
@@ -109,13 +133,19 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 ## Rules
 
 - Never create a new reusable component before checking whether composition or reuse already solves the need
+- For real Cells authoring, prefer existing BBVA components first and justify any new component explicitly
+- Any element used in a template must be imported and registered in `scopedElements`
+- When the architecture is feature/data-manager based, prefer `WidgetMixin` and `this.emitEvent(...)` for business events
 - Prefer repo-local scripts and commands resolved by `skills/cells-cli-usage/`
 - Treat `custom-elements.json` and package docs as part of the deliverable, not as optional extras
 - When public API changes, call out migration risk explicitly
 - When the component uses locales or translated literals, route through `skills/cells-i18n/`
 - In Cells projects, require locale files under `demo/locales` only; do not plan locale files outside that path
+- Require `this.t(...)` for component-owned literals and parity in `demo/locales/locales.json`
+- Treat SCSS as the visual source of truth when the scaffold/toolchain provides it and keep runtime style outputs aligned
 - When tests are needed, route through `skills/cells-test-creator/`
 - Use English for generated JSDoc/comments, event names/custom event types/payload keys, and public API naming unless the user explicitly asks for another naming language
+- Do not leave TODO comments, commented-out code, or unnecessary narrative comments in generated implementation plans
 - Return the standard structured envelope with the markdown report above in `detailed_report`
 
 ## Browser Integration

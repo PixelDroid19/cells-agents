@@ -83,6 +83,17 @@ $AgentBinaries = @{
     'vscode'      = 'code'
 }
 
+$CoreWorkflowCommands = @(
+    'cells-init.md',
+    'cells-explore.md',
+    'cells-new.md',
+    'cells-continue.md',
+    'cells-ff.md',
+    'cells-apply.md',
+    'cells-verify.md',
+    'cells-archive.md'
+)
+
 # ============================================================================
 # Display Helpers
 # ============================================================================
@@ -275,7 +286,7 @@ function Set-Orchestrator {
 # OpenCode Special Handling
 # ============================================================================
 
-function Ask-OpenCodeMode {
+function Select-OpenCodeMode {
     # If already set via parameter, skip
     if ($script:OpenCodeMode) { return }
 
@@ -320,7 +331,7 @@ function Set-OpenCode {
     $pluginsSrc = Join-Path $ExamplesDir 'opencode\plugins'
     $pluginsTarget = Join-Path $env:USERPROFILE '.config\opencode\plugins'
 
-    Ask-OpenCodeMode
+    Select-OpenCodeMode
 
     $exampleConfig = Join-Path $ExamplesDir "opencode\opencode.$($script:OpenCodeMode).json"
     if (-not (Test-Path $exampleConfig) -and $script:OpenCodeMode -eq 'single') {
@@ -334,22 +345,28 @@ function Set-OpenCode {
         New-Item -ItemType Directory -Path $commandsTarget -Force | Out-Null
         $count = 0
 
-        Get-ChildItem -Path $commandsSrc -Filter 'cells-*.md' | ForEach-Object {
-            $cmdName = $_.BaseName
-            $content = Get-Content -Path $_.FullName -Raw
+        foreach ($commandFileName in $CoreWorkflowCommands) {
+            $sourcePath = Join-Path $commandsSrc $commandFileName
+            if (-not (Test-Path $sourcePath)) {
+                Write-Warn "Missing core command template: $([System.IO.Path]::GetFileNameWithoutExtension($commandFileName))"
+                continue
+            }
+
+            $cmdName = [System.IO.Path]::GetFileNameWithoutExtension($commandFileName)
+            $content = Get-Content -Path $sourcePath -Raw
 
             if ($script:OpenCodeMode -eq 'multi' -and $content -match '(?m)^subtask:') {
                 $mapped = Get-MultiPhaseAgent -CommandName $cmdName
                 if ($mapped) {
                     $modified = $content -replace '(?m)^agent: cells-orchestrator', "agent: $mapped"
-                    Set-Content -Path (Join-Path $commandsTarget $_.Name) -Value $modified -NoNewline
+                    Set-Content -Path (Join-Path $commandsTarget $commandFileName) -Value $modified -NoNewline
                 }
                 else {
-                    Copy-Item -Path $_.FullName -Destination (Join-Path $commandsTarget $_.Name) -Force
+                    Copy-Item -Path $sourcePath -Destination (Join-Path $commandsTarget $commandFileName) -Force
                 }
             }
             else {
-                Copy-Item -Path $_.FullName -Destination (Join-Path $commandsTarget $_.Name) -Force
+                Copy-Item -Path $sourcePath -Destination (Join-Path $commandsTarget $commandFileName) -Force
             }
 
             $count++

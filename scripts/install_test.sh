@@ -22,6 +22,17 @@ BOLD='\033[1m'
 NC='\033[0m'
 
 EXPECTED_SKILLS=()
+CORE_WORKFLOW_COMMANDS=(
+    "cells-init.md"
+    "cells-explore.md"
+    "cells-new.md"
+    "cells-continue.md"
+    "cells-ff.md"
+    "cells-apply.md"
+    "cells-verify.md"
+    "cells-archive.md"
+)
+
 for skill_dir in "$REPO_DIR"/skills/*; do
     [[ -d "$skill_dir" ]] || continue
     skill_name="$(basename "$skill_dir")"
@@ -30,7 +41,7 @@ for skill_dir in "$REPO_DIR"/skills/*; do
     EXPECTED_SKILLS+=("$skill_name")
 done
 EXPECTED_SKILL_COUNT="${#EXPECTED_SKILLS[@]}"
-EXPECTED_COMMAND_COUNT=$(find "$REPO_DIR/examples/opencode/commands" -name "cells-*.md" | wc -l | tr -d ' ')
+EXPECTED_COMMAND_COUNT="${#CORE_WORKFLOW_COMMANDS[@]}"
 
 setup() {
     TEST_TMPDIR="$(mktemp -d)"

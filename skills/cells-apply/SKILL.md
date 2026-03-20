@@ -88,6 +88,14 @@ For Cells projects, also inspect:
 12. `skills/cells-cli-usage/` when you need the correct local lint, docs, locales, or serve command
 13. `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` when the task changes rendered UI, demos, routes, interaction flows, or visual states
 
+Before coding real Cells UI/component work, enforce these implementation checks:
+- reuse existing BBVA components first; do not reinvent existing UI primitives
+- register every template dependency in `scopedElements`
+- when the surrounding architecture uses feature/data-manager patterns, prefer `WidgetMixin` and `this.emitEvent(...)` for business events
+- route component-owned literals through `this.t(...)` and keep parity in `demo/locales/locales.json`
+- treat SCSS as visual source and keep runtime style artifacts aligned
+- require a browser validation target when the change is visible in the UI
+
 ### Step 3b: Scope Restriction Gate (Mandatory)
 
 Before editing any file, enforce the assigned scope explicitly:
@@ -298,8 +306,16 @@ If none, say "None."}
 - ALWAYS follow the design decisions  don't freelance a different approach
 - ALWAYS match existing code patterns and conventions in the project
 - For Cells projects, preserve public attributes, event names, scoped registrations, and package import conventions unless the task explicitly changes them
+- For Cells projects, use existing BBVA components before creating new UI primitives or wrappers unless specs/design explicitly justify otherwise
+- For Cells projects, every custom element used in template output must be imported and registered in `scopedElements`
+- For Cells feature/data-manager architecture, prefer `WidgetMixin` plus `this.emitEvent(...)` for business events when consistent with surrounding code
 - For Cells projects, keep locale files under `demo/locales` only; do not create or reference locale files outside `demo/locales`
+- For Cells projects, use `this.t(...)` for component-owned literals and keep key parity in `demo/locales/locales.json`
+- When the scaffold/toolchain uses SCSS, keep SCSS as the visual source and keep runtime style files aligned
 - Use English for generated JSDoc/comments, event names/custom event types/payload keys, and public API naming unless the user explicitly requests a different naming language
+- Use JSDoc for public API/events and non-obvious contracts; do not leave TODO comments, placeholder comments, or commented-out code
+- Avoid unnecessary whitespace-only edits and extra blank lines unrelated to the task
+- Preserve separation of responsibilities across data-manager, pages, shared-components, utils, and styles
 - In `openspec` mode, mark tasks complete in `tasks.md` AS you go, not at the end
 - If you discover the design is wrong or incomplete, NOTE IT in your return summary  don't silently deviate
 - If a task is blocked by something unexpected, STOP and report back
@@ -313,7 +329,7 @@ If none, say "None."}
 - If uncertain whether a command is Cells-native, ask the user before running a non-Cells command
 - Do not run project-wide runtime or test commands for every small change; execute only what is needed to confirm the assigned task
 - If browser confirmation is needed, reuse the existing runtime, browser session, and port before starting a new one
-- When implementation changes browser-visible UI, run a minimal browser validation loop if a local runtime can be served safely
+- When implementation changes browser-visible UI, run a minimal browser validation loop if a local runtime can be served safely; do not claim closure without browser evidence for visible changes
 - Every apply-progress artifact MUST include a `Source Decisions` section and refer to canonical `cells/*` artifacts as the active lineage
 - Record task-level source decision trace and fallback reason when non-primary evidence is used
 - If evidence minimums are unmet, return `status: partial | blocked` with remediation steps

@@ -11,6 +11,17 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 SKILLS_SRC="$REPO_DIR/skills"
 
+CORE_WORKFLOW_COMMANDS=(
+    "cells-init.md"
+    "cells-explore.md"
+    "cells-new.md"
+    "cells-continue.md"
+    "cells-ff.md"
+    "cells-apply.md"
+    "cells-verify.md"
+    "cells-archive.md"
+)
+
 # ============================================================================
 # OS Detection
 # ============================================================================
@@ -269,13 +280,15 @@ install_opencode_commands() {
     mkdir -p "$commands_target"
 
     local count=0
-    for cmd_file in "$commands_src"/*.md; do
-        [ -f "$cmd_file" ] || continue
-        local cmd_name
-        cmd_name=$(basename "$cmd_file")
-        cp "$cmd_file" "$commands_target/$cmd_name"
-        print_skill "${cmd_name%.md}"
-        count=$((count + 1))
+    local cmd_name
+    for cmd_name in "${CORE_WORKFLOW_COMMANDS[@]}"; do
+        if [ -f "$commands_src/$cmd_name" ]; then
+            cp "$commands_src/$cmd_name" "$commands_target/$cmd_name"
+            print_skill "${cmd_name%.md}"
+            count=$((count + 1))
+        else
+            print_warn "Skipping missing workflow command: ${cmd_name%.md}"
+        fi
     done
 
     echo -e "\n  ${GREEN}${BOLD}$count commands installed${NC} → $commands_target"
@@ -449,6 +462,6 @@ else
     interactive_menu
 fi
 
-echo -e "\n${GREEN}${BOLD}Done!${NC} Start with ${CYAN}/cells-init${NC} or inspect a component with ${CYAN}/cells-component bbva-type-text${NC}\n"
+echo -e "\n${GREEN}${BOLD}Done!${NC} Start with ${CYAN}/cells-init${NC} and continue the workflow with ${CYAN}/cells-new${NC} or ${CYAN}/cells-continue${NC}\n"
 print_engram_note
 echo ""

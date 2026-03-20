@@ -38,6 +38,52 @@ Do NOT reference folders outside this package from this file or from dependent s
 
 ## Official Source Map
 
+### Canonical component-construction checklist
+
+When building or reviewing real Cells components, ensure coverage (only the relevant items for the task scope):
+
+- Web Components overview/reference
+- Packaging
+- Custom elements
+- Class and properties
+- Lifecycle
+- Reuse and composition
+- Component API
+- Templating in Lit
+- Styles and theming
+- Demo
+- Internationalization (i18n)
+- Documentation
+- Images and icons
+- Spherica integration
+- Context
+- Testing
+- CI/CD
+
+If required checklist items are not supported by evidence, return `partial` and list missing areas.
+
+### Required real-component implementation patterns
+
+When the task is about building a real component or feature-facing UI, validate these operational patterns as applicable:
+
+- reuse existing BBVA components first (`cells-components-catalog`)
+- register template dependencies in `scopedElements`
+- use `WidgetMixin` and `this.emitEvent(...)` when following Cells feature/data-manager architecture
+- use `this.t(...)` for component-owned literals
+- keep locale parity in `demo/locales/locales.json`
+- treat SCSS as visual source and keep runtime style artifacts aligned
+- validate visible behavior in the browser before closure
+
+Use these sources:
+
+- `skills/cells-components-catalog/` for reuse-first evidence
+- `skills/cells-official-docs-catalog/` topics `component-api`, `lit-authoring`, `composition`, `demo-docs-i18n-assets`, `testing`, `theming`
+- `skills/cells-app-architecture/references/data-managers.md`
+- `skills/cells-app-architecture/references/routing.md`
+- `skills/cells-app-architecture/references/feature-structure.md`
+- `skills/cells-i18n/references/i18n-runtime-and-locales.md`
+- `skills/_shared/browser-testing-convention.md`
+
 ### Cells and Web Components fundamentals
 
 - `skills/cells-official-docs-catalog/` topic: `web-components-foundations`
@@ -101,6 +147,7 @@ Use for:
 - exported classes and entry points
 - package exports and `custom-elements.json`
 - deciding whether a new base component should be authored or avoided
+- packaging rules and publishability checks for reusable components
 
 ### Lit authoring and component internals
 
@@ -133,6 +180,7 @@ Use for:
 - locales setup
 - icons, SVG assets, microillustrations
 - translated literals and locale parity
+- documentation outputs and examples needed for reusable components
 
 ### Testing
 
@@ -184,6 +232,16 @@ Use for:
 - shared styles
 - design tokens
 - dark mode
+
+### CI/CD and delivery checks
+
+- `skills/cells-official-docs-catalog/` topic: `cli`
+- local project CI configuration and scripts
+
+Use for:
+- lint/test/build gating before merge
+- command consistency with Cells-native toolchain
+- release/publish checklist alignment for component packages
 
 ## Preferred Evidence Order
 

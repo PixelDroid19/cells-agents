@@ -184,12 +184,76 @@ def scenario_source_decision_template() -> tuple[bool, str]:
     return False, "Source decision template coverage is incomplete."
 
 
+def scenario_reliability_guardrails() -> tuple[bool, str]:
+    governance = _read(GOVERNANCE)
+    conventions = _read(ROOT / "skills/_shared/cells-conventions.md")
+    required = (
+        "do not claim a file/path exists without direct repository evidence",
+        "Never invent file paths, APIs, events, or command names.",
+        "Verify file paths before citing or editing them.",
+    )
+    if all(token in f"{governance}\n{conventions}" for token in required):
+        return True, "Reliability guardrails (anti-hallucination + path checks) are present."
+    return False, "Reliability guardrails are incomplete."
+
+
+def scenario_i18n_routing_enforced() -> tuple[bool, str]:
+    source_routing = _read(ROOT / "skills/_shared/cells-source-routing-contract.md")
+    verify_cmd = _read(ROOT / "examples/opencode/commands/cells-verify.md")
+    required = (
+        "i18n translation/runtime/locales",
+        "skills/cells-i18n/",
+        "Do not claim translation/i18n correctness without consulting `skills/cells-i18n/`",
+    )
+    if all(token in f"{source_routing}\n{verify_cmd}" for token in required):
+        return True, "i18n routing and verification guardrails are enforced."
+    return False, "i18n routing and verification guardrails are missing."
+
+
+def scenario_real_cells_rules_enforced() -> tuple[bool, str]:
+    conventions = _read(ROOT / "skills/_shared/cells-conventions.md")
+    apply_skill = _read(ROOT / "skills/cells-apply/SKILL.md")
+    verify_skill = _read(VERIFY_SKILL)
+    required = (
+        "Use existing BBVA components first",
+        "scopedElements",
+        "WidgetMixin",
+        "this.emitEvent(...)",
+        "this.t(...)",
+        "demo/locales/locales.json",
+        "SCSS",
+        "browser validation",
+    )
+    if all(token in f"{conventions}\n{apply_skill}\n{verify_skill}" for token in required):
+        return True, "Real Cells implementation rules are enforced across conventions/apply/verify."
+    return False, "Real Cells implementation rules are incomplete."
+
+
+def scenario_code_hygiene_enforced() -> tuple[bool, str]:
+    conventions = _read(ROOT / "skills/_shared/cells-conventions.md")
+    apply_skill = _read(ROOT / "skills/cells-apply/SKILL.md")
+    verify_skill = _read(VERIFY_SKILL)
+    required = (
+        "Use JSDoc for public API",
+        "do not leave TODO comments",
+        "Avoid unnecessary whitespace-only edits",
+        "separation of responsibilities",
+    )
+    if all(token in f"{conventions}\n{apply_skill}\n{verify_skill}" for token in required):
+        return True, "Code hygiene and responsibility-separation rules are enforced."
+    return False, "Code hygiene and responsibility-separation rules are missing."
+
+
 SCENARIOS.update(
     {
         "workflow-contract-parity": scenario_workflow_contract_parity,
         "canonical-write-contract": scenario_canonical_write_contract,
         "canonical-lineage-only": scenario_canonical_lineage_only,
         "source-decision-template": scenario_source_decision_template,
+        "reliability-guardrails": scenario_reliability_guardrails,
+        "i18n-routing-enforced": scenario_i18n_routing_enforced,
+        "real-cells-rules-enforced": scenario_real_cells_rules_enforced,
+        "code-hygiene-enforced": scenario_code_hygiene_enforced,
     }
 )
 

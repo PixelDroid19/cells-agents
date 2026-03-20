@@ -22,6 +22,7 @@ From the orchestrator:
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
+Read and follow `skills/_shared/cells-source-routing-contract.md` for deterministic source selection and minimum evidence.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
 - If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `tasks`. Retrieve `proposal`, `spec`, and `design` canonically.
@@ -63,6 +64,13 @@ From the design document, identify:
 - All files that need to be created/modified/deleted
 - The dependency order (what must come first)
 - Testing requirements per component
+
+Before writing tasks, validate source coverage by intent:
+- UI/component/package/API task groups -> run `skills/cells-components-catalog/scripts/search_docs.py` SQL lookup first and then confirm against project evidence (`custom-elements.json`, `src/`, `test/`).
+- Cells docs/process/CLI/testing/theming/i18n task groups -> consult `skills/cells-official-docs-catalog/` first.
+- Any testing task group must use this strict stack first: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.
+
+Do not skip or reorder these sources. Do not use generic fallback runners (`npm test`, `npm run test`, `npx web-test-runner`) for Cells contexts unless explicitly requested by the user.
 
 ### Step 4: Write The Task Content
 
@@ -210,6 +218,7 @@ Ready for implementation (cells-apply).
 - Every tasks artifact MUST include a `Source Decisions` section and keep canonical `cells/*` refs as the active artifact names
 - Include task-level source trace expectations (source used, fallback reason, blocked/partial condition)
 - If dependency evidence is incomplete, return `status: partial | blocked` and list remediation
+- If task groups do not include routed source evidence per `cells-source-routing-contract.md`, return `status: partial`
 - If filesystem config exists, apply any `rules.tasks` from `openspec/config.yaml`
 - If the project uses TDD, integrate test-first tasks: RED task (write failing test)  GREEN task (make it pass)  REFACTOR task (clean up)
 - Return the standard structured envelope with the markdown report above in `detailed_report`

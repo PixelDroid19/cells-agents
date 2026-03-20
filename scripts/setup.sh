@@ -19,6 +19,17 @@ REPO_DIR="$(dirname "$SCRIPT_DIR")"
 SKILLS_SRC="$REPO_DIR/skills"
 EXAMPLES_DIR="$REPO_DIR/examples"
 
+CORE_WORKFLOW_COMMANDS=(
+    "cells-init.md"
+    "cells-explore.md"
+    "cells-new.md"
+    "cells-continue.md"
+    "cells-ff.md"
+    "cells-apply.md"
+    "cells-verify.md"
+    "cells-archive.md"
+)
+
 MARKER_BEGIN="<!-- BEGIN:cells-agent-bundle -->"
 MARKER_END="<!-- END:cells-agent-bundle -->"
 
@@ -403,9 +414,10 @@ setup_opencode() {
         mkdir -p "$commands_target"
         local count=0
 
-        for cmd_file in "$commands_src"/cells-*.md; do
-            [ -f "$cmd_file" ] || continue
-            local cmd_name
+        local cmd_file cmd_name
+        for cmd_name_with_ext in "${CORE_WORKFLOW_COMMANDS[@]}"; do
+            cmd_file="$commands_src/$cmd_name_with_ext"
+            [ -f "$cmd_file" ] || { warn "Missing core command template: ${cmd_name_with_ext%.md}"; continue; }
             cmd_name="$(basename "$cmd_file" .md)"
 
             if [[ "$OPENCODE_MODE" == "multi" ]] && grep -q "^subtask:" "$cmd_file"; then

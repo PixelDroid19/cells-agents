@@ -134,6 +134,15 @@ For Cells projects, also confirm tests cover:
 - loading, empty, disabled, and error states when applicable
 - i18n and locales setup when the component uses `BbvaCoreIntlMixin`
 
+For real Cells UI/component verification, also verify when applicable:
+- existing BBVA component reuse was preferred over reinvented local UI
+- template dependencies are imported and registered in `scopedElements`
+- `WidgetMixin` and `this.emitEvent(...)` are used consistently with feature/data-manager architecture
+- component-owned literals use `this.t(...)`
+- keys are present in `demo/locales/locales.json`
+- SCSS-backed styling and runtime style artifacts are aligned
+- browser validation exists for visible changes
+
 ### Step 6b: Run Tests (Real Execution)
 
 Detect the project's test runner and execute the tests:
@@ -277,6 +286,10 @@ Before issuing a verdict, complete this exact checklist:
    - Execution evidence uses Cells-native commands (`cells app:*`, `cells lit-component:*`, `/cells-*`) unless user explicitly requested non-Cells path
 4. lcov file-level evidence
    - Target files show 100/100/100/100 (Statements/Branches/Functions/Lines) with per-file lcov counters
+5. Real Cells implementation rules
+   - Reuse-first, `scopedElements`, event pattern, i18n parity, styling alignment, and browser validation requirements are satisfied for the verified scope
+6. Code hygiene
+   - Public API contracts use JSDoc where needed; no leftover TODO/comments/commented-out code/formatting noise remain in changed files
 
 If any checklist item fails, verdict cannot be `PASS`.
 
@@ -426,6 +439,8 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 | No private assertions |  OK /  FAIL | {private scan result} |
 | Native Cells command evidence |  OK /  FAIL | `{command(s)}` |
 | lcov 100/100/100/100 evidence |  OK /  FAIL | {per-file counters} |
+| Real Cells implementation rules |  OK /  FAIL | {reuse/scopedElements/events/i18n/styles/browser note} |
+| Code hygiene |  OK /  FAIL | {JSDoc/comment/formatting note} |
 ```
 
 ## Rules
@@ -437,6 +452,9 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 - For Cells projects, explicitly report mismatches between source code, `custom-elements.json`, package docs, and tests
 - For Cells projects, explicitly report any locale file created or referenced outside `demo/locales` as a verification issue
 - Verify generated and changed technical naming remains in English for JSDoc/comments, event names/custom event types/payload keys, and public API names unless the user explicitly requested otherwise
+- Verify visible Cells changes have browser evidence before claiming closure
+- Verify no unnecessary placeholder comments, TODOs, commented-out code, or formatting noise remain in changed files
+- Verify responsibilities stay separated across data-manager/pages/shared-components/utils/styles when that architecture applies
 - For Cells app/theme verification, do NOT default to generic external runners (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
 - If uncertain whether a command is Cells-native, ask the user before running a non-Cells command
 - Be objective  report what IS, not what should be

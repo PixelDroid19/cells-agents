@@ -49,7 +49,7 @@ The bundle uses a four-layer architecture:
 The canonical flow is:
 
 1. The user selects the orchestrator, usually `cells-orchestrator`.
-2. The user runs a workflow or research command such as `/cells-init` or `/cells-component bbva-button-default`.
+2. The user runs a workflow command such as `/cells-init` or `/cells-explore component:bbva-button-default`.
 3. The host command or prompt hands control to the orchestrator.
 4. The orchestrator launches a delegated run.
    - Prefer `delegate` for non-blocking or parallel work when the optional OpenCode background-delegation plugin is installed.
@@ -239,16 +239,15 @@ Mode-selection policy:
 | `/cells-verify [change]` | Validate implementation against requirements and execution evidence. |
 | `/cells-archive [change]` | Close a completed change and sync final state. |
 
-### Cells Specialist Commands
+### Internal Specialist Routing (no extra slash commands)
 
-| Command | Purpose |
-|---|---|
-| `/cells-component <name>` | Research a BBVA Cells component using package docs, metadata, tests, and real usage. |
-| `/cells-author <name-or-topic>` | Decide reuse vs new component and plan the correct authoring flow. |
-| `/cells-compose <topic>` | Design feature composition from existing Cells components and patterns. |
-| `/cells-feature <path-or-topic>` | Extract reusable patterns from real feature repos. |
-| `/cells-coverage <path-or-module>` | Triage coverage gaps and test-failure artifacts. |
-| `/cells-i18n <topic>` | Audit or implement Cells i18n runtime and locale discipline. |
+The public command surface is intentionally minimal (workflow-only). Specialist skills are still active and are selected by the orchestrator internally based on intent.
+
+Examples:
+
+- Component/API discovery intent in `/cells-explore` -> route to catalog-first component research skills.
+- Docs/process/testing/i18n/theming intent in `/cells-explore` or planning phases -> route to official-docs-first specialist skills.
+- Testing intent in any phase -> enforce mandatory stack: `cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`.
 
 ### Canonical OpenCode Usage
 
@@ -258,14 +257,13 @@ In OpenCode, the intended operating loop is:
 2. add the `cells-orchestrator` agent block from `examples/opencode/opencode.json`
 3. switch to `cells-orchestrator`
 4. run `/cells-init`
-5. use specialist commands first when the task starts from research
-6. use CELLS workflow commands when the task moves into planning and implementation
+5. use `/cells-explore` for discovery; specialist routing happens internally
+6. continue with CELLS workflow commands for planning and implementation
 
 A common flow looks like this:
 
 ```text
-/cells-component bbva-button-default
-/cells-compose debit-card-detail-flow
+/cells-explore component:bbva-button-default for debit-card-detail-flow
 /cells-new improve-card-detail-flow
 /cells-apply
 /cells-verify
@@ -339,16 +337,14 @@ Dependency model:
 proposal -> [spec || design] -> tasks -> apply -> verify -> archive
 ```
 
-### Specialist-First Discovery Flow (before planning)
+### Discovery-First Flow (before planning)
 
 Use this when the work starts from uncertainty (component choice, architecture pattern, coverage gap):
 
-1. `/cells-component <name>`
-2. `/cells-compose <feature-goal>`
-3. `/cells-feature <repo-or-topic>` (optional)
-4. `/cells-new <change-name>` when the direction is clear
+1. `/cells-explore <topic>`
+2. `/cells-new <change-name>` when the direction is clear
 
-This prevents speculative design and keeps proposals tied to real package/docs/test evidence.
+Specialist skills still run, but they are orchestrated internally to keep the command surface compact.
 
 ### Testing and Coverage Flow
 
@@ -366,7 +362,6 @@ Do not skip or reorder this stack.
 |---|---|---|
 | bootstrap project context | `/cells-init` | `/cells-explore` or `/cells-new` |
 | analyze an idea without committing | `/cells-explore <topic>` | `/cells-new <change>` |
-| research a component API/usage | `/cells-component <name>` | `/cells-compose` or `/cells-author` |
 | plan full implementation quickly | `/cells-ff <change>` | `/cells-apply` |
 | continue an in-progress change | `/cells-continue [change]` | follow `next_recommended` |
 | implement pending tasks | `/cells-apply` | `/cells-verify` |
@@ -378,8 +373,7 @@ Playbook A — New feature in existing Cells app:
 
 ```text
 /cells-init
-/cells-component bbva-button-default
-/cells-compose card-detail-improvements
+/cells-explore component:bbva-button-default for card-detail-improvements
 /cells-new improve-card-details
 /cells-continue
 /cells-apply
