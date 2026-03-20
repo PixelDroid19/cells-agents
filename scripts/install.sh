@@ -66,13 +66,6 @@ setup_colors() {
 get_tool_path() {
     local tool="$1"
     case "$tool" in
-        claude-code)
-            case "$OS" in
-                windows)  echo "$USERPROFILE/.claude/skills" ;;
-                wsl)      echo "$HOME/.claude/skills" ;;
-                *)        echo "$HOME/.claude/skills" ;;
-            esac
-            ;;
         opencode)
             case "$OS" in
                 windows)  echo "$USERPROFILE/.config/opencode/skills" ;;
@@ -87,40 +80,9 @@ get_tool_path() {
                 *)        echo "$HOME/.config/opencode/commands" ;;
             esac
             ;;
-        gemini-cli)
-            case "$OS" in
-                windows)  echo "$USERPROFILE/.gemini/skills" ;;
-                wsl)      echo "$HOME/.gemini/skills" ;;
-                *)        echo "$HOME/.gemini/skills" ;;
-            esac
-            ;;
-        codex)
-            case "$OS" in
-                windows)  echo "$USERPROFILE/.codex/skills" ;;
-                wsl)      echo "$HOME/.codex/skills" ;;
-                *)        echo "$HOME/.codex/skills" ;;
-            esac
-            ;;
         vscode)      echo "./.github/skills" ;;
-        antigravity)
-            case "$OS" in
-                windows)  echo "$USERPROFILE/.gemini/antigravity/skills" ;;
-                *)        echo "$HOME/.gemini/antigravity/skills" ;;
-            esac
-            ;;
-        cursor)
-            case "$OS" in
-                windows)  echo "$USERPROFILE/.cursor/skills" ;;
-                wsl)      echo "$HOME/.cursor/skills" ;;
-                *)        echo "$HOME/.cursor/skills" ;;
-            esac
-            ;;
         project-local) echo "./skills" ;;
     esac
-}
-
-get_project_local_root() {
-    pwd
 }
 
 # ============================================================================
@@ -178,7 +140,7 @@ show_help() {
     echo "  --path DIR      Custom install path (use with --agent custom)"
     echo "  -h, --help      Show this help"
     echo ""
-    echo "Agents: claude-code, opencode, gemini-cli, codex, vscode, antigravity, cursor, project-local, all-global"
+    echo "Agents: opencode, vscode, project-local, all-global"
 }
 
 # ============================================================================
@@ -297,42 +259,6 @@ install_skills() {
     echo -e "\n  ${GREEN}${BOLD}$count skills installed${NC} → $target_dir"
 }
 
-get_opencode_config_path() {
-    local mode="$1"
-    case "$mode" in
-        global)
-            case "$OS" in
-                windows)  echo "$USERPROFILE/.config/opencode/opencode.json" ;;
-                *)        echo "$HOME/.config/opencode/opencode.json" ;;
-            esac
-            ;;
-        project)
-            echo "$(get_project_local_root)/.opencode/opencode.json"
-            ;;
-        *)
-            return 1
-            ;;
-    esac
-}
-
-get_opencode_plugins_path() {
-    local mode="$1"
-    case "$mode" in
-        global)
-            case "$OS" in
-                windows)  echo "$USERPROFILE/.config/opencode/plugins" ;;
-                *)        echo "$HOME/.config/opencode/plugins" ;;
-            esac
-            ;;
-        project)
-            echo "$(get_project_local_root)/.opencode/plugins"
-            ;;
-        *)
-            return 1
-            ;;
-    esac
-}
-
 install_opencode_commands() {
     local commands_src="$REPO_DIR/examples/opencode/commands"
     local commands_target
@@ -356,10 +282,12 @@ install_opencode_commands() {
 }
 
 install_opencode_config() {
-    local mode="$1"
     local config_src="$REPO_DIR/examples/opencode/opencode.json"
     local config_target
-    config_target="$(get_opencode_config_path "$mode")"
+    case "$OS" in
+        windows)  config_target="$USERPROFILE/.config/opencode/opencode.json" ;;
+        *)        config_target="$HOME/.config/opencode/opencode.json" ;;
+    esac
 
     if [ ! -f "$config_src" ]; then
         print_warn "Skipping OpenCode config install (source not found: $config_src)"
@@ -384,10 +312,12 @@ install_opencode_config() {
 }
 
 install_opencode_plugins() {
-    local mode="$1"
     local plugins_src="$REPO_DIR/examples/opencode/plugins"
     local plugins_target
-    plugins_target="$(get_opencode_plugins_path "$mode")"
+    case "$OS" in
+        windows)  plugins_target="$USERPROFILE/.config/opencode/plugins" ;;
+        *)        plugins_target="$HOME/.config/opencode/plugins" ;;
+    esac
 
     if [ ! -d "$plugins_src" ]; then
         print_warn "Skipping OpenCode plugin assets (source not found: $plugins_src)"
@@ -408,15 +338,11 @@ install_for_agent() {
     local agent="$1"
 
     case "$agent" in
-        claude-code)
-            install_skills "$(get_tool_path claude-code)" "Claude Code"
-            print_next_step "~/.claude/CLAUDE.md" "examples/claude-code/CLAUDE.md"
-            ;;
         opencode)
             install_skills "$(get_tool_path opencode)" "OpenCode"
             install_opencode_commands
-            install_opencode_config "global"
-            install_opencode_plugins "global"
+            install_opencode_config
+            install_opencode_plugins
             echo ""
             echo -e "${YELLOW}${BOLD}╔══════════════════════════════════════════════════════════════╗${NC}"
             echo -e "${YELLOW}${BOLD}║  ACTION REQUIRED: Add the cells-orchestrator agent config     ║${NC}"
@@ -429,50 +355,24 @@ install_for_agent() {
             echo -e "${YELLOW}${BOLD}║  Without this, /cells-* commands will fail.                   ║${NC}"
             echo -e "${YELLOW}${BOLD}╚══════════════════════════════════════════════════════════════╝${NC}"
             ;;
-        gemini-cli)
-            install_skills "$(get_tool_path gemini-cli)" "Gemini CLI"
-            print_next_step "~/.gemini/GEMINI.md" "examples/gemini-cli/GEMINI.md"
-            ;;
-        codex)
-            install_skills "$(get_tool_path codex)" "Codex"
-            print_next_step "Codex instructions file" "examples/codex/agents.md"
-            ;;
         vscode)
             install_skills "$(get_tool_path vscode)" "VS Code (Copilot)"
             print_next_step ".github/copilot-instructions.md" ".github/instructions/copilot-instructions.md"
             echo -e "  ${YELLOW}Note:${NC} Skills installed in current project (.github/skills/)"
             ;;
-        antigravity)
-            target="$(get_tool_path antigravity)"
-            install_skills "$target" "Antigravity"
-            print_next_step "~/.gemini/GEMINI.md or .agent/rules/" "examples/antigravity/cells-orchestrator.md"
-            ;;
-        cursor)
-            install_skills "$(get_tool_path cursor)" "Cursor"
-            print_next_step ".cursorrules" "examples/cursor/.cursorrules"
-            ;;
         project-local)
             install_skills "$(get_tool_path project-local)" "Project-local"
-            install_opencode_config "project"
-            install_opencode_plugins "project"
             echo -e "\n${YELLOW}Note:${NC} Skills installed in ${BOLD}./skills/${NC} — relative to this project"
+            echo -e "  ${YELLOW}Compatibility:${NC} project-local no longer creates ${BOLD}./.opencode/${NC}; use ${BOLD}examples/opencode/${NC} with user-level ${BOLD}~/.config/opencode/${NC} setup instead"
             ;;
         all-global)
-            install_skills "$(get_tool_path claude-code)" "Claude Code"
             install_skills "$(get_tool_path opencode)" "OpenCode"
             install_opencode_commands
-            install_opencode_config "global"
-            install_opencode_plugins "global"
-            install_skills "$(get_tool_path gemini-cli)" "Gemini CLI"
-            install_skills "$(get_tool_path codex)" "Codex"
-            install_skills "$(get_tool_path cursor)" "Cursor"
+            install_opencode_config
+            install_opencode_plugins
             echo -e "\n${YELLOW}Next steps:${NC}"
-            echo -e "  1. Add orchestrator to ${BOLD}~/.claude/CLAUDE.md${NC}"
-            echo -e "  2. ${YELLOW}${BOLD}[REQUIRED]${NC} Add orchestrator agent to ${BOLD}~/.config/opencode/opencode.json${NC}"
+            echo -e "  1. ${YELLOW}${BOLD}[REQUIRED]${NC} Add orchestrator agent to ${BOLD}~/.config/opencode/opencode.json${NC}"
             echo -e "     ${YELLOW}See: examples/opencode/opencode.json — without this, /cells-* commands won't work${NC}"
-            echo -e "  3. Add orchestrator to ${BOLD}~/.gemini/GEMINI.md${NC}"
-            echo -e "  4. Add orchestrator to ${BOLD}Codex instructions file${NC}"
-            echo -e "  5. Add Cells rules to ${BOLD}.cursorrules${NC}"
             ;;
         custom)
             if [[ -z "${CUSTOM_PATH:-}" ]]; then
@@ -495,30 +395,20 @@ install_for_agent() {
 
 interactive_menu() {
     echo -e "${BOLD}Select your AI coding assistant:${NC}\n"
-    echo "  1) Claude Code    ($(get_tool_path claude-code))"
-    echo "  2) OpenCode       ($(get_tool_path opencode))"
-    echo "  3) Gemini CLI     ($(get_tool_path gemini-cli))"
-    echo "  4) Codex          ($(get_tool_path codex))"
-    echo "  5) VS Code        ($(get_tool_path vscode))"
-    echo "  6) Antigravity    (~/.gemini/antigravity/skills/)"
-    echo "  7) Cursor         ($(get_tool_path cursor))"
-    echo "  8) Project-local  ($(get_tool_path project-local))"
-    echo "  9) All global     (Claude Code + OpenCode + Gemini CLI + Codex + Cursor)"
-    echo "  10) Custom path"
+    echo "  1) OpenCode       ($(get_tool_path opencode))"
+    echo "  2) VS Code        ($(get_tool_path vscode))"
+    echo "  3) Project-local  ($(get_tool_path project-local))"
+    echo "  4) All global     (OpenCode)"
+    echo "  5) Custom path"
     echo ""
-    read -rp "Choice [1-10]: " choice
+    read -rp "Choice [1-5]: " choice
 
     case $choice in
-        1)  install_for_agent "claude-code" ;;
-        2)  install_for_agent "opencode" ;;
-        3)  install_for_agent "gemini-cli" ;;
-        4)  install_for_agent "codex" ;;
-        5)  install_for_agent "vscode" ;;
-        6)  install_for_agent "antigravity" ;;
-        7)  install_for_agent "cursor" ;;
-        8)  install_for_agent "project-local" ;;
-        9)  install_for_agent "all-global" ;;
-        10) install_for_agent "custom" ;;
+        1)  install_for_agent "opencode" ;;
+        2)  install_for_agent "vscode" ;;
+        3)  install_for_agent "project-local" ;;
+        4)  install_for_agent "all-global" ;;
+        5)  install_for_agent "custom" ;;
         *)
             print_error "Invalid choice"
             exit 1

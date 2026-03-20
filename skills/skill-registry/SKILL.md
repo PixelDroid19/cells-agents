@@ -20,16 +20,11 @@ Generate or refresh the **skill registry** used by sub-agents as Step 1, so they
 1. Scan `*/SKILL.md` across known skill locations.
 
    **User-level**:
-   - `~/.claude/skills/`
    - `~/.config/opencode/skills/`
-   - `~/.gemini/skills/`
-   - `~/.cursor/skills/`
    - `~/.copilot/skills/`
    - parent directory of this skill file
 
    **Project-level**:
-   - `{project-root}/.claude/skills/`
-   - `{project-root}/.gemini/skills/`
    - `{project-root}/.agent/skills/`
    - `{project-root}/skills/`
 
@@ -44,9 +39,6 @@ Generate or refresh the **skill registry** used by sub-agents as Step 1, so they
 
 Check project root for convention/index files:
 - `agents.md` or `AGENTS.md`
-- `CLAUDE.md` (project-level only)
-- `.cursorrules`
-- `GEMINI.md`
 - `.github/copilot-instructions.md`
 - `.github/instructions/copilot-instructions.md`
 

@@ -8,7 +8,7 @@
     Idempotent: safe to run multiple times (uses markers to avoid duplication).
 .PARAMETER Agent
     Install for a specific agent.
-    Valid values: claude-code, opencode, gemini-cli, cursor, vscode, codex
+    Valid values: opencode, vscode
 .PARAMETER All
     Auto-detect and install for all found agents.
 .PARAMETER OpenCodeMode
@@ -27,7 +27,7 @@
 
 [CmdletBinding()]
 param(
-    [ValidateSet('claude-code', 'opencode', 'gemini-cli', 'cursor', 'vscode', 'codex')]
+    [ValidateSet('opencode', 'vscode')]
     [string]$Agent,
     [ValidateSet('single', 'multi')]
     [string]$OpenCodeMode,
@@ -65,38 +65,22 @@ $OrchestratorHeadings = @(
 )
 
 $SkillsPaths = @{
-    'claude-code' = Join-Path $env:USERPROFILE '.claude\skills'
     'opencode'    = Join-Path $env:USERPROFILE '.config\opencode\skills'
-    'gemini-cli'  = Join-Path $env:USERPROFILE '.gemini\skills'
-    'cursor'      = Join-Path $env:USERPROFILE '.cursor\skills'
     'vscode'      = Join-Path $env:USERPROFILE '.copilot\skills'
-    'codex'       = Join-Path $env:USERPROFILE '.codex\skills'
 }
 
 $PromptPaths = @{
-    'claude-code' = Join-Path $env:USERPROFILE '.claude\CLAUDE.md'
     'opencode'    = Join-Path $env:USERPROFILE '.config\opencode\AGENTS.md'
-    'gemini-cli'  = Join-Path $env:USERPROFILE '.gemini\GEMINI.md'
-    'cursor'      = Join-Path $env:USERPROFILE '.cursor\rules\cells-agent-bundle.mdc'
     'vscode'      = Join-Path $env:APPDATA 'Code\User\prompts\cells-agent-bundle.instructions.md'
-    'codex'       = Join-Path $env:USERPROFILE '.codex\agents.md'
 }
 
 $ExampleFiles = @{
-    'claude-code' = Join-Path $ExamplesDir 'claude-code\CLAUDE.md'
-    'gemini-cli'  = Join-Path $ExamplesDir 'gemini-cli\GEMINI.md'
-    'cursor'      = Join-Path $ExamplesDir 'cursor\.cursorrules'
     'vscode'      = Join-Path $RepoDir '.github\\instructions\\copilot-instructions.md'
-    'codex'       = Join-Path $ExamplesDir 'codex\agents.md'
 }
 
 $AgentBinaries = @{
-    'claude-code' = 'claude'
     'opencode'    = 'opencode'
-    'gemini-cli'  = 'gemini'
-    'cursor'      = 'cursor'
     'vscode'      = 'code'
-    'codex'       = 'codex'
 }
 
 # ============================================================================
@@ -488,7 +472,7 @@ try {
         Write-Host '  -NonInteractive    No prompts (for external installers)'
         Write-Host '  -Help              Show this help'
         Write-Host ''
-        Write-Host 'Agents: claude-code, opencode, gemini-cli, cursor, vscode, codex'
+        Write-Host 'Agents: opencode, vscode'
         exit 0
     }
 

@@ -7,7 +7,7 @@
     Copies CELLS skills to your AI coding assistant's skill directory.
 .PARAMETER Agent
     Install for a specific agent (non-interactive).
-    Valid values: claude-code, opencode, gemini-cli, codex, vscode, antigravity, cursor, project-local, all-global, custom
+    Valid values: opencode, vscode, project-local, all-global, custom
 .PARAMETER Path
     Custom install path (use with -Agent custom)
 .PARAMETER Help
@@ -15,15 +15,14 @@
 .EXAMPLE
     .\install.ps1
 .EXAMPLE
-    .\install.ps1 -Agent claude-code
+    .\install.ps1 -Agent opencode
 .EXAMPLE
     .\install.ps1 -Agent custom -Path C:\my\skills
 #>
 
 [CmdletBinding()]
 param(
-    [ValidateSet('claude-code', 'opencode', 'gemini-cli', 'codex', 'vscode',
-                 'antigravity', 'cursor', 'project-local', 'all-global', 'custom')]
+    [ValidateSet('opencode', 'vscode', 'project-local', 'all-global', 'custom')]
     [string]$Agent,
     [string]$Path,
     [switch]$Help
@@ -40,19 +39,10 @@ $RepoDir = Split-Path -Parent $ScriptRoot
 $SkillsSrc = Join-Path $RepoDir 'skills'
 
 $ToolPaths = @{
-    'claude-code'       = Join-Path $env:USERPROFILE '.claude\skills'
     'opencode'          = Join-Path $env:USERPROFILE '.config\opencode\skills'
     'opencode-commands' = Join-Path $env:USERPROFILE '.config\opencode\commands'
-    'gemini-cli'        = Join-Path $env:USERPROFILE '.gemini\skills'
-    'codex'             = Join-Path $env:USERPROFILE '.codex\skills'
     'vscode'            = Join-Path '.' '.github\skills'
-    'antigravity'       = Join-Path $env:USERPROFILE '.gemini\antigravity\skills'
-    'cursor'            = Join-Path $env:USERPROFILE '.cursor\skills'
     'project-local'     = Join-Path '.' 'skills'
-}
-
-function Get-ProjectLocalRoot {
-    (Get-Location).Path
 }
 
 # ============================================================================
@@ -126,7 +116,7 @@ function Show-Usage {
     Write-Host '  -Path DIR      Custom install path (use with -Agent custom)'
     Write-Host '  -Help          Show this help'
     Write-Host ''
-    Write-Host 'Agents: claude-code, opencode, gemini-cli, codex, vscode, antigravity, cursor, project-local, all-global'
+    Write-Host 'Agents: opencode, vscode, project-local, all-global'
 }
 
 # ============================================================================
@@ -290,19 +280,13 @@ function Install-OpenCodeCommands {
 }
 
 function Install-OpenCodePlugins {
-    param([ValidateSet('global', 'project')][string]$Mode)
-
     $pluginsSrc = Join-Path $RepoDir 'examples\opencode\plugins'
     if (-not (Test-Path $pluginsSrc)) {
         Write-Warn "Skipping OpenCode plugin assets (source not found: $pluginsSrc)"
         return
     }
 
-    $pluginsTarget = if ($Mode -eq 'project') {
-        Join-Path (Get-ProjectLocalRoot) '.opencode\plugins'
-    } else {
-        Join-Path $env:USERPROFILE '.config\opencode\plugins'
-    }
+    $pluginsTarget = Join-Path $env:USERPROFILE '.config\opencode\plugins'
 
     New-Item -ItemType Directory -Path $pluginsTarget -Force | Out-Null
     Copy-Item -Path (Join-Path $pluginsSrc 'background-agents.ts') -Destination (Join-Path $pluginsTarget 'background-agents.ts') -Force
@@ -318,14 +302,10 @@ function Install-ForAgent {
     param([string]$AgentName)
 
     switch ($AgentName) {
-        'claude-code' {
-            Install-Skills -TargetDir $ToolPaths['claude-code'] -ToolName 'Claude Code'
-            Write-NextStep '~\.claude\CLAUDE.md' 'examples\claude-code\CLAUDE.md'
-        }
         'opencode' {
             Install-Skills -TargetDir $ToolPaths['opencode'] -ToolName 'OpenCode'
             Install-OpenCodeCommands
-            Install-OpenCodePlugins -Mode global
+            Install-OpenCodePlugins
             Write-Host ''
             Write-Host ([char]0x2554 + ([string][char]0x2550 * 62) + [char]0x2557) -ForegroundColor Yellow
             Write-Host ([char]0x2551 + '  ACTION REQUIRED: Add the cells-orchestrator agent config     ' + [char]0x2551) -ForegroundColor Yellow
@@ -338,56 +318,28 @@ function Install-ForAgent {
             Write-Host ([char]0x2551 + '  Without this, /cells-* commands will not find the agent.      ' + [char]0x2551) -ForegroundColor Yellow
             Write-Host ([char]0x255A + ([string][char]0x2550 * 62) + [char]0x255D) -ForegroundColor Yellow
         }
-        'gemini-cli' {
-            Install-Skills -TargetDir $ToolPaths['gemini-cli'] -ToolName 'Gemini CLI'
-            Write-NextStep '~\.gemini\GEMINI.md' 'examples\gemini-cli\GEMINI.md'
-        }
-        'codex' {
-            Install-Skills -TargetDir $ToolPaths['codex'] -ToolName 'Codex'
-            Write-NextStep 'Codex instructions file' 'examples\codex\agents.md'
-        }
         'vscode' {
             Install-Skills -TargetDir $ToolPaths['vscode'] -ToolName 'VS Code (Copilot)'
             Write-NextStep '.github\copilot-instructions.md' '.github\instructions\copilot-instructions.md'
             Write-Warn 'Skills installed in current project (.github\skills\)'
         }
-        'antigravity' {
-            Install-Skills -TargetDir $ToolPaths['antigravity'] -ToolName 'Antigravity'
-            Write-NextStep '~\.gemini\GEMINI.md or .agent\rules\' 'examples\antigravity\cells-orchestrator.md'
-        }
-        'cursor' {
-            Install-Skills -TargetDir $ToolPaths['cursor'] -ToolName 'Cursor'
-            Write-NextStep '.cursorrules' 'examples\cursor\.cursorrules'
-        }
         'project-local' {
             Install-Skills -TargetDir $ToolPaths['project-local'] -ToolName 'Project-local'
-            Install-OpenCodePlugins -Mode project
             Write-Host ''
             Write-Warn "Skills installed in .\skills\ - relative to this project"
+            Write-Warn "Compatibility: project-local no longer creates .\.opencode\ ; use examples\opencode\ with user-level .config\opencode setup instead"
         }
         'all-global' {
-            Install-Skills -TargetDir $ToolPaths['claude-code'] -ToolName 'Claude Code'
             Install-Skills -TargetDir $ToolPaths['opencode'] -ToolName 'OpenCode'
             Install-OpenCodeCommands
-            Install-OpenCodePlugins -Mode global
-            Install-Skills -TargetDir $ToolPaths['gemini-cli'] -ToolName 'Gemini CLI'
-            Install-Skills -TargetDir $ToolPaths['codex'] -ToolName 'Codex'
-            Install-Skills -TargetDir $ToolPaths['cursor'] -ToolName 'Cursor'
+            Install-OpenCodePlugins
             Write-Host ''
             Write-Host 'Next steps:' -ForegroundColor Yellow
-            Write-Host '  1. Add orchestrator to ' -NoNewline
-            Write-Host '~\.claude\CLAUDE.md' -ForegroundColor White
-            Write-Host '  2. ' -NoNewline
+            Write-Host '  1. ' -NoNewline
             Write-Host '[REQUIRED] ' -ForegroundColor Yellow -NoNewline
             Write-Host 'Add orchestrator agent to ' -NoNewline
             Write-Host "$env:APPDATA\opencode\opencode.json" -ForegroundColor White
             Write-Host '     See: examples\opencode\opencode.json — without this, /cells-* commands will not work' -ForegroundColor Yellow
-            Write-Host '  3. Add orchestrator to ' -NoNewline
-            Write-Host '~\.gemini\GEMINI.md' -ForegroundColor White
-            Write-Host '  4. Add orchestrator to ' -NoNewline
-            Write-Host 'Codex instructions file' -ForegroundColor White
-            Write-Host '  5. Add Cells rules to ' -NoNewline
-            Write-Host '.cursorrules' -ForegroundColor White
         }
         'custom' {
             $customPath = $Path
@@ -416,31 +368,21 @@ function Install-ForAgent {
 function Show-Menu {
     Write-Host 'Select your AI coding assistant:' -ForegroundColor White
     Write-Host ''
-    Write-Host "   1) Claude Code    ($($ToolPaths['claude-code']))"
-    Write-Host "   2) OpenCode       ($($ToolPaths['opencode']))"
-    Write-Host "   3) Gemini CLI     ($($ToolPaths['gemini-cli']))"
-    Write-Host "   4) Codex          ($($ToolPaths['codex']))"
-    Write-Host "   5) VS Code        ($($ToolPaths['vscode']))"
-    Write-Host "   6) Antigravity    ($($ToolPaths['antigravity']))"
-    Write-Host "   7) Cursor         ($($ToolPaths['cursor']))"
-    Write-Host "   8) Project-local  ($($ToolPaths['project-local']))"
-    Write-Host '   9) All global     (Claude Code + OpenCode + Gemini CLI + Codex + Cursor)'
-    Write-Host '  10) Custom path'
+    Write-Host "   1) OpenCode       ($($ToolPaths['opencode']))"
+    Write-Host "   2) VS Code        ($($ToolPaths['vscode']))"
+    Write-Host "   3) Project-local  ($($ToolPaths['project-local']))"
+    Write-Host '   4) All global     (OpenCode)'
+    Write-Host '   5) Custom path'
     Write-Host ''
 
-    $choice = Read-Host 'Choice [1-10]'
+    $choice = Read-Host 'Choice [1-5]'
 
     $agentMap = @{
-        '1'  = 'claude-code'
-        '2'  = 'opencode'
-        '3'  = 'gemini-cli'
-        '4'  = 'codex'
-        '5'  = 'vscode'
-        '6'  = 'antigravity'
-        '7'  = 'cursor'
-        '8'  = 'project-local'
-        '9'  = 'all-global'
-        '10' = 'custom'
+        '1'  = 'opencode'
+        '2'  = 'vscode'
+        '3'  = 'project-local'
+        '4'  = 'all-global'
+        '5' = 'custom'
     }
 
     if ($agentMap.ContainsKey($choice)) {

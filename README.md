@@ -272,6 +272,152 @@ A common flow looks like this:
 /cells-archive
 ```
 
+## Operational Flows and Usage
+
+This section explains how the agent is operated in real work, which commands to run first, and what to expect at each step.
+
+### Operating Modes
+
+The orchestrator can run in two practical modes:
+
+1. Delegated background mode (`delegate` available)
+
+  Better for parallel work and long investigations. The orchestrator stays responsive while sub-agents run.
+
+1. Synchronous fallback mode (`task`)
+
+  Used when background delegation is unavailable or immediate response is required. Workflow contracts and governance still apply.
+
+In both modes, behavior is identical from a governance perspective:
+
+- Cells command canon stays mandatory.
+- Evidence routing stays catalog-first.
+- Result envelope stays deterministic.
+
+### What Happens When You Run a Command
+
+For any `/cells-*` command, the runtime sequence is:
+
+1. Command prompt provides context (`workdir`, `project`, optional `argument`, persistence mode).
+2. Orchestrator selects the phase/specialist skill.
+3. Sub-agent reads the target `SKILL.md` first.
+4. Skill gathers evidence in deterministic order (catalogs, docs, code, tests, artifacts).
+5. Skill returns structured envelope (`status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`).
+6. Orchestrator summarizes and asks to continue when the next phase needs user approval.
+
+### End-to-End Planning and Delivery Flow
+
+Use this for a standard change from idea to closeout:
+
+1. `/cells-init`
+
+  Detects stack, confirms Cells context, and establishes persistence expectations.
+
+1. `/cells-new <change-name>`
+
+  Runs exploration and then proposal creation.
+
+1. `/cells-continue` or `/cells-ff <change-name>`
+
+  Produces planning artifacts in dependency order: `proposal`, `spec` + `design`, and `tasks`.
+
+1. `/cells-apply`
+
+  Implements tasks against spec/design decisions.
+
+1. `/cells-verify`
+
+  Validates implementation, coherence, and execution evidence.
+
+1. `/cells-archive`
+
+  Archives completed change and finalizes lineage.
+
+Dependency model:
+
+```text
+proposal -> [spec || design] -> tasks -> apply -> verify -> archive
+```
+
+### Specialist-First Discovery Flow (before planning)
+
+Use this when the work starts from uncertainty (component choice, architecture pattern, coverage gap):
+
+1. `/cells-component <name>`
+2. `/cells-compose <feature-goal>`
+3. `/cells-feature <repo-or-topic>` (optional)
+4. `/cells-new <change-name>` when the direction is clear
+
+This prevents speculative design and keeps proposals tied to real package/docs/test evidence.
+
+### Testing and Coverage Flow
+
+Whenever testing is involved (explore/apply/verify/coverage), follow this exact stack:
+
+1. `cells-cli-usage` (canonical command and invocation)
+2. `cells-coverage` (thresholds and artifact triage)
+3. `cells-test-creator` (test design/update conventions)
+
+Do not skip or reorder this stack.
+
+### Command Selection Cheat Sheet
+
+| If you need to... | Start with | Then |
+|---|---|---|
+| bootstrap project context | `/cells-init` | `/cells-explore` or `/cells-new` |
+| analyze an idea without committing | `/cells-explore <topic>` | `/cells-new <change>` |
+| research a component API/usage | `/cells-component <name>` | `/cells-compose` or `/cells-author` |
+| plan full implementation quickly | `/cells-ff <change>` | `/cells-apply` |
+| continue an in-progress change | `/cells-continue [change]` | follow `next_recommended` |
+| implement pending tasks | `/cells-apply` | `/cells-verify` |
+| validate completion/readiness | `/cells-verify` | `/cells-archive` |
+
+### Practical Usage Playbooks
+
+Playbook A — New feature in existing Cells app:
+
+```text
+/cells-init
+/cells-component bbva-button-default
+/cells-compose card-detail-improvements
+/cells-new improve-card-details
+/cells-continue
+/cells-apply
+/cells-verify
+```
+
+Playbook B — Fast planning only (no implementation yet):
+
+```text
+/cells-init
+/cells-ff add-card-notifications
+```
+
+Playbook C — Resume a partially completed change:
+
+```text
+/cells-init
+/cells-continue add-card-notifications
+```
+
+### How to Read Results and Decide Next Step
+
+Interpret phase output using this rule:
+
+- `status: ok` -> proceed with `next_recommended`.
+- `status: partial` -> proceed only after addressing evidence gaps in `risks`.
+- `status: blocked` -> stop and resolve missing dependency/evidence first.
+
+Always treat `artifacts` as source-of-truth references for what was actually produced.
+
+### Common Mistakes to Avoid
+
+- Jumping directly to `/cells-apply` without `proposal/spec/design/tasks`.
+- Using generic test commands in Cells contexts without explicit user request.
+- Skipping catalog-first routing and guessing component APIs from memory.
+- Treating browser captures alone as completion evidence.
+- Archiving a change before verification reaches `ok`.
+
 ## Skills
 
 ### CELLS Skills
@@ -341,7 +487,6 @@ Setup options:
 
 ```bash
 ./scripts/setup.sh --all
-./scripts/setup.sh --agent claude-code
 ./scripts/setup.sh --agent opencode --opencode-mode single
 ./scripts/setup.sh --agent opencode --opencode-mode multi
 ./scripts/setup.sh --non-interactive
@@ -349,7 +494,6 @@ Setup options:
 
 ```powershell
 .\scripts\setup.ps1 -All
-.\scripts\setup.ps1 -Agent claude-code
 .\scripts\setup.ps1 -Agent opencode -OpenCodeMode single
 .\scripts\setup.ps1 -Agent opencode -OpenCodeMode multi
 .\scripts\setup.ps1 -NonInteractive
@@ -357,15 +501,12 @@ Setup options:
 
 If you only want to copy skills (without prompt/config orchestration), use `./scripts/install.sh` or `.\scripts\install.ps1`.
 
+Compatibility note: project-local install copies `./skills/` only. OpenCode commands, config, and optional background-delegation assets live under `examples/opencode/` and install into user-level `~/.config/opencode/`; this bundle no longer uses a committed package-root `./.opencode/` folder.
+
 ### Supported Hosts
 
 - OpenCode
-- Claude Code
-- Gemini CLI
-- Codex
 - VS Code Copilot
-- Antigravity
-- Cursor
 - project-local installs
 
 ### OpenCode
@@ -487,24 +628,6 @@ Troubleshooting (`database table is locked`):
 - Stop stale processes (`pkill -f opencode` or `Stop-Process -Name opencode -Force`), then start OpenCode again.
 - Avoid leaving suspended OpenCode sessions running in the background.
 
-### Claude Code
-
-1. Copy `skills/_shared` and all `skills/cells-*` directories to `~/.claude/skills/`.
-2. Append `examples/claude-code/CLAUDE.md` to `~/.claude/CLAUDE.md`.
-3. Start with `/cells-init`.
-
-### Gemini CLI
-
-1. Copy the bundle to `~/.gemini/skills/`.
-2. Append `examples/gemini-cli/GEMINI.md` to your Gemini system prompt file.
-3. Skills execute inline because Gemini CLI does not provide the same delegated-run mechanism as OpenCode.
-
-### Codex
-
-1. Copy the bundle to `~/.codex/skills/`.
-2. Add `examples/codex/agents.md` to your Codex instructions.
-3. Skills execute inline.
-
 ### VS Code Copilot
 
 1. Keep Copilot runtime assets under `.github/` in the project root.
@@ -522,17 +645,6 @@ Troubleshooting (`database table is locked`):
 ```bash
 python scripts/validate_vscode_copilot_assets.py
 ```
-
-### Antigravity
-
-1. Install globally to `~/.gemini/antigravity/skills/` or per-project to `.agent/skills/`.
-2. Add the orchestrator rule from `examples/antigravity/cells-orchestrator.md`.
-
-### Cursor
-
-1. Install globally to `~/.cursor/skills/` or per-project to `./skills/`.
-2. Append `examples/cursor/.cursorrules` to your Cursor rules.
-3. Skills execute inline.
 
 ## Project Structure
 
@@ -568,11 +680,6 @@ python scripts/validate_vscode_copilot_assets.py
 |   |-- cells-test-creator/
 |   `-- cells-verify/
 |-- examples/
-|   |-- antigravity/
-|   |-- claude-code/
-|   |-- codex/
-|   |-- cursor/
-|   |-- gemini-cli/
 |   |-- opencode/
 |   |   |-- opencode.json
 |   |   |-- opencode.single.json

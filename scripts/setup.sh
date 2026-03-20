@@ -10,7 +10,7 @@ set -euo pipefail
 # Usage:
 #   ./setup.sh                      # Interactive: detect + let user choose
 #   ./setup.sh --all                # Auto-detect + install for all found agents
-#   ./setup.sh --agent claude-code  # Install for a specific agent
+#   ./setup.sh --agent opencode     # Install for a specific agent
 #   ./setup.sh --non-interactive    # For external installers
 # ============================================================================
 
@@ -107,12 +107,8 @@ detect_agents() {
     header "Detecting installed agents..."
 
     DETECTED_AGENTS=()
-    check_agent "claude-code" "claude"
     check_agent "opencode" "opencode"
-    check_agent "gemini-cli" "gemini"
-    check_agent "cursor" "cursor"
     check_agent "vscode" "code"
-    check_agent "codex" "codex"
 
     echo ""
     if [[ ${#DETECTED_AGENTS[@]} -eq 0 ]]; then
@@ -133,12 +129,8 @@ get_skills_path() {
     home="$(home_dir)"
 
     case "$agent" in
-        claude-code)  echo "$home/.claude/skills" ;;
         opencode)     echo "$home/.config/opencode/skills" ;;
-        gemini-cli)   echo "$home/.gemini/skills" ;;
-        cursor)       echo "$home/.cursor/skills" ;;
         vscode)       echo "$home/.copilot/skills" ;;
-        codex)        echo "$home/.codex/skills" ;;
     esac
 }
 
@@ -148,10 +140,7 @@ get_prompt_path() {
     home="$(home_dir)"
 
     case "$agent" in
-        claude-code)  echo "$home/.claude/CLAUDE.md" ;;
         opencode)     echo "$home/.config/opencode/AGENTS.md" ;;
-        gemini-cli)   echo "$home/.gemini/GEMINI.md" ;;
-        cursor)       echo "$home/.cursor/rules/cells-agent-bundle.mdc" ;;
         vscode)
             if [[ "$OS" == "windows" ]]; then
                 echo "${APPDATA:-$home/AppData/Roaming}/Code/User/prompts/cells-agent-bundle.instructions.md"
@@ -161,19 +150,14 @@ get_prompt_path() {
                 echo "$home/.config/Code/User/prompts/cells-agent-bundle.instructions.md"
             fi
             ;;
-        codex)        echo "$home/.codex/agents.md" ;;
     esac
 }
 
 get_example_file() {
     local agent="$1"
     case "$agent" in
-        claude-code)  echo "$EXAMPLES_DIR/claude-code/CLAUDE.md" ;;
         opencode)     echo "" ;; # OpenCode has special handling
-        gemini-cli)   echo "$EXAMPLES_DIR/gemini-cli/GEMINI.md" ;;
-        cursor)       echo "$EXAMPLES_DIR/cursor/.cursorrules" ;;
         vscode)       echo "$REPO_DIR/.github/instructions/copilot-instructions.md" ;;
-        codex)        echo "$EXAMPLES_DIR/codex/agents.md" ;;
     esac
 }
 
@@ -645,7 +629,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --non-interactive   No prompts (for external installers)"
             echo "  -h, --help          Show this help"
             echo ""
-            echo "Agents: claude-code, opencode, gemini-cli, cursor, vscode, codex"
+            echo "Agents: opencode, vscode"
             exit 0
             ;;
         *)
@@ -657,11 +641,11 @@ done
 
 if [[ -n "$AGENT" ]]; then
     case "$AGENT" in
-        claude-code|opencode|gemini-cli|cursor|vscode|codex)
+        opencode|vscode)
             ;;
         *)
             fail "Unknown agent: $AGENT"
-            echo "Valid agents: claude-code, opencode, gemini-cli, cursor, vscode, codex"
+            echo "Valid agents: opencode, vscode"
             exit 1
             ;;
     esac

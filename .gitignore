@@ -18,4 +18,5 @@ node_modules/
 __pycache__/
 # Agent tooling cache/artifacts
 .atl/
+.opencode/
 build/
