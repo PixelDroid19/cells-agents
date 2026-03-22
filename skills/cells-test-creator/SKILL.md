@@ -1,6 +1,7 @@
 ---
 name: cells-test-creator
-description: Create or improve unit tests for Cells Lit components with OpenWC + Sinon, enforcing public-behavior testing only and driving file-level coverage to 100% (Statements, Branches, Functions, Lines). Use this skill whenever the user asks to add tests, increase coverage, fix flaky tests, or generate missing test files in this repository.
+description: >
+  Create or improve unit tests for Cells + Lit + BBVA components with OpenWC + Sinon, targeting public-behavior only and 100% file-level coverage (Statements, Branches, Functions, Lines). Triggers: when adding tests, increasing coverage, fixing flaky tests, generating test files, or validating test quality. Load as final step of the cells-cli-usage -> cells-coverage -> cells-test-creator mandatory stack. NEVER test private implementation details — only public component behavior.
 compatibility: python>=3.9,node>=18
 ---
 

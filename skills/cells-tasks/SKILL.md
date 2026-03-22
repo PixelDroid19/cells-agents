@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-tasks
 description: >
-  Break a planned change into ordered, concrete implementation tasks with file-level actions and testing work. Use when the orchestrator already has proposal, specs, and design context and needs an actionable task checklist for implementation.
+  Break a planned Cells + Lit + BBVA + SCSS change into ordered, concrete, file-level implementation tasks with testing work. Triggers: when breaking down a change into tasks, generating a checklist, assigning implementation steps, or planning sprints. Load after cells-design has completed. Each task must reference the canonical cells-components-catalog before assuming a component does not exist.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

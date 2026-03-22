@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-archive
 description: >
-  Sync approved delta specs into the main OpenSpec source of truth and archive a completed change safely. Use when the orchestrator has a verified change ready to close and needs filesystem archive work, merge traceability, and final closure reporting.
+  Sync approved delta specs into the canonical source and archive a completed Cells + Lit + BBVA + SCSS change safely. Triggers: when closing a change, archiving artifacts, merging specs, or performing final closure. Load after cells-verify confirms the change. Creates traceability and final reporting.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

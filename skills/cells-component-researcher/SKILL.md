@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-component-researcher
 description: >
-  Research a BBVA Cells component using package docs, metadata, tests, Components Studio notes, and real feature usage. Use when the orchestrator needs authoritative component API, events, styling hooks, caveats, or usage evidence before design, implementation, verification, or skill writing.
+  Find authoritative BBVA Cells component API, events, CSS hooks, caveats, and usage patterns from bundled docs and Components Studio. Triggers: when researching a component, discovering API surface, checking events or styling, or validating component choice before design or apply. Always load before cells-design or cells-apply when the change touches UI. Search cells-components-catalog first for the component name.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 ---
 
 ## Purpose

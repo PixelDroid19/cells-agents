@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-app-architecture
 description: >
-  Explain or plan Cells application and feature architecture using the bundled official guidance for feature structure, application runtime, bridge communication, routing, and Lit-based composition.
+  Plan Cells + Lit + BBVA feature structure, data managers, routing, bridge communication, and app-level composition. Triggers: when designing feature structure, planning data managers, configuring routing, setting up pub/sub, or designing the bridge between app and components. Load when cells-design or cells-apply involves app-level architecture.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Cells App & Feature Architecture

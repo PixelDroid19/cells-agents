@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-explore
 description: >
-  Explore a feature, bug, refactor, or Cells composition before planning a change. Use when the orchestrator needs evidence about the current codebase, affected areas, risks, or implementation options before writing a proposal or design.
+  Investigate the codebase, existing components, architecture, and implementation landscape for a Cells + Lit + BBVA + SCSS project. Triggers: when exploring a feature, bug, refactor, component discovery, or composition before writing a proposal or design. Always search cells-components-catalog and cells-official-docs-catalog first before exploring code manually.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

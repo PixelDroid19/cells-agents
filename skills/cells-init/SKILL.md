@@ -1,11 +1,11 @@
 ﻿---
 name: cells-init
 description: >
-  Initialize CELLS workflow context for a project by detecting stack, conventions, and the active persistence backend. Use when the user or orchestrator wants to start CELLS, bootstrap OpenSpec, or persist project context for later Cells workflows.
+  Detect stack, conventions, and persistence backend for a Cells + Lit + BBVA + SCSS project. Triggers: when initializing a project, bootstrapping CELLS, detecting the tech stack, or setting up persistence for later workflow phases. Always use before /cells-explore.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

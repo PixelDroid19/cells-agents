@@ -48,20 +48,12 @@ Every workflow phase returns the same structured envelope:
 
 ## Source Decisions
 
-Every workflow artifact MUST include an explicit `source_decisions` section.
+Every workflow artifact MUST include a compact `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
 
 When a phase stays on canonical evidence, record that explicitly.
 When historical legacy context is mentioned for archive continuity or migration compatibility, record it as inactive history or compatibility-only evidence and do not treat it as active canonical fallback.
 
-Each entry uses:
-
-- `intent`
-- `primary_source`
-- `fallback_used`
-- `fallback_source`
-- `fallback_reason`
-- `evidence_quality`
-- `status`
+Required fields per entry: `intent`, `primary_source`, `fallback_used`, `fallback_source`, `fallback_reason`, `evidence_quality`, `status`.
 
 ## Reporting Lineage
 
@@ -70,6 +62,5 @@ Each entry uses:
 
 ## Validation Safeguards
 
-- Validation SHOULD treat prompt-layer parity as a safeguard check because `.github` prompt and instruction assets referenced by the policy matrix may be absent in this workspace.
 - Local skill registry refreshes SHOULD verify whether workflow skill names or paths changed before rewriting `.atl/skill-registry.md`; unchanged registry entries do not require a content rewrite.
 - Validation scripts SHOULD check shared-contract parity, canonical write targets, canonical-only dependency guidance, source-decision template coverage, and any documented policy exemptions before the change is considered ready for verification.

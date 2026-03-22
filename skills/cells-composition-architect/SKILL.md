@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-composition-architect
 description: >
-  Plan how to build a Cells feature or widget from existing BBVA components, mixins, and real feature patterns. Use when the orchestrator needs a composition strategy, building blocks, event flow, or file-level implementation plan before specs, design, or code.
+  Plan how to compose a Cells + Lit + BBVA feature or widget from existing components, mixins, and real patterns. Triggers: when composing features, planning widget wiring, designing event flow, or building from existing components before specs or design. Load after cells-component-researcher has identified available components. Never invent composition patterns without evidence from cells-components-catalog or cells-official-docs-catalog.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 ---
 
 ## Purpose

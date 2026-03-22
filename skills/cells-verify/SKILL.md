@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-verify
 description: >
-  Verify that an implemented change matches specs, design, and tasks using real execution evidence. Use when the orchestrator needs a quality gate for a completed or partially completed change, including test execution, build checks, and spec compliance reporting.
+  Validate that a Cells + Lit + BBVA + SCSS implementation matches specs, design, and tasks using real execution evidence. Triggers: when verifying implementation, running tests, checking build, quality gate, or closing a change. Load cells-cli-usage, cells-coverage, and cells-test-creator as mandatory stack. Also load cells-i18n if the change touched user-facing text or locale files.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

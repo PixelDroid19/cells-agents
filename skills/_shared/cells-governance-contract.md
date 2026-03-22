@@ -23,15 +23,9 @@ Apply this contract after persistence rules and before phase-specific implementa
 
 For every decision, resolve source intent first and query the primary source before fallback.
 
-| Intent class | Primary source | Deterministic fallback order |
-|---|---|---|
-| UI/component discovery | `cells-components-catalog` SQL lookup | `cells-official-docs-catalog` -> project code/tests |
-| Cells process/docs/CLI/testing/theming/i18n | `cells-official-docs-catalog` | `cells-components-catalog` -> project code/tests |
-| Test execution and coverage | `cells-cli-usage` -> `cells-coverage` -> `cells-test-creator` | escalate (no generic runner by default) |
-| Browser-visible validation | `browser-testing-convention` + `agent-browser` | source-only evidence with explicit limitation note |
+**The canonical routing table lives in `skills/_shared/cells-source-routing-contract.md` (Core Intent Matrix).** Use it for all intent routing decisions.
 
-## Fallback Rules
-
+Fallback rules:
 - Fallback is allowed only when primary source is unavailable or insufficient.
 - Fallback order MUST NOT skip intermediate sources.
 - Every fallback MUST include an explicit reason and impact note.
@@ -102,15 +96,7 @@ Scope policy:
 
 ## Execution Trace Fields (Mandatory)
 
-Every workflow phase artifact MUST include a compact `source_decisions` section with entries using:
-
-- `intent`: decision category
-- `primary_source`: first source attempted
-- `fallback_used`: yes/no
-- `fallback_source`: source used when fallback happened
-- `fallback_reason`: why fallback was required
-- `evidence_quality`: high | medium | low
-- `status`: ok | partial | blocked
+Every workflow phase artifact MUST include a compact `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
 
 ## Contribution Lifecycle Enforcement
 

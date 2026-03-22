@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-apply
 description: >
-  Implement one or more planned change tasks by editing real code to match proposal, specs, design, and project conventions. Use when the orchestrator has a task batch ready for implementation, including Cells-specific component work and test updates.
+  Implement planned Cells + Lit + BBVA + SCSS tasks by editing real code against proposal, specs, and design. Triggers: when implementing code, writing components, applying changes, or generating tests. Load cells-cli-usage, cells-coverage, and cells-test-creator before starting. NEVER use HTML elements like <p>, <h3>, <span> — always search cells-components-catalog first for BBVA components. If no matching component exists, use cells-component-authoring to create one correctly.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

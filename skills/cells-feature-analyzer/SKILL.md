@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-feature-analyzer
 description: >
-  Analyze real BBVA Cells feature repositories to extract reusable composition, wiring, state, and testing patterns. Use when the orchestrator needs evidence from production-like feature code before design, implementation, verification, or skill creation.
+  Extract reusable composition, wiring, state, and testing patterns from real Cells + Lit + BBVA feature implementations. Triggers: when analyzing existing feature code, finding patterns to reuse, validating implementation approach, or extracting best practices before design or apply. Load when cells-design needs evidence from production-like code.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 ---
 
 ## Purpose

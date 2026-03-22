@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-component-authoring
 description: >
-  Plan or scaffold a new BBVA Cells component, or evolve an existing component package, using official Cells authoring, CLI, documentation, testing, and i18n rules. Use when the user wants to create a base component package, add public API, generate docs metadata, or standardize a component for reuse.
+  Scaffold or evolve a new BBVA Cells Lit component when no existing BBVA component matches the goal. Triggers: when creating a new component, adding public API, generating docs metadata, standardizing a component, or adding a component to the catalog. NEVER use this to bypass cells-components-catalog — always search the catalog first. If a component exists, use it and do not create a new one.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Cells Component Authoring

@@ -1,12 +1,11 @@
 ---
 name: cells-visual-intent-demo
 description: >
-  Demo skill used to validate installer behavior for skills that include
-  examples, scripts, and test fixtures.
+  Demo and validation skill for installer behavior — NOT for productive Cells + Lit + BBVA workflows. Triggers: when testing or validating the cells-teams installer setup. Do NOT load during normal development or any SDD phase.
 license: MIT
 metadata:
   author: cells-team
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Cells Visual Intent Demo

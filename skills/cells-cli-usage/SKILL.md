@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-cli-usage
 description: >
-  Resolve how to use Cells-native CLI commands for building, serving, linting, documenting, and testing Cells apps and components. Use when an agent needs the correct command path without guessing or assuming a global installation.
+  Resolve the correct Cells-native CLI command for building, serving, linting, documenting, and testing Cells + Lit + BBVA apps and components. Triggers: when running commands, building projects, serving demos, running tests, or checking CLI options. NEVER guess a command — always resolve via this skill first. Load before cells-apply or cells-verify.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Cells CLI Usage

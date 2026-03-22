@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-official-docs-catalog
 description: >
-  Search and retrieve normalized official BBVA Cells guidance from an internal SQLite FTS5 catalog bundled inside this package. Use this when an agent needs authoritative rules for architecture, CLI, component API, Lit authoring, composition, testing, demos, i18n, theming, or packaging without reading external folders.
+  Search authoritative BBVA Cells official guidance for architecture, CLI, component API, Lit authoring, composition, testing, demos, i18n, theming, and packaging from a bundled SQLite FTS5 catalog. Triggers: when looking up official rules, checking how Cells works, finding CLI commands, or resolving architectural guidance. Load in cells-explore and cells-design phases.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 ---
 
 # Cells Official Docs Catalog

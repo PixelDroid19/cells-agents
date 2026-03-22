@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-coverage
 description: >
-  Analyze coverage artifacts and test-failure outputs using compact deterministic summaries. Use this when the team needs to prioritize branch misses, inspect coverage gaps, or convert test error folders and lcov reports into focused next test actions.
+  Analyze coverage artifacts, lcov reports, branch misses, and test failure outputs for Cells + Lit + BBVA projects. Triggers: when analyzing coverage, prioritizing test gaps, inspecting branch misses, or converting test errors into next test actions. Load as part of the cells-cli-usage -> cells-coverage -> cells-test-creator mandatory stack in cells-apply and cells-verify.
 license: MIT
 metadata:
   author: D. J
-  version: "1.0"
+  version: "1.1"
 compatibility: python>=3.9
 ---
 

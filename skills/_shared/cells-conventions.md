@@ -70,14 +70,7 @@ If two sources conflict, trust project code first, then the internal component c
 
 ## Intent Routing Rules (Mandatory)
 
-Use this routing table before choosing which skill or catalog to read first:
-
-| Intent | First Route | Fallback Route |
-|---|---|---|
-| UI/component discovery, screen building, element selection | SQL/database-backed lookup in `skills/cells-components-catalog/assets/bbva_cells_components.db` via `skills/cells-components-catalog/scripts/search_docs.py` | `skills/cells-official-docs-catalog/` only when process/authoring rules are also required |
-| Any Cells documentation lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells knowledge) | `skills/cells-official-docs-catalog/` | `skills/cells-components-catalog/` only when the answer needs concrete package/tag/API discovery |
-| Tests, coverage, or test creation in Cells | `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/` | No reorder; only then use extra sources if still blocked |
-| Browser-visible UI behavior, route flow, visual checks | `skills/_shared/browser-testing-convention.md` + `skills/agent-browser/SKILL.md` | Source-only evidence only when browser validation is not required |
+**The canonical routing table is in `skills/_shared/cells-source-routing-contract.md` (Core Intent Matrix).** Use it for all intent routing decisions before choosing which skill or catalog to read first.
 
 Fallback is allowed only when the first route does not provide enough evidence for the decision.
 

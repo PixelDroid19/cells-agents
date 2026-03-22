@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-propose
 description: >
-  Create or update a change proposal with intent, scope, affected areas, risks, and rollback plan. Use when the orchestrator has enough exploration or user context to define a concrete change before writing specs or design.
+  Define intent, scope, affected areas, risks, and rollback plan for a Cells + Lit + BBVA + SCSS change. Triggers: when creating a new change proposal, updating scope, or framing a feature request before specs or design. Load after cells-explore has completed.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

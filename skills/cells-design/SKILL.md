@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-design
 description: >
-  Create or update the technical design for a change, including architecture decisions, data flow, file changes, and testing strategy. Use when the orchestrator needs the implementation plan after proposal/spec work and before task breakdown or coding.
+  Produce technical architecture, data flow, file changes, and testing strategy for a Cells + Lit + BBVA + SCSS change. Triggers: when creating or updating a technical design, architecture decisions, component wiring plan, or implementation roadmap. Load after cells-spec has completed. Must load cells-component-researcher and cells-composition-architect before designing if the change touches UI or composition.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose

@@ -1,11 +1,11 @@
-﻿---
+---
 name: cells-spec
 description: >
-  Write or update change specifications with requirements and Given/When/Then scenarios. Use when the orchestrator needs behavioral specs for a planned change, including delta specs against existing OpenSpec domains.
+  Write behavioral specs with Given/When/Then scenarios for a Cells + Lit + BBVA + SCSS change. Triggers: when writing specifications, defining requirements, adding test scenarios, or updating delta specs. Load after cells-propose has completed. Always resolve component references via cells-components-catalog before writing component-related requirements.
 license: MIT
 metadata:
   author: D. J
-  version: "2.0"
+  version: "2.1"
 ---
 
 ## Purpose
