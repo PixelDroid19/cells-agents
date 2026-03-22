@@ -1,5 +1,5 @@
 {
-  "topic_count": 13,
+  "topic_count": 14,
   "database": "skills\\cells-official-docs-catalog\\assets\\cells_official_docs.db",
   "topics": [
     {
@@ -51,6 +51,11 @@
       "slug": "lit-authoring",
       "title": "Lit Authoring",
       "path": "skills\\cells-official-docs-catalog\\references\\lit-authoring.md"
+    },
+    {
+      "slug": "monitoring",
+      "title": "Monitoring",
+      "path": "skills\\cells-official-docs-catalog\\references\\monitoring.md"
     },
     {
       "slug": "testing",

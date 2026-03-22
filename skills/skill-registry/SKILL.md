@@ -1,19 +1,19 @@
 ---
 name: skill-registry
 description: >
-  Knowledge gateway and anti-patterns catalog for Cells projects. Load this FIRST before writing any code, proposing components, or making architectural decisions. Provides mandatory BBVA component lookup, Cells official guidance routing, and a never-do list of anti-patterns.
-  Trigger: Always — before any code work, component proposal, or design decision.
+  Knowledge gateway for Cells projects. Load this FIRST before any code, design, or component work. Routes to cells-components-catalog and cells-official-docs-catalog, provides mandatory pre-flight gates, and delegates Cells implementation rules to cells-rules-contract.
+  Triggers: Always — before any code work, component proposal, design decision, or architectural choice in a Cells + Lit + BBVA project.
 license: MIT
 metadata:
   author: Cells Agent Bundle
-  version: "2.0"
+  version: "3.0"
 ---
 
 ## Purpose
 
 You are the **knowledge gateway** for Cells projects. Your job is to make sure the agent **knows what exists** before it invents something new, proposes a component, or makes a Cells mistake.
 
-Load this skill **before** any code, design, or component work. Not as step 1 of a phase — as **step 0 of everything**.
+Load this skill **before** any code, design, or component work — as **step 0 of everything**.
 
 ## Mandatory Pre-Flight Knowledge Gates
 
@@ -56,36 +56,19 @@ Topics: `architecture`, `testing`, `cli`, `component-api`, `lit-authoring`, `com
 
 ---
 
-### Gate 3: Anti-Patterns Catalog (ALWAYS — non-negotiable)
+### Gate 3: Anti-Patterns + Implementation Rules Reference (MANDATORY)
 
-**Never do any of the following in a Cells project:**
+**Before implementing any Cells component, read `skills/_shared/cells-rules-contract.md`.**
 
-#### i18n Anti-Patterns
+It contains the single source of truth for:
+- BBVA-First Rule and component anti-patterns table
+- i18n anti-patterns (`this.t('key') || ''` is wrong, not falsy)
+- `scopedElements` registration requirements
+- `WidgetMixin` + `this.emitEvent(...)` usage rules
+- Mandatory testing stack (`cells-cli-usage` → `cells-coverage` → `cells-test-creator`)
+- Cells component checklist (reuse, scopedElements, WidgetMixin, i18n, browser validation)
 
-| Anti-Pattern | Why | Correct approach |
-|---|---|---|
-| `this.t('key') \|\| ''` | The i18n runtime renders the key itself as fallback — it is NOT falsy. This pattern hides real missing translations and makes them look intentional. | Always check the locale file directly. If the key is missing, add it to `demo/locales/locales.json`. Never use `\|\| ''` to silence the key. |
-| Hardcoded user-facing literals | Cells requires all user-facing text to go through `this.t(...)`. | Route every visible string through `this.t('key')`. Add the key to locale files. |
-| `IntlMsg.lang = 'en'` at instance level without waiting | Race condition: the component may render before the locale loads, showing the key as text. | Set `IntlMsg.lang` at app/shell level. Await `window.IntlMsg.loadUrlResourcesComplete` in tests and demos. |
-| Locale files outside `demo/locales/` | Cells enforces this location. | Always use `demo/locales/locales.json`. |
-
-#### Component Anti-Patterns
-
-| Anti-Pattern | Why | Correct approach |
-|---|---|---|
-| Using `<p>`, `<h1-h6>`, or `<span>` for text | BBVA has `bbva-type-text` and family for all typography. | Use `bbva-type-text` with the appropriate `weight` and `size` props. |
-| Implementing `<div onclick>` as a button | Cells buttons handle focus, keyboard, a11y, and loading states. | Use `bbva-button-default` or the appropriate button variant. |
-| Creating custom loading spinners | BBVA has `bbva-skeleton-default` and notification components for loading states. | Use the appropriate BBVA feedback component. |
-| Inventing `<custom-element>` without checking the catalog | Reuse existing BBVA components first. | Search `cells-components-catalog` before creating any new component. |
-| Using `<img>` for BBVA icons | BBVA icon system is not `<img>`. | Use the BBVA icon system (referenced in `cells-official-docs-catalog` topic `demo-docs-i18n-assets`). |
-
-#### Architecture Anti-Patterns
-
-| Anti-Pattern | Why | Correct approach |
-|---|---|---|
-| Putting API logic in the component | Violates Cells separation of concerns. | Use data managers for API interaction. Components own presentation only. |
-| Skipping `cells-cli-usage` → `cells-coverage` → `cells-test-creator` stack | This stack is mandatory for Cells testing. | Always apply the stack in order before any test work. |
-| Using generic `npm test` in Cells contexts | Cells has its own test commands via `cells lit-component:test` or `cells app:test`. | Resolve via `cells-cli-usage` first. |
+Do not replicate these rules in individual skills. Reference `cells-rules-contract.md` instead.
 
 ---
 
@@ -104,9 +87,9 @@ Load these skills **before** the phase that needs them:
 
 ---
 
-## Cells Component Non-Negotiables
+## Cells Component Non-Negotiables (Summary)
 
-Before closing any task that touches UI or components:
+Before closing any task that touches UI or components, verify via `cells-rules-contract.md`:
 
 1. **Searched** the BBVA components catalog for existing solutions
 2. **Used** the correct BBVA component (not HTML elements)

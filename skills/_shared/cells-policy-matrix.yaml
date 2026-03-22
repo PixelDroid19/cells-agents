@@ -71,6 +71,18 @@ policy_rows:
       - "cells-cli-usage` -> `cells-coverage` -> `cells-test-creator"
 
   - layer: shared-skills
+    file: skills/_shared/cells-rules-contract.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "BBVA-First Rule"
+      - "scopedElements"
+      - "WidgetMixin"
+      - "this.t("
+
+  - layer: shared-skills
     file: skills/_shared/browser-testing-convention.md
     requirement_ids:
       - REQ-EVIDENCE-QUALITY-GATES

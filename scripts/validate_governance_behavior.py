@@ -14,6 +14,8 @@ INSTRUCTIONS = ROOT / "examples/vscode/instructions/copilot-instructions.md"
 GOVERNANCE = ROOT / "skills/_shared/cells-governance-contract.md"
 PERSISTENCE = ROOT / "skills/_shared/persistence-contract.md"
 VERIFY_SKILL = ROOT / "skills/cells-verify/SKILL.md"
+RULES = ROOT / "skills/_shared/cells-rules-contract.md"
+APPLY_SKILL = ROOT / "skills/cells-apply/SKILL.md"
 
 
 def _read(path: Path) -> str:
@@ -211,11 +213,9 @@ def scenario_i18n_routing_enforced() -> tuple[bool, str]:
 
 
 def scenario_real_cells_rules_enforced() -> tuple[bool, str]:
-    conventions = _read(ROOT / "skills/_shared/cells-conventions.md")
-    apply_skill = _read(ROOT / "skills/cells-apply/SKILL.md")
-    verify_skill = _read(VERIFY_SKILL)
+    rules = _read(RULES)
     required = (
-        "Use existing BBVA components first",
+        "BBVA-First Rule",
         "scopedElements",
         "WidgetMixin",
         "this.emitEvent(...)",
@@ -224,29 +224,28 @@ def scenario_real_cells_rules_enforced() -> tuple[bool, str]:
         "SCSS",
         "browser validation",
     )
-    if all(token in f"{conventions}\n{apply_skill}\n{verify_skill}" for token in required):
-        return True, "Real Cells implementation rules are enforced across conventions/apply/verify."
+    if all(token in rules for token in required):
+        return True, "Real Cells implementation rules are enforced in cells-rules-contract."
     return False, "Real Cells implementation rules are incomplete."
 
 
 def scenario_code_hygiene_enforced() -> tuple[bool, str]:
     conventions = _read(ROOT / "skills/_shared/cells-conventions.md")
-    apply_skill = _read(ROOT / "skills/cells-apply/SKILL.md")
-    verify_skill = _read(VERIFY_SKILL)
+    apply_skill = _read(APPLY_SKILL)
     required = (
         "Use JSDoc for public API",
         "do not leave TODO comments",
         "Avoid unnecessary whitespace-only edits",
         "separation of responsibilities",
     )
-    if all(token in f"{conventions}\n{apply_skill}\n{verify_skill}" for token in required):
+    if all(token in f"{conventions}\n{apply_skill}" for token in required):
         return True, "Code hygiene and responsibility-separation rules are enforced."
     return False, "Code hygiene and responsibility-separation rules are missing."
 
 
 def scenario_task_scope_isolation_enforced() -> tuple[bool, str]:
     governance = _read(GOVERNANCE)
-    apply_skill = _read(ROOT / "skills/cells-apply/SKILL.md")
+    apply_skill = _read(APPLY_SKILL)
     verify_skill = _read(VERIFY_SKILL)
     required = (
         "Task Scope Isolation (Mandatory)",

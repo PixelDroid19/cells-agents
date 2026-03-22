@@ -31,27 +31,26 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 
 ## What to Do
 
-### Step 1: Load Skill Registry (Mandatory)
+### Step 1: Dependency Gate (Mandatory)
 
-Do this FIRST, before any other work.
+Before producing any output, verify that a proposal artifact exists.
 
-1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
-2. If found, call `mem_get_observation(id: {id})` for the full registry
-3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
-4. If neither exists, proceed without skills (this is not an error)
-
-From the registry, load only the skills and convention files relevant to specification work.
-
-### Step 2: Load Dependencies (Engram / Hybrid)
-
-When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
-
+When mode is `engram` or `hybrid`, retrieve the proposal artifact:
 1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
-2. `mem_get_observation(id: {proposal_id})` (REQUIRED)
+2. If found: `mem_get_observation(id: {id})` (REQUIRED)
 
-If the canonical proposal artifact is absent, return `status: blocked` and require it to be seeded before continuing.
+If the canonical proposal artifact is absent, return `status: blocked` with:
+```
+missing_artifact: cells/{change-name}/proposal
+reason: "cells-spec requires cells-propose output before specs can be written"
+required_action: "Run /cells-propose first or provide a seeded proposal artifact"
+```
 
 Do not use `mem_search` preview text as complete artifact content.
+
+### Step 2: Load Skill Registry
+
+Load the skill registry from the orchestrator's pre-resolved context. If the orchestrator did not pass a resolved skill registry path, read `skills/skill-registry/SKILL.md` to understand available skills and routing.
 
 ### Step 3: Identify Affected Domains
 

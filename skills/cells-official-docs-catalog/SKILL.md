@@ -34,6 +34,7 @@ Use this skill when the task needs official guidance for:
 - Cells bridge communication, event channels, native integration, or logout flows
 - advanced application concerns like feature flags, microfrontends, performance, or service workers
 - Cells CLI commands and local workflows
+- Cells monitoring, SeMAAS integration, logging, and tracing
 - component public API and packaging
 - Lit templating and lifecycle
 - composition, scoped elements, extension, and mixins
@@ -84,6 +85,7 @@ Do not dump large documentation blocks into the report.
 - `testing`
 - `application-testing`
 - `theming`
+- `monitoring`
 
 ## Canonical Component Construction Coverage
 

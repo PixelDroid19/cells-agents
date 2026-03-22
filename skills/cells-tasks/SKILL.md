@@ -32,21 +32,11 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 
 ## What to Do
 
-### Step 1: Load Skill Registry (Mandatory)
+### Step 1: Dependency Gate (Mandatory)
 
-Do this FIRST, before any other work.
+Before producing any output, verify that all required canonical artifacts exist.
 
-1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
-2. If found, call `mem_get_observation(id: {id})` for the full registry
-3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
-4. If neither exists, proceed without skills (this is not an error)
-
-From the registry, load only the skills and convention files relevant to task decomposition.
-
-### Step 2: Load Dependencies (Engram / Hybrid)
-
-When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
-
+When mode is `engram` or `hybrid`, retrieve all three required artifacts:
 1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
 2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
 3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
@@ -54,9 +44,18 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 5. `mem_get_observation(id: {spec_id})` (REQUIRED)
 6. `mem_get_observation(id: {design_id})` (REQUIRED)
 
-If any required canonical dependency is absent, return `status: blocked` and require canonical artifact seeding before task generation.
+If any required canonical dependency is absent, return `status: blocked` with:
+```
+missing_artifact: cells/{change-name}/<missing-phase>
+reason: "cells-tasks requires proposal, spec, and design artifacts before tasks can be generated"
+required_action: "Run the missing phase(s) first or provide the required canonical artifact"
+```
 
 Do not use `mem_search` preview text as complete artifact content.
+
+### Step 2: Load Skill Registry
+
+Load the skill registry from the orchestrator's pre-resolved context. If the orchestrator did not pass a resolved skill registry path, read `skills/skill-registry/SKILL.md` to understand available skills and routing.
 
 ### Step 3: Analyze the Design
 

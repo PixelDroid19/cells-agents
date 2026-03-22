@@ -33,18 +33,26 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 
 ## What to Do
 
-### Step 1: Load Skill Registry (Mandatory)
+### Step 1: Dependency Gate (Mandatory)
 
-Do this FIRST, before any other work.
+Before producing any output, verify that either an exploration artifact exists OR the user provided a direct change description.
 
-1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
-2. If found, call `mem_get_observation(id: {id})` for the full registry
-3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
-4. If neither exists, proceed without skills (this is not an error)
+When mode is `engram` or `hybrid`, retrieve the explore artifact:
+1. `mem_search(query: "cells/{change-name}/explore", project: "{project}")`
+2. If found: `mem_get_observation(id: {id})`
 
-From the registry, load only the skills and convention files relevant to proposal writing.
+When no explore artifact exists and no user description was provided, return `status: blocked` with:
+```
+missing_artifact: cells/{change-name}/explore
+reason: "cells-propose requires cells-explore output or direct user description"
+required_action: "Run /cells-explore first or provide a direct change description"
+```
 
-### Step 2: Load Dependencies (Engram / Hybrid)
+When mode is `openspec`, check for `openspec/changes/{change-name}/proposal.md`. If the change folder exists with a proposal, read it and update rather than creating fresh.
+
+### Step 2: Load Skill Registry
+
+Load the skill registry from the orchestrator's pre-resolved context. If the orchestrator did not pass a resolved skill registry path, read `skills/skill-registry/SKILL.md` to understand available skills and routing.
 
 When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 
