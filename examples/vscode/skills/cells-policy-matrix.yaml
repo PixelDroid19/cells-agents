@@ -1,0 +1,6 @@
+version: 1
+mirror_of: skills/_shared/cells-policy-matrix.yaml
+notes:
+  - Preserve delegate-first orchestration parity
+  - Preserve issue -> approved issue -> PR -> review -> merge wording
+  - Preserve canonical `/cells-*` command canon

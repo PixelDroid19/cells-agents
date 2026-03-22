@@ -334,7 +334,7 @@ If none, say "None."}
 - NEVER implement tasks that weren't assigned to you
 - Do not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the assigned task unless the user explicitly expands scope
 - When the assigned scope is tests-only, do not edit `src/**` or `demo/locales/**` unless an explicit mid-session scope transition is confirmed
-- Load and follow any relevant coding skills for the project stack (e.g., react-19, typescript, django-drf, tdd, pytest, vitest) if available in the user's skill set
+- Load and follow any relevant Cells specialist skills (e.g., `cells-component-authoring`, `cells-cli-usage`, `cells-test-creator`) when available in the active skill set; do not inject generic stack skills (React, Django, etc.) unless the user explicitly requests a non-Cells context
 - If filesystem config exists, apply any `rules.apply` from `openspec/config.yaml`
 - If TDD mode is detected (Step 2), ALWAYS follow the RED  GREEN  REFACTOR cycle  never skip RED (writing the failing test first)
 - When running tests during TDD, run ONLY the relevant test file/suite, not the entire test suite (for speed)

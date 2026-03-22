@@ -33,16 +33,8 @@ CORE_WORKFLOW_COMMANDS=(
 MARKER_BEGIN="<!-- BEGIN:cells-agent-bundle -->"
 MARKER_END="<!-- END:cells-agent-bundle -->"
 
-# Backward-compat markers we can upgrade in place
-OLD_MARKER_BEGIN="<!-- BEGIN:agent-teams-lite -->"
-OLD_MARKER_END="<!-- END:agent-teams-lite -->"
-GAI_MARKER_BEGIN="<!-- gentle-ai:cells-orchestrator -->"
-GAI_MARKER_END="<!-- /gentle-ai:cells-orchestrator -->"
-
 ORCHESTRATOR_HEADINGS=(
     "## CELLS Orchestrator"
-    "## Agent Teams Orchestrator"
-    # Compatibility-only legacy headings for in-place upgrades.
     "## Spec-Driven Development (CELLS) Orchestrator"
     "## Spec-Driven Development (CELLS)"
 )
@@ -308,12 +300,6 @@ setup_orchestrator() {
         if grep -qF "$MARKER_BEGIN" "$prompt_path"; then
             replace_marked_block "$prompt_path" "$MARKER_BEGIN" "$MARKER_END" "$content_file"
             ok "Orchestrator updated in $prompt_path"
-        elif grep -qF "$OLD_MARKER_BEGIN" "$prompt_path"; then
-            replace_marked_block "$prompt_path" "$OLD_MARKER_BEGIN" "$OLD_MARKER_END" "$content_file"
-            ok "Orchestrator updated in $prompt_path (upgraded old markers)"
-        elif grep -qF "$GAI_MARKER_BEGIN" "$prompt_path"; then
-            replace_marked_block "$prompt_path" "$GAI_MARKER_BEGIN" "$GAI_MARKER_END" "$content_file"
-            ok "Orchestrator updated in $prompt_path (replaced gentle-ai section)"
         else
             local already_present=false
             for heading in "${ORCHESTRATOR_HEADINGS[@]}"; do

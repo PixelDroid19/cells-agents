@@ -3,8 +3,6 @@
 Thumbs.db
 
 # Editors
-.github/
-.atl/
 .vscode/
 .idea/
 *.swp

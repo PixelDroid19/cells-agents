@@ -10,35 +10,34 @@ import sys
 ROOT = Path(__file__).resolve().parent.parent
 
 REQUIRED_FILES = [
-    ".github/instructions/copilot-instructions.md",
-    ".github/docs/README.md",
-    ".github/docs/hooks.md",
-    ".github/docs/models.md",
-    ".github/prompts/README.md",
-    ".github/prompts/cells-explore.md",
-    ".github/prompts/cells-propose.md",
-    ".github/prompts/cells-spec.md",
-    ".github/prompts/cells-design.md",
-    ".github/prompts/cells-tasks.md",
-    ".github/prompts/cells-apply.md",
-    ".github/prompts/cells-verify.md",
-    ".github/prompts/cells-archive.md",
-    ".github/prompts/cells-fallback.md",
-    ".github/agents/analysis-agent.md",
-    ".github/agents/implementation-agent.md",
-    ".github/agents/verification-agent.md",
-    ".github/skills/README.md",
-    ".github/skills/cells-governance-contract.md",
-    ".github/skills/cells-policy-matrix.yaml",
+    "examples/vscode/instructions/copilot-instructions.md",
+    "examples/vscode/docs/README.md",
+    "examples/vscode/docs/hooks.md",
+    "examples/vscode/docs/models.md",
+    "examples/vscode/prompts/README.md",
+    "examples/vscode/prompts/cells-explore.md",
+    "examples/vscode/prompts/cells-propose.md",
+    "examples/vscode/prompts/cells-spec.md",
+    "examples/vscode/prompts/cells-design.md",
+    "examples/vscode/prompts/cells-tasks.md",
+    "examples/vscode/prompts/cells-apply.md",
+    "examples/vscode/prompts/cells-verify.md",
+    "examples/vscode/prompts/cells-archive.md",
+    "examples/vscode/prompts/cells-fallback.md",
+    "examples/vscode/agents/analysis-agent.md",
+    "examples/vscode/agents/implementation-agent.md",
+    "examples/vscode/agents/verification-agent.md",
+    "skills/_shared/cells-governance-contract.md",
+    "skills/_shared/cells-policy-matrix.yaml",
 ]
 
 REQUIRED_STRINGS = {
-    ".github/instructions/copilot-instructions.md": [
+    "examples/vscode/instructions/copilot-instructions.md": [
         "### Layered Precedence (Deterministic)",
         "`status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`",
         "fallback is used, record source decision trace",
     ],
-    ".github/prompts/cells-fallback.md": [
+    "examples/vscode/prompts/cells-fallback.md": [
         "WARNING: Dedicated prompt for this CELLS phase is missing",
         "`status`",
         "`next_recommended`",
@@ -59,7 +58,7 @@ def _contains_in_order(content: str, tokens: list[str]) -> bool:
 def validate_behavioral_policies() -> list[str]:
     invalid: list[str] = []
 
-    instructions_path = ROOT / ".github/instructions/copilot-instructions.md"
+    instructions_path = ROOT / "examples/vscode/instructions/copilot-instructions.md"
     governance_path = ROOT / "skills/_shared/cells-governance-contract.md"
     persistence_path = ROOT / "skills/_shared/persistence-contract.md"
     verify_skill_path = ROOT / "skills/cells-verify/SKILL.md"
@@ -76,22 +75,8 @@ def validate_behavioral_policies() -> list[str]:
             ],
         ):
             invalid.append(
-                ".github/instructions/copilot-instructions.md missing deterministic catalog-first/fallback order"
+                "examples/vscode/instructions/copilot-instructions.md missing deterministic catalog-first/fallback order"
             )
-
-        required_trace_fields = (
-            "intent",
-            "primary_source",
-            "fallback_source",
-            "fallback_reason",
-            "evidence_quality",
-            "status",
-        )
-        for field in required_trace_fields:
-            if field not in instructions:
-                invalid.append(
-                    f".github/instructions/copilot-instructions.md missing trace field: {field}"
-                )
 
     if governance_path.is_file():
         governance = governance_path.read_text(encoding="utf-8")

@@ -1,4 +1,4 @@
-﻿<p align="center">
+<p align="center">
   <h1 align="center">Cells Agent Bundle</h1>
   <p align="center">
     <strong>OpenCode-first orchestration for BBVA Cells using skill-driven delegated runs</strong>
@@ -624,16 +624,16 @@ Troubleshooting (`database table is locked`):
 
 ### VS Code Copilot
 
-1. Keep Copilot runtime assets under `.github/` in the project root.
-2. Use `.github/instructions/copilot-instructions.md` as the orchestrator instructions source.
+1. Keep Copilot runtime assets under `examples/vscode/` in the project root.
+2. Use `examples/vscode/instructions/copilot-instructions.md` as the orchestrator instructions source.
 3. Skills act as context files rather than separate delegated runs.
-4. Apply the layered VS Code model documented in `.github/docs/README.md`:
+4. Apply the layered VS Code model documented in `examples/vscode/docs/README.md`:
    - baseline instructions (`copilot-instructions.md`)
-   - CELLS prompt catalog (`.github/prompts/`)
-   - specialized agents (`.github/agents/`)
-   - operational hooks (`.github/docs/hooks.md`)
-   - model/fallback policy (`.github/docs/models.md`)
-   - shared convention mirrors (`.github/skills/`)
+   - CELLS prompt catalog (`examples/vscode/prompts/`)
+   - specialized agents (`examples/vscode/agents/`)
+   - operational hooks (`examples/vscode/docs/hooks.md`)
+   - model/fallback policy (`examples/vscode/docs/models.md`)
+   - shared convention mirrors (`examples/vscode/skills/`)
 5. Validate VS Code customization assets before release:
 
 ```bash

@@ -50,16 +50,8 @@ $ExamplesDir = Join-Path $RepoDir 'examples'
 $MarkerBegin = '<!-- BEGIN:cells-agent-bundle -->'
 $MarkerEnd = '<!-- END:cells-agent-bundle -->'
 
-# Backward-compat markers we can upgrade in place
-$OldMarkerBegin = '<!-- BEGIN:agent-teams-lite -->'
-$OldMarkerEnd = '<!-- END:agent-teams-lite -->'
-$GaiMarkerBegin = '<!-- gentle-ai:cells-orchestrator -->'
-$GaiMarkerEnd = '<!-- /gentle-ai:cells-orchestrator -->'
-
 $OrchestratorHeadings = @(
     '## CELLS Orchestrator',
-    '## Agent Teams Orchestrator',
-    # Compatibility-only legacy headings for in-place upgrades.
     '## Spec-Driven Development (CELLS) Orchestrator',
     '## Spec-Driven Development (CELLS)'
 )
@@ -239,20 +231,6 @@ function Set-Orchestrator {
             Set-Content -Path $PromptPath -Value $updated -NoNewline
             Write-Ok "Orchestrator updated in $PromptPath"
         }
-        elseif ($existing -match [regex]::Escape($OldMarkerBegin)) {
-            $pattern = "(?s)$([regex]::Escape($OldMarkerBegin)).*?$([regex]::Escape($OldMarkerEnd))"
-            $replacement = "$MarkerBegin`n$content`n$MarkerEnd"
-            $updated = [regex]::Replace($existing, $pattern, $replacement)
-            Set-Content -Path $PromptPath -Value $updated -NoNewline
-            Write-Ok "Orchestrator updated in $PromptPath (upgraded old markers)"
-        }
-        elseif ($existing -match [regex]::Escape($GaiMarkerBegin)) {
-            $pattern = "(?s)$([regex]::Escape($GaiMarkerBegin)).*?$([regex]::Escape($GaiMarkerEnd))"
-            $replacement = "$MarkerBegin`n$content`n$MarkerEnd"
-            $updated = [regex]::Replace($existing, $pattern, $replacement)
-            Set-Content -Path $PromptPath -Value $updated -NoNewline
-            Write-Ok "Orchestrator updated in $PromptPath (replaced gentle-ai section)"
-        }
         else {
             $alreadyPresent = $false
             foreach ($heading in $OrchestratorHeadings) {
@@ -387,20 +365,18 @@ function Set-OpenCode {
                         $existing | Add-Member -NotePropertyName 'agent' -NotePropertyValue ([PSCustomObject]@{})
                     }
 
-                    $legacyPhasePattern = (('s', 'd', 'd' -join '') + '-*')
-
-                    # 1. Save existing model fields from phase agents.
-                    # Compatibility-only: preserve legacy pre-Cells phase keys during upgrades.
+                    # Remove old phase agents to replace with fresh config from template.
+                    # Preserve user model choices so re-running setup does not wipe custom model assignments.
                     $savedModels = @{}
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if (($prop.Name -like 'cells-*' -or $prop.Name -like $legacyPhasePattern) -and $prop.Value.PSObject.Properties['model']) {
+                        if ($prop.Name -like 'cells-*' -and $prop.Value.PSObject.Properties['model']) {
                             $savedModels[$prop.Name] = $prop.Value.model
                         }
                     }
 
-                    # 2. Remove old phase agents, including compatibility-only legacy phase keys.
+                    # Remove old phase agents.
                     foreach ($prop in @($existing.agent.PSObject.Properties)) {
-                        if ($prop.Name -like 'cells-*' -or $prop.Name -like $legacyPhasePattern) {
+                        if ($prop.Name -like 'cells-*') {
                             $existing.agent.PSObject.Properties.Remove($prop.Name)
                         }
                     }
