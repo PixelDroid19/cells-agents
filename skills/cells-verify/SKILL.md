@@ -1,7 +1,7 @@
 ---
 name: cells-verify
 description: >
-  Validate that a Cells + Lit + BBVA + SCSS implementation matches specs, design, and tasks using real execution evidence. Triggers: when verifying implementation, running tests, checking build, quality gate, or closing a change. Load cells-cli-usage, cells-coverage, and cells-test-creator as mandatory stack. Also load cells-i18n if the change touched user-facing text or locale files.
+  Validate implementation matches specs, design, and tasks using real execution evidence. Triggers: when the user says "run tests", "verify this works", "check the build", "is this correct", "quality check", "validate the changes", "test everything", "does it meet the specs", "compliance check", or when running the quality gate before archiving a change.
 license: MIT
 metadata:
   author: D. J
@@ -149,13 +149,10 @@ Detect the project's test runner and execute the tests:
 
 ```
 Detect test runner from:
- openspec/config.yaml  rules.verify.test_command (if filesystem config exists)
- `skills/cells-cli-usage/` first for the correct Cells-native command path
- `skills/cells-coverage/` second for threshold/reporting constraints when configured
- `skills/cells-test-creator/` third for quality and convention checks
- package.json  scripts.test (wrapper mapping only after Cells command resolution)
- pyproject.toml / pytest.ini  pytest
- Makefile  make test
+ 1. `skills/cells-cli-usage/` first for the correct Cells-native command path
+ 2. `skills/cells-coverage/` second for threshold/reporting constraints when configured
+ 3. `skills/cells-test-creator/` third for quality and convention checks
+ 4. `package.json` scripts.test (wrapper mapping only after Cells command resolution)
  Fallback: ask orchestrator
 
 Prefer the smallest confirmation scope that proves the change:
@@ -445,32 +442,35 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 
 ## Rules
 
-- ALWAYS read the actual source code  don't trust summaries
-- ALWAYS execute tests  static analysis alone is not verification
-- A spec scenario is only COMPLIANT when a test that covers it has PASSED
-- Compare against SPECS first (behavioral correctness), DESIGN second (structural correctness)
-- For Cells projects, explicitly report mismatches between source code, `custom-elements.json`, package docs, and tests
-- For Cells projects, explicitly report any locale file created or referenced outside `demo/locales` as a verification issue
-- Verify generated and changed technical naming remains in English for JSDoc/comments, event names/custom event types/payload keys, and public API names unless the user explicitly requested otherwise
-- Verify visible Cells changes have browser evidence before claiming closure
-- Verify no unnecessary placeholder comments, TODOs, commented-out code, or formatting noise remain in changed files
-- Verify responsibilities stay separated across data-manager/pages/shared-components/utils/styles when that architecture applies
-- Verify the implementation did not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the requested task unless explicit scope expansion was requested
-- For Cells app/theme verification, do NOT default to generic external runners (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
-- If uncertain whether a command is Cells-native, ask the user before running a non-Cells command
-- Be objective  report what IS, not what should be
-- CRITICAL issues = must fix before archive
-- WARNINGS = should fix but won't block
-- SUGGESTIONS = improvements, not blockers
-- DO NOT fix any issues  only report them. The orchestrator decides what to do.
-- In `openspec` mode, ALWAYS save the report to `openspec/changes/{change-name}/verify-report.md`  this persists the verification for cells-archive and the audit trail
-- If filesystem config exists, apply any `rules.verify` from `openspec/config.yaml`
-- Do not escalate every small change into full-project execution; use targeted confirmation first and broaden only when required
-- If browser validation is needed, reuse the already running runtime, browser, and port before starting another one
-- Verification and archive-facing reporting MUST cite canonical `cells/*` artifact refs as the active lineage and treat historical legacy artifacts as inactive archive context only
-- Record source-decision trace and fallback reasons for verification path choices
-- If evidence minimums are unmet, verdict cannot claim full completion and status must be `partial` or `blocked`
-- Return the standard structured envelope with the markdown report above in `detailed_report`
+### Verification Principles
+
+1. **Read actual source code** — don't trust summaries or assume implementation matches intent. Verification requires ground truth, which is the code itself.
+
+2. **Execute tests — static analysis alone is not verification** — code existing doesn't prove it works. Only passing tests prove behavioral compliance. A spec scenario is COMPLIANT only when a covering test has PASSED.
+
+3. **Specs first, design second** — compare against specs for behavioral correctness (does it do the right thing?), then design for structural correctness (does it do it the right way?).
+
+### Cells-Specific Checks
+
+4. **Report mismatches explicitly** — if source code, `custom-elements.json`, package docs, and tests disagree, flag it. Why? Mismatches indicate documentation drift or implementation bugs.
+
+5. **Locale path violations are verification issues** — any locale file outside `demo/locales` must be reported. Why? Cells runtime only reads from `demo/locales`, so misplaced files cause silent translation failures.
+
+6. **Browser evidence required for visible changes** — if the change affects what users see, verify in browser before claiming closure. Why? Unit tests can't prove visual correctness (colors, layout, icon rendering). Reuse existing runtime to save time.
+
+7. **Cells-native commands only** — use `cells app:*`, `cells lit-component:*`. Why? Cells commands carry toolchain guarantees for coverage, lint, and test setup.
+
+### Reporting Discipline
+
+8. **Be objective** — report what IS, not what should be. CRITICAL = must fix before archive. WARNING = should fix. SUGGESTION = nice to have.
+
+9. **Do NOT fix issues — only report them** — the orchestrator decides what to fix and in what order. Fixing issues during verification introduces unreviewed changes.
+
+10. **Targeted confirmation first** — don't escalate every small change into full-project execution. Run the smallest relevant test suite, broaden only when risk or coupling justifies it.
+
+11. **Cite canonical artifact refs** — verification reports must reference `cells/{change-name}/proposal`, `spec`, `design`, `tasks`. Historical legacy artifacts are inactive archive context only.
+
+12. **Source-decision trace required** — include `{intent, primary_source, fallback_used, evidence_quality, status}` for each verification path. Why? Enables traceability and audit.
 
 ## Browser Integration
 

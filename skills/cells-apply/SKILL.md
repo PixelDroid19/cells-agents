@@ -1,7 +1,7 @@
 ---
 name: cells-apply
 description: >
-  Implement planned Cells + Lit + BBVA + SCSS tasks by editing real code against proposal, specs, and design. Triggers: when implementing code, writing components, applying changes, or generating tests. Load cells-cli-usage, cells-coverage, and cells-test-creator before starting. NEVER use HTML elements like <p>, <h3>, <span> — always search cells-components-catalog first for BBVA components. If no matching component exists, use cells-component-authoring to create one correctly.
+  Implement planned tasks by editing real code against proposal, specs, and design. Triggers: when the user says "implement this", "write the code", "build this feature", "code up the tasks", "make the changes", "start coding", "apply the planned tasks", "add this component", "write tests for", or when turning planned tasks into actual code changes, new components, or test files.
 license: MIT
 metadata:
   author: D. J
@@ -178,13 +178,10 @@ Detect the test runner for execution:
 
 ```
 Detect test runner from:
- openspec/config.yaml  rules.apply.test_command (if filesystem config exists)
- `skills/cells-cli-usage/` first for the correct Cells-native command path
- `skills/cells-coverage/` second for coverage/reporting constraints when applicable
- `skills/cells-test-creator/` third for test-design and convention constraints
- package.json  scripts.test (wrapper mapping only after Cells command resolution)
- pyproject.toml / pytest.ini  pytest
- Makefile  make test
+ 1. `skills/cells-cli-usage/` first for the correct Cells-native command path
+ 2. `skills/cells-coverage/` second for coverage/reporting constraints when applicable
+ 3. `skills/cells-test-creator/` third for test-design and convention constraints
+ 4. `package.json` scripts.test (wrapper mapping only after Cells command resolution)
  Fallback: report that tests couldn't be run automatically
 ```
 
@@ -254,9 +251,9 @@ Do not skip this step in `engram` or `hybrid`, or `cells-verify` will not have c
 ```markdown
 ## Phase 1: Foundation
 
-- [x] 1.1 Create `internal/auth/middleware.go` with JWT validation
-- [x] 1.2 Add `AuthConfig` struct to `internal/config/config.go`
-- [ ] 1.3 Add auth routes to `internal/server/server.go`   still pending
+- [x] 1.1 Add `icon-left="transfer"` to transfer button in `src/account-actions.js`
+- [x] 1.2 Register `bbva-button-default` in `static get scopedElements()`
+- [ ] 1.3 Add icon verification test in `test/account-actions.test.js`   still pending
 ```
 
 ### Step 6: Return Summary
@@ -314,38 +311,97 @@ If none, say "None."}
 
 ## Rules
 
-- ALWAYS read specs before implementing  specs are your acceptance criteria
-- ALWAYS follow the design decisions  don't freelance a different approach
-- ALWAYS match existing code patterns and conventions in the project
-- For Cells projects, preserve public attributes, event names, scoped registrations, and package import conventions unless the task explicitly changes them
-- For Cells projects, use existing BBVA components before creating new UI primitives or wrappers unless specs/design explicitly justify otherwise
-- For Cells projects, every custom element used in template output must be imported and registered in `scopedElements`
-- For Cells feature/data-manager architecture, prefer `WidgetMixin` plus `this.emitEvent(...)` for business events when consistent with surrounding code
-- For Cells projects, keep locale files under `demo/locales` only; do not create or reference locale files outside `demo/locales`
-- For Cells projects, use `this.t(...)` for component-owned literals and keep key parity in `demo/locales/locales.json`
-- When the scaffold/toolchain uses SCSS, keep SCSS as the visual source and keep runtime style files aligned
-- Use English for generated JSDoc/comments, event names/custom event types/payload keys, and public API naming unless the user explicitly requests a different naming language
-- Use JSDoc for public API/events and non-obvious contracts; do not leave TODO comments, placeholder comments, or commented-out code
-- Avoid unnecessary whitespace-only edits and extra blank lines unrelated to the task
-- Preserve separation of responsibilities across data-manager, pages, shared-components, utils, and styles
-- In `openspec` mode, mark tasks complete in `tasks.md` AS you go, not at the end
-- If you discover the design is wrong or incomplete, NOTE IT in your return summary  don't silently deviate
-- If a task is blocked by something unexpected, STOP and report back
-- NEVER implement tasks that weren't assigned to you
-- Do not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the assigned task unless the user explicitly expands scope
-- When the assigned scope is tests-only, do not edit `src/**` or `demo/locales/**` unless an explicit mid-session scope transition is confirmed
-- Load and follow any relevant Cells specialist skills (e.g., `cells-component-authoring`, `cells-cli-usage`, `cells-test-creator`) when available in the active skill set; do not inject generic stack skills (React, Django, etc.) unless the user explicitly requests a non-Cells context
-- If filesystem config exists, apply any `rules.apply` from `openspec/config.yaml`
-- If TDD mode is detected (Step 2), ALWAYS follow the RED  GREEN  REFACTOR cycle  never skip RED (writing the failing test first)
-- When running tests during TDD, run ONLY the relevant test file/suite, not the entire test suite (for speed)
-- For Cells app/theme work, do NOT switch to generic external runners (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path
-- If uncertain whether a command is Cells-native, ask the user before running a non-Cells command
-- Do not run project-wide runtime or test commands for every small change; execute only what is needed to confirm the assigned task
-- If browser confirmation is needed, reuse the existing runtime, browser session, and port before starting a new one
-- When implementation changes browser-visible UI, run a minimal browser validation loop if a local runtime can be served safely; do not claim closure without browser evidence for visible changes
-- Every apply-progress artifact MUST include a `Source Decisions` section and refer to canonical `cells/*` artifacts as the active lineage
-- Record task-level source decision trace and fallback reason when non-primary evidence is used
-- If evidence minimums are unmet, return `status: partial | blocked` with remediation steps
-- Return the standard structured envelope with the markdown report above in `detailed_report`
+### Core Implementation Principles
+
+1. **Specs are acceptance criteria** — read them before implementing. Every task maps to one or more spec scenarios. Skipping specs means flying blind on what "done" means.
+
+2. **Follow design decisions** — the design document chose a specific technical approach. Deviating without noting it introduces drift between plan and reality. If the design is wrong, flag it in your summary.
+
+3. **Match existing patterns** — read surrounding code first. Consistent conventions matter more than "ideal" patterns. If the project uses X, use X — not Y because it's theoretically better.
+
+4. **Scope isolation** — touch only files directly required by assigned tasks. If another file must be touched, it must be a direct dependency of the task. Fixing unrelated issues "while I'm here" introduces regressions and makes review impossible. Report unrelated defects in "issues found" instead.
+
+### Cells-Specific Rules
+
+5. **BBVA-first** — use existing BBVA components before creating new UI primitives. Why? BBVA components carry design system guarantees (accessibility, theming, maintenance). Search `cells-components-catalog` before assuming a component doesn't exist.
+
+6. **Register everything in `scopedElements`** — every custom element in templates must be imported and registered. Why? Scoped elements prevent style leakage and naming collisions in complex apps.
+
+7. **i18n through `this.t(...)` with locale parity** — route component-owned literals through `this.t(...)` and keep key parity in `demo/locales/locales.json`. Why? Missing keys show the key text at runtime (truthy), so `|| ''` hides the problem. Locale files live under `demo/locales` only.
+
+8. **Technical naming in English** — JSDoc, event names, custom event types, payload keys, and public API names use English by default. Why? This is the Cells team convention and ensures parity across international contributors.
+
+### Code Quality Rules (Enforced During Implementation)
+
+13. **No trailing commas** — remove commas after the last element in arrays, objects, or function arguments. Why? Trailing commas cause parse errors in older environments and create noisy diffs when adding new items.
+
+14. **Use `@attribute` decorator for Lit properties** — prefer `@property({ type: String, attribute: true })` over `static get properties()` when authoring new components. Why? Decorator syntax is more readable and aligns with modern Lit conventions.
+
+15. **Semicolons required** — end every statement with a semicolon. Why? Consistent semicolons prevent automatic semicolon insertion edge cases and make code intent explicit.
+
+16. **No unnecessary blank lines** — remove extra blank lines between logical blocks. One blank line between methods/classes is enough. Why? Excessive whitespace inflates file size and makes navigation harder.
+
+17. **JSDoc: no blank lines inside blocks** — the description goes on one continuous line, no empty lines between description and `@param`/`@returns`, no blank lines between tags. Why? Compact JSDoc is faster to read and avoids noisy diffs.
+
+```javascript
+// BAD — blank lines inside JSDoc
+/**
+ * Suma dos números.
+ *
+ * Esta función recibe dos valores numéricos y retorna su suma.
+ *
+ * @param {number} a - Primer número
+ * @param {number} b - Segundo número
+ * @returns {number} Resultado de la suma
+ */
+function sumar(a, b) {
+  return a + b;
+}
+
+// GOOD — compact, no internal blank lines
+/**
+ * Suma dos números. Esta función recibe dos valores numéricos y retorna su suma.
+ * @param {number} a - Primer número
+ * @param {number} b - Segundo número
+ * @returns {number} Resultado de la suma
+ */
+function sumar(a, b) {
+  return a + b;
+}
+```
+
+18. **Max 3 `if` statements per function** — if a function needs more than 3 conditionals, extract helper functions or use early returns. Why? High cyclomatic complexity makes functions hard to test and reason about. Each `if` doubles the execution paths.
+
+19. **Make components reusable** — when creating or modifying components, design them to work in multiple contexts. Accept data through properties, emit events for state changes, avoid hardcoding values. Why? Reusable components reduce duplication across the app.
+
+20. **Use `.map()` over repetitive code** — put repeated data in arrays/objects and transform with `.map()`, `.filter()`, `.reduce()`. Why? Declarative transforms are shorter, easier to modify, and less error-prone than copy-paste blocks.
+
+```javascript
+// BAD — repetitive, hard to add new items
+const items = [];
+if (data.a) items.push({ label: 'A', value: data.a });
+if (data.b) items.push({ label: 'B', value: data.b });
+if (data.c) items.push({ label: 'C', value: data.c });
+
+// GOOD — data-driven, one line to add new items
+const config = [
+  { key: 'a', label: 'A' },
+  { key: 'b', label: 'B' },
+  { key: 'c', label: 'C' },
+];
+const items = config
+  .filter(({ key }) => data[key])
+  .map(({ key, label }) => ({ label, value: data[key] }));
+```
+
+### Workflow Rules
+
+24. **Mark tasks as you go** — in openspec mode, update `[ ]` to `[x]` immediately, not at the end. Why? If the run is interrupted, progress isn't lost.
+
+25. **Browser validation for visible changes** — if a change affects rendered UI, run minimal browser validation before claiming done. Why? Code-level tests can't prove visual correctness. Reuse existing runtime/browser session to avoid starting fresh.
+
+26. **Cells-native commands only** — use `/cells-*`, `cells app:*`, `cells lit-component:*`. Do not fall back to `npm test`, `npm run`, etc. unless user explicitly requests. Why? Cells commands carry toolchain guarantees (coverage paths, test setup, lint config).
+
+27. **Source decisions in every artifact** — include `{intent, primary_source, fallback_used, evidence_quality, status}`. Why? This enables traceability and prevents "it worked on my machine" scenarios.
 
 

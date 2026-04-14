@@ -1,7 +1,7 @@
 ---
 name: cells-test-creator
 description: >
-  Create or improve unit tests for Cells + Lit + BBVA components with OpenWC + Sinon, targeting public-behavior only and 100% file-level coverage (Statements, Branches, Functions, Lines). Triggers: when adding tests, increasing coverage, fixing flaky tests, generating test files, or validating test quality. Load as final step of the cells-cli-usage -> cells-coverage -> cells-test-creator mandatory stack. NEVER test private implementation details — only public component behavior.
+  Create or improve unit tests for Cells components with OpenWC + Sinon, targeting public-behavior only and 100% file-level coverage. Triggers: when the user says "write tests", "I need tests for", "test this component", "add test coverage", "fix failing tests", "improve test quality", "generate test file", "increase coverage", "create unit tests", "write integration tests", or when adding, updating, or validating test files for Cells components.
 compatibility: python>=3.9,node>=18
 ---
 
@@ -20,31 +20,34 @@ Before large test work, read:
 - `skills/cells-official-docs-catalog/` topic `demo-docs-i18n-assets`
 - `skills/cells-i18n/` when the component uses `BbvaCoreIntlMixin`, locale files, or translated literals
 
-## Mandatory rules
+## Test Design Philosophy
 
-1. Test public behavior, not private implementation details.
-2. Do not reference private members (`_something` or `#something`) in tests.
-3. Use events, spies, stubs, and mocks to verify observable outcomes.
-4. When testing APIs, do not test them directly; always use mocks to simulate API responses.
-5. Follow the repository's OpenWC + Sinon conventions.
-6. Verify file-level coverage in `build/coverage-reports/lcov-report`.
-7. Write `suite(...)` and `test(...)` descriptions in English.
-8. Do not include comments in test files (`//`, `/* */`, `*/`, or JSDoc).
-9. Run validation commands sequentially (one command per execution), never in parallel terminal invocations.
-10. Prefer stable DOM assertions: for boolean UI state, validate property and/or attribute (`el.visible` or `hasAttribute('visible')`) depending on component behavior.
-11. When stubbing DOM selectors, resolve required real DOM references first, then apply stubs to avoid breaking event dispatch in the same test.
-12. For non-trivial tasks, orchestrate subagents with explicit handoffs: test-creator -> test-runner -> coverage-auditor -> compliance-auditor.
-13. If test execution leaves a failure-output folder or coverage artifacts, use them as evidence instead of re-reading large raw reports manually.
-14. Do not assume Unix-only utilities. If `awk` or `grep` are unavailable, use a shell-native or Python equivalent and keep the same evidence goal.
-15. In Cells contexts, always apply the mandatory testing stack in order (`cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`) before any other testing source.
-16. Never use generic fallback testing commands (`npm test`, `npm run test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
-17. Keep generated technical naming in English (event names, custom event types, payload keys, public API names, and assertion messages) unless the user explicitly requests another naming language.
-18. Reuse a shared harness/mocks pattern under `test/mocks/*` for repeated setup dependencies (stores, services, i18n bootstraps, network stubs).
-19. Extract duplicated setup into helper builders when the same setup shape appears 2 or more times in the same file or test module.
+Tests should verify what the component DOES, not HOW it does it. This matters because:
+- Implementation changes during refactoring, but public behavior stays stable
+- Tests coupled to implementation details (`_privateMethod`, `#privateField`) break on every refactor
+- Public-behavior tests serve as living documentation of the component contract
 
-## Multi-subagent orchestration mode
+### Core Principles
 
-Use this mode whenever the task includes creating or modifying tests.
+1. **Public behavior only** — test rendered output, emitted events, and public API. Never reference `_private` or `#private` members. Why? Private members are implementation details that should be free to change.
+
+2. **Use events, spies, stubs, and mocks** — verify observable outcomes, not internal state. When testing APIs, use mocks to simulate responses rather than calling real APIs. Why? Tests must be deterministic and fast.
+
+3. **Follow repository conventions** — use OpenWC + Sinon patterns already in the codebase. Write `suite(...)` and `test(...)` descriptions in English with no comments. Why? Consistent naming enables team review and automated tooling.
+
+4. **Stable DOM assertions** — validate properties and/or attributes (`el.visible` or `hasAttribute('visible')`) depending on component behavior. When stubbing DOM selectors, resolve real DOM references first, then apply stubs. Why? Unstable selectors break when component internals change.
+
+5. **Coverage target: 100/100/100/100** — Statements, Branches, Functions, Lines at file level. Verify in `build/coverage-reports/lcov-report`. Use failure-output folders as evidence instead of re-reading raw reports.
+
+6. **Reuse mocks pattern** — extract shared setup to `test/mocks/*` when the same setup shape appears 2+ times. Why? Duplicated setup becomes maintenance burden and obscures what each test is actually verifying.
+
+7. **Sequential execution** — run validation commands one at a time, never in parallel. Why? Mixed output makes it impossible to attribute failures to specific commands.
+
+8. **Cells-native commands only** — resolve test commands through `cells-cli-usage` first. Never use `npm test`, `npm run test`, `npx web-test-runner` unless user explicitly requests. Why? Cells commands carry toolchain guarantees for coverage paths and test setup.
+
+## Multi-subagent orchestration (recommended pattern)
+
+For non-trivial test work, use this handoff pattern to keep each agent focused:
 
 ### Agent 1: Test Creator
 
@@ -261,6 +264,16 @@ Checks:
 - Evidence of hard stop checks executed (private scan clean + validator clean).
 - Evidence of file-level lcov validation for the exact target source file.
 - Evidence exists for all four agents (creator, runner, coverage auditor, compliance auditor).
+
+### Code Quality (applies to test files too)
+
+- **No trailing commas** in arrays, objects, or function arguments.
+- **Semicolons required** — every statement ends with `;`.
+- **No unnecessary blank lines** — one between test blocks is enough.
+- **Max 3 `if` statements per test helper** — extract to separate helpers for more.
+- **Use `.map()` over repetitive test setup** — extract repeated setup to `test/mocks/*`.
+- **No comments in test files** — test descriptions, assertions, and helper names should be self-documenting. Why? Comments in tests become stale after refactors and confuse test runners.
+- **JSDoc in test helpers: no blank lines inside blocks** — if mock helpers in `test/mocks/*` use JSDoc, keep description on one line with no internal blank lines. Why? Same readability rationale as production code.
 
 ## Browser Integration
 

@@ -1,6 +1,7 @@
 ﻿---
 name: cells-components-catalog
-description: Search BBVA Cells component documentation from a bundled local SQLite FTS5 index packaged inside this bundle. Use this whenever the orchestrator or another Cells specialist needs to discover available components, inspect tags, attributes, events, usage snippets, or map product intent to BBVA Cells packages without inventing APIs.
+description: >
+  Find existing BBVA Cells components before writing code. Triggers: when the user says "what component for X", "is there a component for", "find a button/form/table component", "discover available components", "search for BBVA components", "what BBVA packages exist", "look up component API", "check if X already exists", "component catalog", "search components database", or before any UI/component work to avoid reinventing existing components.
 license: MIT
 metadata:
   author: D. J

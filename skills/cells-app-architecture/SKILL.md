@@ -1,7 +1,7 @@
 ---
 name: cells-app-architecture
 description: >
-  Plan Cells + Lit + BBVA feature structure, data managers, routing, bridge communication, and app-level composition. Triggers: when designing feature structure, planning data managers, configuring routing, setting up pub/sub, or designing the bridge between app and components. Load when cells-design or cells-apply involves app-level architecture.
+  Plan Cells feature structure, data managers, routing, bridge communication, and app-level composition. Triggers: when the user says "how should I organize", "where does this code go", "structure my app", "app architecture", "how to separate concerns", "where should API logic live", "feature structure for", "data manager design", "routing setup", "pub/sub architecture", "bridge communication", or when designing how a Cells app or feature package should be structured.
 license: MIT
 metadata:
   author: D. J

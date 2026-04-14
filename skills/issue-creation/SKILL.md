@@ -1,8 +1,7 @@
 ---
 name: issue-creation
 description: >
-  Issue creation workflow for Cells Agent Bundle following the issue-first enforcement system.
-  Trigger: When creating a GitHub issue, reporting a bug, or requesting a feature.
+  Create GitHub issues following issue-first enforcement. Triggers: when the user says "file a bug", "report a problem", "create an issue", "something is broken", "request a feature", "I found a bug", "we need a new feature", "open an issue", "create GitHub issue", "document this problem", or when creating bug reports, feature requests, or any GitHub issue.
 license: MIT
 metadata:
   author: Cells Agent Bundle

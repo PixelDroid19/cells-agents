@@ -1,7 +1,7 @@
 ---
 name: cells-design
 description: >
-  Produce technical architecture, data flow, file changes, and testing strategy for a Cells + Lit + BBVA + SCSS change. Triggers: when creating or updating a technical design, architecture decisions, component wiring plan, or implementation roadmap. Load after cells-spec has completed. Must load cells-component-researcher and cells-composition-architect before designing if the change touches UI or composition.
+  Produce technical architecture, data flow, file changes, and testing strategy. Triggers: when the user says "how should I build this", "design the solution", "plan the implementation", "architect this feature", "what files need to change", "how should this be structured", "plan the technical approach", or when translating specs into an implementation plan.
 license: MIT
 metadata:
   author: D. J

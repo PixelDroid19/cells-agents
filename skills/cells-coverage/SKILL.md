@@ -1,7 +1,7 @@
 ---
 name: cells-coverage
 description: >
-  Analyze coverage artifacts, lcov reports, branch misses, and test failure outputs for Cells + Lit + BBVA projects. Triggers: when analyzing coverage, prioritizing test gaps, inspecting branch misses, or converting test errors into next test actions. Load as part of the cells-cli-usage -> cells-coverage -> cells-test-creator mandatory stack in cells-apply and cells-verify.
+  Analyze coverage artifacts, lcov reports, branch misses, and test failure outputs. Triggers: when the user says "analyze coverage", "why did this test fail", "improve coverage", "coverage report", "what tests are missing", "branch coverage", "lcov report", "test failure analysis", "coverage gaps", or when triaging coverage reports and prioritizing test gaps.
 license: MIT
 metadata:
   author: D. J

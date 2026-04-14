@@ -1,8 +1,7 @@
 ---
 name: skill-registry
 description: >
-  Knowledge gateway for Cells projects. Load this FIRST before any code, design, or component work. Routes to cells-components-catalog and cells-official-docs-catalog, provides mandatory pre-flight gates, and delegates Cells implementation rules to cells-rules-contract.
-  Triggers: Always — before any code work, component proposal, design decision, or architectural choice in a Cells + Lit + BBVA project.
+  Route Cells queries to the right specialist skill or catalog. Triggers: when the user says "which skill should I use", "what exists for X", "show me available skills", "what BBVA components are available", "how do I find official docs", "what tools do I have", "list available skills", "how do I start a Cells workflow", "what skills handle", "routing for", or before starting any Cells workflow phase to discover available resources. Acts as knowledge gateway, not a code-writing skill.
 license: MIT
 metadata:
   author: Cells Agent Bundle

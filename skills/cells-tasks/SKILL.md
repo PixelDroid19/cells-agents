@@ -1,7 +1,7 @@
 ---
 name: cells-tasks
 description: >
-  Break a planned Cells + Lit + BBVA + SCSS change into ordered, concrete, file-level implementation tasks with testing work. Triggers: when breaking down a change into tasks, generating a checklist, assigning implementation steps, or planning sprints. Load after cells-design has completed. Each task must reference the canonical cells-components-catalog before assuming a component does not exist.
+  Break a planned change into ordered, concrete, file-level implementation tasks. Triggers: when the user says "break this down", "give me steps", "what do I need to do", "create a task list", "step by step plan", "checklist for", "implementation tasks for", "what order should I do this in", or when translating a design into actionable, ordered task list.
 license: MIT
 metadata:
   author: D. J
@@ -131,9 +131,9 @@ Each task MUST be:
 
 | Criteria | Example  | Anti-example  |
 |----------|-----------|----------------|
-| **Specific** | "Create `internal/auth/middleware.go` with JWT validation" | "Add auth" |
-| **Actionable** | "Add `ValidateToken()` method to `AuthService`" | "Handle tokens" |
-| **Verifiable** | "Test: `POST /login` returns 401 without token" | "Make sure it works" |
+| **Specific** | "Add `icon-left='transfer'` to transfer button in `src/account-actions.js`" | "Add icon to button" |
+| **Actionable** | "Register `bbva-button-default` in `static get scopedElements()`" | "Register button" |
+| **Verifiable** | "Test: transfer button renders `icon-left='transfer'`" | "Make sure icon works" |
 | **Small** | One file or one logical unit of work | "Implement the feature" |
 
 ### Phase Organization Guidelines

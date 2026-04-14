@@ -1,7 +1,7 @@
 ---
 name: cells-archive
 description: >
-  Sync approved delta specs into the canonical source and archive a completed Cells + Lit + BBVA + SCSS change safely. Triggers: when closing a change, archiving artifacts, merging specs, or performing final closure. Load after cells-verify confirms the change. Creates traceability and final reporting.
+  Archive a completed change and sync final state. Triggers: when the user says "close this change", "we're done", "wrap up the change", "archive this", "finalize the change", "merge the specs", "mark as complete", "closure for", or after cells-verify passes and the change is ready for final archiving.
 license: MIT
 metadata:
   author: D. J

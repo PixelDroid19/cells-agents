@@ -1,7 +1,7 @@
 ---
 name: cells-feature-analyzer
 description: >
-  Extract reusable composition, wiring, state, and testing patterns from real Cells + Lit + BBVA feature implementations. Triggers: when analyzing existing feature code, finding patterns to reuse, validating implementation approach, or extracting best practices before design or apply. Load when cells-design needs evidence from production-like code.
+  Extract reusable patterns from real Cells feature implementations. Triggers: when the user says "analyze this feature", "study how X works", "what patterns does this use", "extract lessons from", "how is this implemented in production", "what can I reuse from", "reverse engineer this", "what architecture does this follow", or when studying real feature repos to find patterns for new work.
 license: MIT
 metadata:
   author: D. J

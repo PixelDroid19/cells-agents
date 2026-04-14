@@ -1,7 +1,7 @@
 ---
 name: cells-cli-usage
 description: >
-  Resolve the correct Cells-native CLI command for building, serving, linting, documenting, and testing Cells + Lit + BBVA apps and components. Triggers: when running commands, building projects, serving demos, running tests, or checking CLI options. NEVER guess a command — always resolve via this skill first. Load before cells-apply or cells-verify.
+  Resolve the correct Cells-native CLI command for building, serving, linting, documenting, and testing. Triggers: when the user says "what command do I run", "how do I build this", "how to serve", "run tests", "generate docs", "which command for X", "how do I lint", "serve the demo", "build the app", "run the tests", "generate documentation", "collect locales", or when any task needs the correct Cells command resolved. Load before cells-apply or cells-verify.
 license: MIT
 metadata:
   author: D. J

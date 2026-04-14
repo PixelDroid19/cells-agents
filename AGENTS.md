@@ -21,6 +21,23 @@ For any UI, typography, form, button, navigation, or feedback work:
 
 - **Never** use `this.t('key') || ''` — the i18n runtime renders the key itself as fallback when missing (it is not falsy). This hides real missing translations.
 - If a key is missing, add it to `demo/locales/locales.json`.
+- Locale files **MUST** live under `demo/locales` ONLY.
+
+## Cells Command Policy (Strict)
+
+- **ALLOWED**: `/cells-*`, `cells app:*`, `cells lit-component:*`
+- **FORBIDDEN** (unless user explicitly requests): `npm test`, `npm run test`, `npx web-test-runner`, `npm run start`
+- If uncertain — ask user before running non-Cells command
+
+## Mandatory Testing Stack (Strict Order)
+
+For any Cells test intent, consult skills in this **exact order** before any other testing source:
+
+1. `skills/cells-cli-usage/` — canonical test command resolution
+2. `skills/cells-coverage/` — coverage thresholds, report triage
+3. `skills/cells-test-creator/` — test design, creation, conventions
+
+Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
 
 ## CELLS Workflow Skills
 

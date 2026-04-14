@@ -1,7 +1,7 @@
 ---
 name: cells-spec
 description: >
-  Write behavioral specs with Given/When/Then scenarios for a Cells + Lit + BBVA + SCSS change. Triggers: when writing specifications, defining requirements, adding test scenarios, or updating delta specs. Load after cells-propose has completed. Always resolve component references via cells-components-catalog before writing component-related requirements.
+  Write behavioral specs with Given/When/Then scenarios for a planned change. Triggers: when the user says "write test cases", "define acceptance criteria", "what are the requirements for", "document the behavior of", "write scenarios for", "spec out this feature", "Given When Then for", or when translating a proposal into testable behavioral requirements.
 license: MIT
 metadata:
   author: D. J

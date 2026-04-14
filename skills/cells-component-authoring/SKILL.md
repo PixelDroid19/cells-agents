@@ -1,7 +1,7 @@
 ---
 name: cells-component-authoring
 description: >
-  Scaffold or evolve a new BBVA Cells Lit component when no existing BBVA component matches the goal. Triggers: when creating a new component, adding public API, generating docs metadata, standardizing a component, or adding a component to the catalog. NEVER use this to bypass cells-components-catalog — always search the catalog first. If a component exists, use it and do not create a new one.
+  Scaffold or evolve a new BBVA Cells Lit component when no existing BBVA component matches. Triggers: when the user says "create a new component", "I need a custom component", "build X from scratch", "add a property to", "extend this component", "scaffold a Lit component", "generate component API", "add public props/events", "create component package", or after catalog search confirms no BBVA component fits the need.
 license: MIT
 metadata:
   author: D. J
@@ -132,21 +132,47 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 
 ## Rules
 
-- Never create a new reusable component before checking whether composition or reuse already solves the need
-- For real Cells authoring, prefer existing BBVA components first and justify any new component explicitly
-- Any element used in a template must be imported and registered in `scopedElements`
-- When the architecture is feature/data-manager based, prefer `WidgetMixin` and `this.emitEvent(...)` for business events
-- Prefer repo-local scripts and commands resolved by `skills/cells-cli-usage/`
-- Treat `custom-elements.json` and package docs as part of the deliverable, not as optional extras
-- When public API changes, call out migration risk explicitly
-- When the component uses locales or translated literals, route through `skills/cells-i18n/`
-- In Cells projects, require locale files under `demo/locales` only; do not plan locale files outside that path
-- Require `this.t(...)` for component-owned literals and parity in `demo/locales/locales.json`
-- Treat SCSS as the visual source of truth when the scaffold/toolchain provides it and keep runtime style outputs aligned
-- When tests are needed, route through `skills/cells-test-creator/`
-- Use English for generated JSDoc/comments, event names/custom event types/payload keys, and public API naming unless the user explicitly asks for another naming language
-- Do not leave TODO comments, commented-out code, or unnecessary narrative comments in generated implementation plans
-- Return the standard structured envelope with the markdown report above in `detailed_report`
+### Authoring Principles
+
+1. **Reuse before authoring** — never create a new reusable component before checking whether composition or reuse already solves the need. Search `cells-components-catalog` first. Why? Every new component is maintenance cost; BBVA components carry design system guarantees.
+
+2. **Justify new components explicitly** — if authoring, state why existing components don't fit. Why? Unjustified components fragment the design system and duplicate effort.
+
+3. **Design for reusability** — accept data through properties, emit events for state changes, avoid hardcoding. Why? Components used in one context today get reused in others tomorrow.
+
+4. **Register in `scopedElements`** — every template dependency must be imported and registered. Why? Scoped elements prevent style leakage and naming collisions.
+
+### Code Quality
+
+5. **No trailing commas** — remove commas after the last element in arrays, objects, or function arguments. Why? Trailing commas cause parse errors in older environments and noisy diffs.
+
+6. **Use `@property` / `@state` decorators** — prefer decorators over `static get properties()`. Why? More readable, aligns with modern Lit conventions.
+
+7. **Semicolons required** — end every statement with `;`. Why? Prevents automatic semicolon insertion edge cases.
+
+8. **No unnecessary blank lines** — one blank line between methods is enough. Why? Excessive whitespace inflates file size.
+
+9. **JSDoc: no blank lines inside blocks** — description on one continuous line, no empty lines between description and `@param`/`@returns`, no blank lines between tags. Why? Compact JSDoc is faster to read and avoids noisy diffs.
+
+10. **Max 3 `if` statements per function** — extract helpers or use early returns for more complexity. Why? Each `if` doubles execution paths, making testing harder.
+
+11. **Use `.map()` over repetitive code** — put data in arrays/objects and transform. Why? Declarative transforms are shorter and less error-prone than copy-paste blocks.
+
+### Cells Conventions
+
+12. **`WidgetMixin` + `this.emitEvent(...)`** for business events in feature/data-manager architecture. Why? Consistent event wiring across the app.
+
+13. **`this.t(...)` for literals** — route component-owned strings through i18n with parity in `demo/locales/locales.json`. Why? Translation gaps break localization.
+
+14. **`demo/locales` only** — no locale files outside this path. Why? Cells runtime only reads from `demo/locales`.
+
+15. **SCSS as visual source** — keep runtime style artifacts aligned with SCSS. Why? SCSS is the Cells toolchain standard.
+
+16. **Docs are deliverables** — `custom-elements.json` and `README.md` are part of the deliverable, not extras. Why? Undocumented components can't be reused.
+
+17. **English for technical naming** — JSDoc, event names, payload keys, public API. Why? Team convention across international contributors.
+
+18. **No TODOs or commented-out code** — resolve before delivery. Why? TODOs become permanent technical debt.
 
 ## Browser Integration
 

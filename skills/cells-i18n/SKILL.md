@@ -1,7 +1,7 @@
 ---
 name: cells-i18n
 description: >
-  Manage Cells + Lit + BBVA i18n with this.t(...), locale parity, and IntlMsg runtime setup in components, demos, and tests. Triggers: when adding or updating translations, checking locale parity, configuring IntlMsg, handling i18n in tests, or verifying i18n in verification flows. NEVER use this.t('key') || '' — the i18n runtime renders the key itself as fallback when missing, so || '' hides real missing translations. Add missing keys to demo/locales/locales.json instead.
+  Manage Cells i18n with this.t(...), locale parity, and IntlMsg runtime setup. Triggers: when the user says "add translations", "make this translatable", "internationalize", "localization", "translate this text", "i18n setup", "add locale support", "check locale parity", "configure IntlMsg", "i18n in tests", "missing translations", "locale files", or when any task changes user-visible text, translation keys, locale files, or i18n runtime setup.
 license: MIT
 metadata:
   author: D. J

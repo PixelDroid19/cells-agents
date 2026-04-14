@@ -1,8 +1,7 @@
 ---
 name: branch-pr
 description: >
-  PR creation workflow for Cells Agent Bundle following the issue-first enforcement system.
-  Trigger: When creating a pull request, opening a PR, or preparing changes for review.
+  Create branch and pull request following issue-first enforcement. Triggers: when the user says "open a PR", "create a pull request", "submit for review", "push my changes", "ready to merge", "create branch", "prepare for review", "open PR for this change", "create branch and PR", "merge this", or when preparing changes for GitHub review.
 license: MIT
 metadata:
   author: Cells Agent Bundle

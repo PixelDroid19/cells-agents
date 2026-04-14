@@ -1,7 +1,7 @@
 ﻿---
 name: cells-init
 description: >
-  Detect stack, conventions, and persistence backend for a Cells + Lit + BBVA + SCSS project. Triggers: when initializing a project, bootstrapping CELLS, detecting the tech stack, or setting up persistence for later workflow phases. Always use before /cells-explore.
+  Initialize a Cells project by detecting the tech stack, analyzing conventions, and setting up the persistence backend. Triggers: when the user says "analyze my project", "what tech stack is this", "initialize Cells", "bootstrap my project", "set up persistence", "detect the framework", "what is this project built with", "start a Cells workflow", or before any other Cells phase (/cells-explore, /cells-new, /cells-ff). Also triggers when the user asks about project structure, linting rules, test framework, or Cells conventions in use.
 license: MIT
 metadata:
   author: D. J
