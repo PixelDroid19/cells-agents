@@ -83,6 +83,13 @@
       "description": "Archive completed change artifacts",
       "prompt": "You are a CELLS sub-agent for the archive phase. Read your skill file at ~/.config/opencode/skills/cells-archive/SKILL.md and follow its instructions. It includes a Step 1 for loading the skill registry — do NOT skip it.\n\nMANDATORY CONSTRAINTS FROM ORCHESTRATOR:\n- Confirm verify gate passed all 6 checks before archiving\n- Include constraint compliance evidence in archive artifacts: No-TypeScript, Conditions-by-method, BBVA-first",
       "tools": { "read": true, "write": true, "edit": true, "bash": true }
+    },
+    "cells-cleanup": {
+      "mode": "subagent",
+      "hidden": true,
+      "description": "Sweep component for code quality without changing logic or behavior",
+      "prompt": "You are a CELLS sub-agent for the cleanup phase. Read your skill file at ~/.config/opencode/skills/cells-cleanup/SKILL.md and follow its instructions exactly.\n\nABSOLUTE CONSTRAINT — ZERO BEHAVIOR CHANGE:\n- You MAY change how code is written (style, structure, docs)\n- You MUST NOT change what code does (logic, behavior, public API)\n- If in doubt: flag as suggestion, do NOT apply\n\nAUTO-APPLY (safe — no behavior change possible):\n1. Formatting: remove trailing commas, add semicolons, collapse blank lines\n2. JSDoc: add/improve for public props, methods, event handlers; remove narrative inline comments\n3. Attribute field: add attribute:'kebab-case' to public props, attribute:false to private props\n4. Conditions by method: extract 3+ ifs to named helpers, apply Rules Table Pattern for N validations\n5. Repetitive code: replace push loops with CONFIG array + .filter().map()\n\nSUGGEST ONLY (require explicit user approval before applying):\n6. Reusability: hardcoded values that could be props, logic in wrong layer\n7. Constants: magic values that should go to constants.js\n\nDO NOT TOUCH: test/, demo/locales/, .scss, .css.js, custom-elements.json\n\nReturn: status, executive_summary, cleanup_report (table per category), suggestions list, next_recommended.",
+      "tools": { "read": true, "write": true, "edit": true, "bash": false }
     }
   }
 }

@@ -70,3 +70,14 @@ Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
 | `issue-creation` | Creating GitHub bug report or feature request | [`skills/issue-creation/SKILL.md`](skills/issue-creation/SKILL.md) |
 | `branch-pr` | Creating pull request or preparing branch for submission | [`skills/branch-pr/SKILL.md`](skills/branch-pr/SKILL.md) |
 | `skill-registry` | Knowledge gateway: BBVA component lookup, anti-patterns, routing | [`skills/skill-registry/SKILL.md`](skills/skill-registry/SKILL.md) |
+| `cells-cleanup` | Sweep component for code quality issues (JSDoc, formatting, conditions, attributes, `.map()`) without changing logic | [`skills/cells-cleanup/SKILL.md`](skills/cells-cleanup/SKILL.md) |
+
+## Cleanup Rule (cells-cleanup)
+
+When running `/cells-cleanup`:
+
+- **NEVER change logic or behavior** — only form, structure, and documentation
+- Changes that are safe to auto-apply: formatting, JSDoc, attribute fields, conditions-by-method, Rules Table Pattern, `.map()` refactors
+- Changes that require user approval: reusability improvements, constants extraction, layer-responsibility moves
+- Do NOT touch: `test/`, `demo/locales/`, `.scss`, `.css.js`, `custom-elements.json`
+
