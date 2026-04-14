@@ -1,12 +1,12 @@
 ---
-description: Validate implementation matches specs, design, and tasks
+description: Validate implementation matches specs, design, and tasks — enforces No-TypeScript, conditions-by-method, and BBVA-first gates
 agent: cells-orchestrator
 subtask: true
 ---
 
 # Cells Verify Command
 
-You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-verify/SKILL.md FIRST, then follow its instructions exactly.
+You are a CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-verify/SKILL.md FIRST, then follow its instructions exactly.
 
 CONTEXT:
 
@@ -14,39 +14,71 @@ CONTEXT:
 - Current project: {project}
 - Artifact store mode: engram
 
-TASK:
-Verify the active CELLS change. Read the proposal, specs, design, and tasks artifacts. Then:
+## MANDATORY VERIFICATION GATES (run before any other check)
+
+These 6 gates must ALL pass for `status: ok`. Any failure → `status: partial` or `status: blocked`.
+
+### Gate 1 — No TypeScript
+
+- Confirm zero `.ts` or `.tsx` files exist in `src/` and `test/`
+- Scan all `.js` files for TypeScript syntax: type annotations, `interface`, `enum`, `as Type`, `<Type>` generics, `readonly`, `public`/`private`/`protected` keywords
+- If found → flag each occurrence as a violation with file path and line
+
+### Gate 2 — Conditions-by-Method Rule
+
+- Review every method in every modified `.js` file
+- Count `if` statements and ternary expressions per method body
+- Any method with 3+ conditions → violation
+- Getter methods (`get _xxx()`) are also in scope — max 2 conditions each
+- Report violations as: `{file, method, condition_count, line_range}`
+
+### Gate 3 — BBVA-First
+
+- For every custom element tag used in templates, verify either:
+  a. It is a known BBVA component (catalog evidence or `@bbva-*` / `@bbva-spherica-components/*` package), OR
+  b. It was created via `cells-component-authoring` after a failed catalog lookup
+- If a raw HTML element (`<p>`, `<h3>`, `<span>`, `<button>`) exists where a BBVA component was available → violation
+
+### Gate 4 — Scoped Elements
+
+- Confirm every custom element tag used in `render()` / `_renderXxx()` is imported and registered in `static get scopedElements()`
+- Missing registration → violation
+
+### Gate 5 — i18n
+
+- Confirm no raw string literals appear inside `html\`...\`` template literals
+- Confirm the `this.t('key') || ''` pattern is absent everywhere
+- Confirm all i18n keys used by modified components exist in `demo/locales/locales.json`
+
+### Gate 6 — Event Pattern
+
+- Confirm all business/bridge-facing events use `this.emitEvent(...)` — not raw `this.dispatchEvent(...)`
+- Confirm all event handlers call `evt.stopPropagation()` or `evt.preventDefault()` as first statement
+- Confirm no event handler has 3+ condition branches without extracting to a named helper
+
+## STANDARD VERIFY TASK
+
+After running all 6 gates, continue with the standard cells-verify workflow:
 
 1. Check completeness — are all tasks done?
 2. Check correctness — does code match specs?
 3. Check coherence — were design decisions followed?
 4. For Cells projects, compare source, `custom-elements.json`, package docs, and tests for API/event consistency
-5. Run tests and build (real execution)
+5. Run tests and build (real execution via Cells-native commands only)
 6. Build the spec compliance matrix
 
 Reliability contract (mandatory):
 
-- Apply `skills/_shared/cells-source-routing-contract.md` and `skills/_shared/cells-governance-contract.md`.
-- Verify file paths and command validity before reporting evidence.
-- Do not claim translation/i18n correctness without consulting `skills/cells-i18n/` + official docs and checking locale/runtime evidence.
-- If evidence is incomplete, return `partial` or `blocked` (never infer success).
+- Apply `skills/_shared/cells-source-routing-contract.md` and `skills/_shared/cells-governance-contract.md`
+- Verify file paths and command validity before reporting evidence
+- If evidence is incomplete, return `partial` or `blocked` — never infer success
 
-Mandatory testing stack for Cells contexts:
+Testing stack for Cells contexts (strict order):
 
-- For any test execution, coverage validation, or test-quality judgment, consult in strict order: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.
-- `cells-cli-usage` defines canonical test command/invocation.
-- `cells-coverage` defines threshold/reporting and artifact triage.
-- `cells-test-creator` defines test quality and convention checks.
-- Do not skip or reorder this stack.
+- `skills/cells-cli-usage/` → canonical test command/invocation
+- `skills/cells-coverage/` → threshold/reporting and artifact triage
+- `skills/cells-test-creator/` → test quality and convention checks
 
-Command guardrail for Cells app/theme flow:
+Command guardrail: Cells-native commands only (`cells app:*`, `cells lit-component:*`). No `npm run *`, `npm test`, `npx web-test-runner` unless user explicitly requests.
 
-- Use Cells-native workflow commands and tooling only.
-- Do not switch to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) unless the user explicitly requests a non-Cells path.
-- If uncertain whether a command is Cells-native, ask before running the non-Cells command.
-
-Delegation note:
-
-- This command may be launched through `delegate` when background delegation is available, but verification must still report canonical `cells/*` lineage and Cells-native evidence.
-
-Return a structured verification report with: status, executive_summary, detailed_report, artifacts, and next_recommended.
+Return a structured verification report with: status, executive_summary, gate_results (one per gate), detailed_report, artifacts, and next_recommended.
