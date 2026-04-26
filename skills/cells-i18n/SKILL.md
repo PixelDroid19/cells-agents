@@ -16,6 +16,7 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 ## Read and follow
 
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 - `skills/cells-official-docs-catalog/` topics `demo-docs-i18n-assets` and `testing`
 - `references/i18n-runtime-and-locales.md`
 
@@ -38,6 +39,7 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 
 - Do not leave component-owned user-facing literals hardcoded when they should be localized
 - Keep keys stable, component-prefixed, and aligned exactly across code and locale files
+- Use `skills/_shared/real-cells-patterns.md` for observed key naming, placeholder preservation, and root `locales/locales.json` vs `demo/locales/locales.json` conventions before changing an existing repo
 - Prefer region-free keys like `en` and `es` unless regional override is necessary
 - In Cells projects, locale files are mandatory under `demo/locales` and must not be created or referenced outside `demo/locales`
 - If tests or demos depend on locales, mention `IntlMsg.lang`, `IntlMsg.localesHost`, and any required wait for locale loading

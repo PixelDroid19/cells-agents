@@ -16,6 +16,7 @@ PERSISTENCE = ROOT / "skills/_shared/persistence-contract.md"
 VERIFY_SKILL = ROOT / "skills/cells-verify/SKILL.md"
 RULES = ROOT / "skills/_shared/cells-rules-contract.md"
 APPLY_SKILL = ROOT / "skills/cells-apply/SKILL.md"
+REAL_CELLS_PATTERNS = ROOT / "skills/_shared/real-cells-patterns.md"
 
 
 def _read(path: Path) -> str:
@@ -258,6 +259,49 @@ def scenario_task_scope_isolation_enforced() -> tuple[bool, str]:
     return False, "Task-scope isolation guidance is missing or incomplete."
 
 
+def scenario_real_cells_patterns_contract() -> tuple[bool, str]:
+    patterns = _read(REAL_CELLS_PATTERNS)
+    contract = _read(RULES)
+    skills_to_check = (
+        ROOT / "skills/cells-apply/SKILL.md",
+        ROOT / "skills/cells-component-authoring/SKILL.md",
+        ROOT / "skills/cells-composition-architect/SKILL.md",
+        ROOT / "skills/cells-feature-analyzer/SKILL.md",
+        ROOT / "skills/cells-app-architecture/SKILL.md",
+        ROOT / "skills/cells-test-creator/SKILL.md",
+        ROOT / "skills/cells-i18n/SKILL.md",
+    )
+    required_pattern_tokens = (
+        "ScopedElementsMixin",
+        "WidgetMixin",
+        "configurationScopedElements",
+        "scopedElementsFromClasses",
+        "getComponentSharedStyles",
+        "data-tag-name",
+        "cells lit-component:test",
+        "demo/locales/locales.json",
+        "emitEvent",
+        "@bbva-spherica-components",
+        "bbva-type-text",
+    )
+    if not all(token in patterns for token in required_pattern_tokens):
+        return False, "Real Cells pattern contract is missing required evidence-backed tokens."
+    if "real-cells-patterns.md" not in contract:
+        return False, "cells-rules-contract does not reference real-cells-patterns.md."
+    missing_refs = [
+        str(path.relative_to(ROOT))
+        for path in skills_to_check
+        if "real-cells-patterns.md" not in _read(path)
+    ]
+    if missing_refs:
+        return (
+            False,
+            "Real Cells pattern contract is not referenced by: "
+            + ", ".join(missing_refs),
+        )
+    return True, "Real Cells pattern contract is present and routed from key skills."
+
+
 SCENARIOS.update(
     {
         "workflow-contract-parity": scenario_workflow_contract_parity,
@@ -269,6 +313,7 @@ SCENARIOS.update(
         "real-cells-rules-enforced": scenario_real_cells_rules_enforced,
         "code-hygiene-enforced": scenario_code_hygiene_enforced,
         "task-scope-isolation-enforced": scenario_task_scope_isolation_enforced,
+        "real-cells-patterns-contract": scenario_real_cells_patterns_contract,
     }
 )
 

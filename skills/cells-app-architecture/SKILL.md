@@ -17,6 +17,7 @@ This skill explains how Cells applications and feature packages should be struct
 
 Read and follow:
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 - `skills/cells-official-docs-catalog/` topics `architecture`, `application-runtime`, `application-communication`, and `advanced-application`
 - `references/feature-structure.md`
 - `references/data-managers.md`
@@ -57,6 +58,7 @@ A standard Cells feature commonly organizes code into:
 - `styles/`
 
 Use this as a baseline, then adapt only when the existing app architecture already establishes a different proven pattern.
+Use `skills/_shared/real-cells-patterns.md` to distinguish modern Lit 3 feature evidence from legacy app evidence such as older GloMo runtimes.
 
 ### 2. Main Feature Host
 

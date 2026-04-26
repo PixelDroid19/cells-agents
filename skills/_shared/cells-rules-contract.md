@@ -6,6 +6,8 @@ This is the **single source of truth** for all Cells-specific implementation rul
 
 When a rule in this file conflicts with a rule in another file, this file wins for Cells implementation rules.
 
+For practical implementation evidence from real local Cells projects, also read `skills/_shared/real-cells-patterns.md`. Official docs and catalog lookups remain primary sources; the real-patterns file grounds architecture, Spherica composition, i18n, style, and test decisions in observed Cells code.
+
 ## BBVA-First Rule
 
 **NEVER invent a BBVA component.** For any UI, typography, form, button, table, navigation, or feedback work:
@@ -108,6 +110,7 @@ These rules are consolidated from:
 - `skill-registry/SKILL.md` (anti-patterns, routing)
 - `cells-conventions.md` (scopedElements, WidgetMixin, testing stack)
 - `cells-official-reference.md` (component checklist)
+- `real-cells-patterns.md` (real local Cells feature, app, and Spherica evidence)
 - `cells-apply/SKILL.md` (Cells component rules)
 - `cells-verify/SKILL.md` (Cells verification rules)
 - `cells-component-authoring/SKILL.md` (component creation rules)

@@ -17,6 +17,7 @@ Read and follow:
 - `skills/_shared/persistence-contract.md`
 - `skills/_shared/cells-conventions.md`
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 
 ## What To Read
 
@@ -26,7 +27,7 @@ Always inspect:
 - `skills/cells-app-architecture/` when the request is feature-level or involves pages, data managers, or bridge communication
 - the active project's `package.json`, `src/`, and `test/`
 - package dossiers from `skills/cells-components-catalog/` for the selected BBVA components
-- real reference features when available
+- real reference features when available, using `skills/_shared/real-cells-patterns.md` as the shared baseline for Spherica composition, data managers, `WidgetMixin`, `emitEvent`, and `data-tag-name` test selectors
 - any internal notes already packaged inside this bundle
 
 ## What To Produce

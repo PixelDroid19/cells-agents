@@ -17,6 +17,7 @@ Read and follow:
 - `skills/_shared/persistence-contract.md`
 - `skills/_shared/cells-conventions.md`
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 
 ## What To Read
 
@@ -35,6 +36,7 @@ Always extract:
 - main public component and child component tree
 - reused BBVA packages
 - `scopedElements` registrations
+- `ScopedElementsMixin`, `WidgetMixin`, `configurationScopedElements`, `scopedElementsFromClasses`, and `getComponentSharedStyles` usage when present
 - mixins and helpers
 - event wiring and upward emissions
 - state/view toggles

@@ -20,6 +20,7 @@ Your first job is to decide whether a NEW component is actually justified. Prefe
 Read and follow:
 - `skills/_shared/cells-conventions.md`
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 - `skills/cells-components-catalog/`
 - `skills/cells-cli-usage/`
 - `skills/cells-test-creator/`
@@ -70,6 +71,7 @@ If relevant checklist items are missing evidence, return `status: partial` and l
 Also validate these implementation rules when they apply to the requested scope:
 - reuse existing BBVA components before authoring new UI
 - register template dependencies in `scopedElements`
+- follow the real Cells baseline from `skills/_shared/real-cells-patterns.md` for `ScopedElementsMixin`, `WidgetMixin`, `configurationScopedElements`, `scopedElementsFromClasses`, and `getComponentSharedStyles` when the active project uses those patterns
 - use `WidgetMixin` + `this.emitEvent(...)` when following Cells feature/data-manager architecture
 - route literals through `this.t(...)` and keep locale parity in `demo/locales/locales.json`
 - keep SCSS as visual source and runtime style artifacts aligned

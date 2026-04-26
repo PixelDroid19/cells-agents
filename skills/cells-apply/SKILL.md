@@ -24,6 +24,7 @@ Read and follow `skills/_shared/persistence-contract.md` for mode resolution rul
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
+If the project is Cells-oriented, also read `skills/_shared/real-cells-patterns.md` before making architecture, Spherica UI, i18n, styling, or test-pattern decisions.
 For Cells implementation work, use `skills/_shared/cells-official-reference.md` to fetch only the official guidance needed for the touched area.
 
 For Cells testing or test-execution decisions during implementation, apply this mandatory stack first and in order:
