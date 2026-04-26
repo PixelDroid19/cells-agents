@@ -1,7 +1,6 @@
 ---
 name: cells-coverage
-description: >
-  Analyze coverage artifacts, lcov reports, branch misses, and test failure outputs. Triggers: when the user says "analyze coverage", "why did this test fail", "improve coverage", "coverage report", "what tests are missing", "branch coverage", "lcov report", "test failure analysis", "coverage gaps", or when triaging coverage reports and prioritizing test gaps.
+description: "Use when analyzing Cells coverage reports, lcov HTML, branch misses, coverage thresholds, test-failure artifacts, or prioritizing missing test cases."
 license: MIT
 metadata:
   author: D. J

@@ -1,7 +1,6 @@
 ---
 name: agent-browser
-description: >
-  Automate browser interactions for Cells UI validation using CDP-based CLI. Triggers: when the user says "open the browser", "take a screenshot", "test this page", "click through", "validate the UI", "check how it looks", "automate the browser", "fill this form", "navigate to", "confirm rendered UI", "capturar screenshot", "validar visualmente", or when confirming rendered UI, capturing screenshots, filling forms, navigating routes, validating i18n visually, or running browser-level tests.
+description: "Use when validating rendered Cells UI in a browser, capturing screenshots, navigating routes, filling forms, checking visual/i18n output, or automating browser-level confirmation."
 allowed-tools: Bash(npx agent-browser:*), Bash(agent-browser:*)
 ---
 

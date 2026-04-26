@@ -1,7 +1,6 @@
 ---
 name: cells-design
-description: >
-  Produce technical architecture, data flow, file changes, and testing strategy. Triggers: when the user says "how should I build this", "design the solution", "plan the implementation", "architect this feature", "what files need to change", "how should this be structured", "plan the technical approach", or when translating specs into an implementation plan.
+description: "Use when translating Cells proposal and behavioral specs into technical design, data flow, file changes, architecture decisions, and testing strategy."
 license: MIT
 metadata:
   author: D. J

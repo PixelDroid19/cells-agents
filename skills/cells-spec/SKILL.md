@@ -1,7 +1,6 @@
 ---
 name: cells-spec
-description: >
-  Write behavioral specs with Given/When/Then scenarios for a planned change. Triggers: when the user says "write test cases", "define acceptance criteria", "what are the requirements for", "document the behavior of", "write scenarios for", "spec out this feature", "Given When Then for", or when translating a proposal into testable behavioral requirements.
+description: "Use when writing testable Cells behavioral requirements, acceptance criteria, Given/When/Then scenarios, RFC 2119 statements, or requirement deltas."
 license: MIT
 metadata:
   author: D. J

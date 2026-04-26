@@ -1,7 +1,6 @@
 ---
 name: cells-verify
-description: >
-  Validate implementation matches specs, design, and tasks using real execution evidence. Triggers: when the user says "run tests", "verify this works", "check the build", "is this correct", "quality check", "validate the changes", "test everything", "does it meet the specs", "compliance check", or when running the quality gate before archiving a change.
+description: "Use when validating Cells implementation against specs, design, tasks, command policy, tests, coverage evidence, i18n, browser-visible behavior, or archive readiness."
 license: MIT
 metadata:
   author: D. J
@@ -111,8 +110,15 @@ FOR EACH DECISION in design.md:
  Was the chosen approach actually used?
  Were rejected alternatives accidentally implemented?
  Do file changes match the "File Changes" table?
- Flag: WARNING if deviation found (may be valid improvement)
+Flag: WARNING if deviation found (may be valid improvement)
 ```
+
+### Step 5b: Check Task Scope Isolation
+
+Verify the implementation did not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the requested task unless explicit scope expansion was requested.
+
+Flag: WARNING if touched files lack a direct task/dependency justification.
+Flag: CRITICAL if broad out-of-scope edits changed behavior without approval.
 
 ### Step 6: Check Testing (Static)
 

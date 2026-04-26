@@ -1,7 +1,6 @@
 ---
 name: issue-creation
-description: >
-  Create GitHub issues following issue-first enforcement. Triggers: when the user says "file a bug", "report a problem", "create an issue", "something is broken", "request a feature", "I found a bug", "we need a new feature", "open an issue", "create GitHub issue", "document this problem", or when creating bug reports, feature requests, or any GitHub issue.
+description: "Use when creating GitHub bug reports, feature requests, approved issue records, or issue-first workflow artifacts for Cells contribution flow."
 license: MIT
 metadata:
   author: Cells Agent Bundle

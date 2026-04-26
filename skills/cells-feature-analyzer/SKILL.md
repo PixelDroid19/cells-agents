@@ -1,7 +1,6 @@
 ---
 name: cells-feature-analyzer
-description: >
-  Extract reusable patterns from real Cells feature implementations. Triggers: when the user says "analyze this feature", "study how X works", "what patterns does this use", "extract lessons from", "how is this implemented in production", "what can I reuse from", "reverse engineer this", "what architecture does this follow", or when studying real feature repos to find patterns for new work.
+description: "Use when extracting reusable patterns from real Cells feature implementations, production examples, data flow, event wiring, architecture, or composition choices."
 license: MIT
 metadata:
   author: D. J

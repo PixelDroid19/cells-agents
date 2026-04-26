@@ -1,7 +1,6 @@
 ---
 name: cells-official-docs-catalog
-description: >
-  Search authoritative BBVA Cells official guidance for architecture, CLI, component API, Lit authoring, composition, testing, demos, i18n, theming, and packaging. Triggers: when the user says "how does Cells do X", "official guidance for", "Cells documentation", "what is the Cells way", "Cells best practices", "how should I structure", "Cells architecture", "Cells testing guide", "Cells CLI docs", "Cells theming", "official Cells rules", or when looking up official Cells rules, checking how Cells works, finding CLI commands, or resolving architectural guidance.
+description: "Use when looking up official Cells guidance for architecture, CLI, testing, i18n, theming, Lit authoring, component API, composition, runtime, demos, or packaging."
 license: MIT
 metadata:
   author: D. J

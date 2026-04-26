@@ -1,7 +1,6 @@
 ---
 name: cells-new
-description: >
-  Start a new change by running exploration and proposal creation. Triggers: when the user says "/cells-new", "start a new feature", "I want to work on X", "let's begin a change", "kick off a new task", "start planning X", "I have an idea for", "plan a new feature", or when ready to turn an explored topic into a structured change proposal.
+description: "Use when starting a new Cells change from an idea, feature, bug, or explored topic and needing structured exploration plus proposal creation."
 license: MIT
 metadata:
   author: D. J

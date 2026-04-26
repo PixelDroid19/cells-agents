@@ -1,7 +1,6 @@
 ---
 name: cells-explore
-description: >
-  Investigate the codebase, existing components, architecture, and implementation landscape. Triggers: when the user says "how does X work in this codebase", "find all places that do Y", "explore this feature", "what uses this component", "trace the flow of", "analyze the architecture", "understand how X is implemented", "investigate this bug", "what components are involved in", "before I start working on X", "what exists for", or when researching a feature, bug, refactor, component discovery, or composition before writing a proposal.
+description: "Use when investigating a Cells codebase, feature, bug, component usage, architecture, implementation pattern, refactor area, or solution landscape before proposing changes."
 license: MIT
 metadata:
   author: D. J

@@ -45,8 +45,8 @@ Using skill-creator evaluation criteria:
 ### Tier D (Not Cells-specific)
 | Skill | Issue | Recommendation |
 |-------|-------|----------------|
-| `branch-pr` | Generic GitHub workflow | Move to separate dir or make Cells-specific |
-| `issue-creation` | Generic GitHub workflow | Move to separate dir or make Cells-specific |
+| `branch-pr` | GitHub workflow now scoped to Cells contribution flow | Keep in bundle |
+| `issue-creation` | GitHub workflow now scoped to Cells contribution flow | Keep in bundle |
 | `skill-registry` | "Always" trigger defeats purpose | Fix trigger text |
 
 ### Missing
@@ -66,10 +66,7 @@ Using skill-creator evaluation criteria:
 9. ✅ Added JSDoc compact rule (no blank lines inside blocks) to all 3 skills
 
 ## Remaining Work
-1. Move branch-pr and issue-creation out of Cells bundle or make Cells-specific
-2. Fix skill-registry trigger text
-3. Trim explore/design/spec/propose/init/archive templates to <200 lines
-4. Move verbose templates to references/
-5. Optimize all skill descriptions for better triggering (skill-creator run_loop)
-6. Create eval test suite for critical skills
-7. Verify all referenced scripts exist
+1. Trim explore/design/spec/propose/init/archive templates to <200 lines
+2. Move verbose templates to references/
+3. Create eval test suite for critical skills
+4. Verify all referenced scripts exist

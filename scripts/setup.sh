@@ -144,15 +144,7 @@ get_prompt_path() {
 
     case "$agent" in
         opencode)     echo "$home/.config/opencode/AGENTS.md" ;;
-        vscode)
-            if [[ "$OS" == "windows" ]]; then
-                echo "${APPDATA:-$home/AppData/Roaming}/Code/User/prompts/cells-agent-bundle.instructions.md"
-            elif [[ "$OS" == "macos" ]]; then
-                echo "$home/Library/Application Support/Code/User/prompts/cells-agent-bundle.instructions.md"
-            else
-                echo "$home/.config/Code/User/prompts/cells-agent-bundle.instructions.md"
-            fi
-            ;;
+        vscode)       echo "$home/.copilot/instructions/cells-orchestrator.instructions.md" ;;
     esac
 }
 
@@ -160,7 +152,7 @@ get_example_file() {
     local agent="$1"
     case "$agent" in
         opencode)     echo "" ;; # OpenCode has special handling
-        vscode)       echo "$REPO_DIR/.github/instructions/copilot-instructions.md" ;;
+        vscode)       echo "$EXAMPLES_DIR/vscode/instructions/cells-orchestrator.instructions.md" ;;
     esac
 }
 
@@ -203,24 +195,17 @@ install_skills() {
 
     local count=0
 
-    # Copy all cells-* skills (phase + specialist)
-    for skill_dir in "$SKILLS_SRC"/cells-*/; do
+    # Copy all bundle skills with SKILL.md
+    for skill_dir in "$SKILLS_SRC"/*/; do
         [ -d "$skill_dir" ] || continue
+        local skill_name
+        skill_name="$(basename "${skill_dir%/}")"
+        case "$skill_name" in
+            _shared|scripts|evals) continue ;;
+        esac
         install_skill_directory "${skill_dir%/}" "$target_dir"
         count=$((count + 1))
     done
-
-    # Copy skill-registry if present
-    if [ -d "$SKILLS_SRC/skill-registry" ]; then
-        install_skill_directory "$SKILLS_SRC/skill-registry" "$target_dir"
-        count=$((count + 1))
-    fi
-
-    # Copy agent-browser if present
-    if [ -d "$SKILLS_SRC/agent-browser" ]; then
-        install_skill_directory "$SKILLS_SRC/agent-browser" "$target_dir"
-        count=$((count + 1))
-    fi
 
     ok "$count skills installed"
 }
@@ -481,6 +466,23 @@ setup_opencode() {
     fi
 }
 
+setup_vscode_user_assets() {
+    local home
+    home="$(home_dir)"
+    local vscode_src="$EXAMPLES_DIR/vscode"
+    local instructions_target="$home/.copilot/instructions"
+    local agents_target="$home/.copilot/agents"
+
+    mkdir -p "$instructions_target" "$agents_target"
+
+    cp "$vscode_src/instructions/cells-orchestrator.instructions.md" "$instructions_target/"
+    cp "$vscode_src/agents"/*.agent.md "$agents_target/"
+
+    ok "VS Code user instructions installed ($instructions_target)"
+    ok "VS Code custom agents installed ($agents_target)"
+    info "For workspace slash prompts, hooks, plugin manifest, and project skills, run: ./scripts/install.sh --agent vscode from the target repository"
+}
+
 # ============================================================================
 # Full Setup for One Agent
 # ============================================================================
@@ -500,7 +502,7 @@ setup_agent() {
     if [[ "$agent" == "opencode" ]]; then
         setup_opencode
     else
-        setup_orchestrator "$prompt_path" "$example_file"
+        setup_vscode_user_assets
     fi
 }
 
@@ -656,18 +658,22 @@ if [ ! -d "$SKILLS_SRC/_shared" ]; then
     exit 1
 fi
 
-found_cells_skill=false
-for skill_dir in "$SKILLS_SRC"/cells-*/; do
+found_skill=false
+for skill_dir in "$SKILLS_SRC"/*/; do
     [ -d "$skill_dir" ] || continue
-    found_cells_skill=true
+    skill_name="$(basename "${skill_dir%/}")"
+    case "$skill_name" in
+        _shared|scripts|evals) continue ;;
+    esac
+    found_skill=true
     if [ ! -f "$skill_dir/SKILL.md" ]; then
         fail "Missing: $(basename "$skill_dir")/SKILL.md"
         exit 1
     fi
 done
 
-if ! $found_cells_skill; then
-    fail "No cells-* skills found in $SKILLS_SRC"
+if ! $found_skill; then
+    fail "No installable skills found in $SKILLS_SRC"
     exit 1
 fi
 

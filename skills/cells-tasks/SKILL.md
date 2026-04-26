@@ -1,7 +1,6 @@
 ---
 name: cells-tasks
-description: >
-  Break a planned change into ordered, concrete, file-level implementation tasks. Triggers: when the user says "break this down", "give me steps", "what do I need to do", "create a task list", "step by step plan", "checklist for", "implementation tasks for", "what order should I do this in", or when translating a design into actionable, ordered task list.
+description: "Use when breaking Cells design and specs into ordered, file-level implementation tasks, task groups, dependency sequencing, and verification-ready checklists."
 license: MIT
 metadata:
   author: D. J

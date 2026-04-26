@@ -1,7 +1,6 @@
 ---
 name: cells-composition-architect
-description: >
-  Plan how to compose a Cells feature or widget from existing components, mixins, and real patterns. Triggers: when the user says "how do I combine X and Y", "put these together", "wire up X to Y", "how should these components interact", "connect X and Y", "assemble from existing", "composition pattern for", "how to wire events between", "feature composition strategy", or when designing how multiple components work together in a feature.
+description: "Use when designing how multiple Cells components, mixins, events, data managers, or widgets should be composed into a feature or reusable UI flow."
 license: MIT
 metadata:
   author: D. J

@@ -5,7 +5,7 @@ agent: cells-orchestrator
 
 # Cells Fast-Forward Command
 
-Follow the CELLS orchestrator workflow to fast-forward all planning phases for change "{argument}".
+Follow the CELLS orchestrator workflow to fast-forward all planning phases for change "$ARGUMENTS".
 
 WORKFLOW:
 
@@ -30,9 +30,9 @@ If this is a Cells project or component task, make sure delegated phases run SQL
 
 CONTEXT:
 
-- Working directory: {workdir}
-- Current project: {project}
-- Change name: {argument}
+- Working directory: current OpenCode project root
+- Current project: infer from current workspace
+- Change name: $ARGUMENTS
 - Artifact store mode: engram
 
 Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline — delegate to sub-agents and keep Cells governance unchanged.

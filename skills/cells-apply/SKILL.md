@@ -1,7 +1,6 @@
 ---
 name: cells-apply
-description: >
-  Implement planned tasks by editing real code against proposal, specs, and design. Triggers: when the user says "implement this", "write the code", "build this feature", "code up the tasks", "make the changes", "start coding", "apply the planned tasks", "add this component", "write tests for", or when turning planned tasks into actual code changes, new components, or test files.
+description: "Use when turning approved Cells proposal, specs, design, or task artifacts into scoped code changes, component updates, test files, or implementation progress."
 license: MIT
 metadata:
   author: D. J
@@ -120,6 +119,9 @@ If the assigned batch is tests-only:
  - Allowed paths: `test/**`, `test/mocks/**`, and test-only fixtures
  - Forbidden paths: `src/**`, `demo/locales/**`, and any runtime source path
  - Do not "just fix source quickly" during this batch
+
+Absolute scope rule:
+ - Do not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the assigned task unless the user explicitly expands scope
 ```
 
 Use one of these one-line gate evidence entries in `detailed_report`:
@@ -335,7 +337,7 @@ If none, say "None."}
 
 13. **No trailing commas** — remove commas after the last element in arrays, objects, or function arguments. Why? Trailing commas cause parse errors in older environments and create noisy diffs when adding new items.
 
-14. **Use `@attribute` decorator for Lit properties** — prefer `@property({ type: String, attribute: true })` over `static get properties()` when authoring new components. Why? Decorator syntax is more readable and aligns with modern Lit conventions.
+14. **Use `static get properties()` for Lit properties** — do not use decorator syntax (`@property`, `@state`, or `@attribute`) in generated Cells components. Why? The bundle standardizes on plain JavaScript, and static property metadata works without TypeScript or decorator transforms.
 
 15. **Semicolons required** — end every statement with a semicolon. Why? Consistent semicolons prevent automatic semicolon insertion edge cases and make code intent explicit.
 
@@ -403,5 +405,3 @@ const items = config
 26. **Cells-native commands only** — use `/cells-*`, `cells app:*`, `cells lit-component:*`. Do not fall back to `npm test`, `npm run`, etc. unless user explicitly requests. Why? Cells commands carry toolchain guarantees (coverage paths, test setup, lint config).
 
 27. **Source decisions in every artifact** — include `{intent, primary_source, fallback_used, evidence_quality, status}`. Why? This enables traceability and prevents "it worked on my machine" scenarios.
-
-

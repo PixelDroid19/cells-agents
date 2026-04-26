@@ -1,7 +1,6 @@
 ---
 name: cells-component-researcher
-description: >
-  Find authoritative BBVA Cells component API, events, CSS hooks, caveats, and usage patterns. Triggers: when the user says "what does this component do", "how do I use X", "show me the API for", "what events does X emit", "can X do Y", "research this component", "component documentation", "what props does X support", "check the styling hooks for", "validate component choice", or before design or apply phases when the change touches UI.
+description: "Use when researching a BBVA Cells component API, package, tag, events, properties, CSS hooks, caveats, usage snippets, or validating a component choice."
 license: MIT
 metadata:
   author: D. J

@@ -13,9 +13,9 @@ WORKFLOW:
 4. Present the result and ask the user to proceed
 
 CONTEXT:
-- Working directory: {workdir}
-- Current project: {project}
-- Change name: {argument}
+- Working directory: current OpenCode project root
+- Current project: infer from current workspace
+- Change name: $ARGUMENTS
 - Artifact store mode: engram
 
 Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline — delegate to sub-agents and preserve Cells specialist routing.

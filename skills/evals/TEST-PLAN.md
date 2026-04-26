@@ -34,7 +34,7 @@ Improve skills that fail tests, optimize descriptions, and re-test.
 - Searches catalog, finds NO matching BBVA component
 - Loads cells-component-authoring
 - Creates new component with proper scaffold
-- Uses @property decorators, scopedElements, i18n
+- Uses `static get properties()`, scopedElements, i18n
 
 ### Scenario 3: Test Creation
 **Prompt**: "Agrega tests al componente account-actions para cubrir los botones que emiten action-selected"
@@ -53,7 +53,7 @@ Improve skills that fail tests, optimize descriptions, and re-test.
 - Reads specs/design
 - Uses bbva-button-default with icon-left prop
 - Registers in scopedElements if needed
-- Code quality: no trailing commas, semicolons, compact JSDoc, max 3 if, .map() if repetitive
+- Code quality: no trailing commas, semicolons, compact JSDoc, max 2 conditions per method block, .map() if repetitive
 
 ### Scenario 5: Verification
 **Prompt**: "Verifica que la implementación de account-actions cumple con las specs"

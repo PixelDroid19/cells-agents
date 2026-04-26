@@ -1,12 +1,6 @@
 ---
 name: cells-cleanup
-description: >
-  Sweep a Cells/Lit component for code quality issues without changing logic or behavior.
-  Triggers: when the user says "limpiar el componente", "clean up this file", "cells-cleanup",
-  "aplicar reglas de calidad", "refactorizar sin cambiar lógica", "arreglar estilo de código",
-  "quitar comentarios innecesarios", "aplicar jsdoc", "separar responsabilidades",
-  "fix code style", "apply quality rules", "reutilizar código repetitivo", "separar mocks",
-  "limpiar tests", or when asking to improve code hygiene without touching business logic.
+description: "Use when sweeping a Cells or Lit component for code hygiene without changing behavior, including formatting, JSDoc, attributes, condition extraction, comments, or repeated test setup."
 license: MIT
 metadata:
   author: D. J

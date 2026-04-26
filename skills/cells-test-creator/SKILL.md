@@ -1,7 +1,6 @@
 ---
 name: cells-test-creator
-description: >
-  Create or improve unit tests for Cells components with OpenWC + Sinon, targeting public-behavior only and 100% file-level coverage. Triggers: when the user says "write tests", "I need tests for", "test this component", "add test coverage", "fix failing tests", "improve test quality", "generate test file", "increase coverage", "create unit tests", "write integration tests", or when adding, updating, or validating test files for Cells components.
+description: "Use when creating, updating, validating, or improving Cells OpenWC/Sinon tests, public-behavior coverage, mocks, fixtures, or test convention compliance."
 compatibility: python>=3.9,node>=18
 ---
 

@@ -10,7 +10,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 
-INSTRUCTIONS = ROOT / "examples/vscode/instructions/copilot-instructions.md"
+INSTRUCTIONS = ROOT / "examples/vscode/instructions/cells-orchestrator.instructions.md"
 GOVERNANCE = ROOT / "skills/_shared/cells-governance-contract.md"
 PERSISTENCE = ROOT / "skills/_shared/persistence-contract.md"
 VERIFY_SKILL = ROOT / "skills/cells-verify/SKILL.md"

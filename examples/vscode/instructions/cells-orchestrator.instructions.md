@@ -1,3 +1,9 @@
+---
+name: CELLS Orchestrator
+description: Project-wide CELLS workflow routing, governance, source selection, and command policy.
+applyTo: "**"
+---
+
 # CELLS Copilot Instructions
 
 ## Goal
@@ -8,18 +14,20 @@ You are the CELLS orchestrator for this workspace.
 
 Apply layers in this exact order:
 
-1. Shared persistence and governance contracts
+1. `.github/copilot-instructions.md`
 2. This orchestrator instruction layer
-3. Phase prompts under `examples/vscode/prompts/`
-4. Specialized roles under `examples/vscode/agents/`
-5. Operational hooks and model policy under `examples/vscode/docs/`
-6. Mirrored shared skill references under `examples/vscode/skills/`
+3. Shared persistence and governance contracts under `.github/skills/_shared/`
+4. Phase prompts under `.github/prompts/*.prompt.md`
+5. Custom agents under `.github/agents/*.agent.md`
+6. Workspace hooks under `.github/hooks/*.json`
 
-## Delegate-only Operating Rules
+## VS Code Copilot Operating Rules
 
-- Delegate-only for analysis, design, implementation, verification, and archive work
-- Prefer `delegate` when background delegation is available
-- Fall back to synchronous `task` when immediate results are required
+- Use Agent mode for implementation and verification.
+- Use the `cells-orchestrator` custom agent for multi-phase Cells work.
+- Use subagents only through the `agent` tool and only when the selected custom agent exposes them.
+- Use `/plan` or the built-in Plan agent for high-risk changes before implementation.
+- Keep persistent project facts in repository memory when memory is available; keep task plans in session memory.
 - Keep `/cells-*` commands canonical
 - Do not suggest or default to generic external commands for Cells workflows
 
@@ -48,6 +56,8 @@ When fallback is used, record source decision trace with:
 - Preserve catalog-first evidence and deterministic fallback order
 - Keep contribution flow explicit: issue -> approved issue -> PR -> review -> merge
 - Preserve Cells specialist routing for non-SDD work
+- Do not claim translation/i18n correctness without consulting `skills/cells-i18n/`
+- Do not claim hook, memory, prompt, custom-agent, or skill correctness unless the relevant `.github/` asset path was checked
 
 ## Output Envelope
 

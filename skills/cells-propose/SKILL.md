@@ -1,7 +1,6 @@
 ---
 name: cells-propose
-description: >
-  Create a change proposal with intent, scope, affected areas, risks, and rollback plan. Triggers: when the user says "plan this change", "scope this out", "what would it take to", "draft a proposal for", "outline the changes for", "should we do this", "what are the risks of", "propose an approach for", or after cells-explore when direction is clear and ready to define the change.
+description: "Use when defining Cells change intent, scope, affected areas, risks, rollback plan, alternatives, and readiness after exploration identifies a viable direction."
 license: MIT
 metadata:
   author: D. J

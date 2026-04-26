@@ -1,7 +1,6 @@
 ---
 name: cells-visual-intent-demo
-description: >
-  Demo and validation skill for installer behavior — NOT for productive Cells + Lit + BBVA workflows. Triggers: when testing or validating the cells-teams installer setup. Do NOT load during normal development or any SDD phase.
+description: "Use when testing the cells-teams installer setup or demo skill discovery behavior; do not use for normal Cells, Lit, BBVA, or workflow phase work."
 license: MIT
 metadata:
   author: cells-team

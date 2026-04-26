@@ -1,7 +1,6 @@
 ---
 name: cells-app-architecture
-description: >
-  Plan Cells feature structure, data managers, routing, bridge communication, and app-level composition. Triggers: when the user says "how should I organize", "where does this code go", "structure my app", "app architecture", "how to separate concerns", "where should API logic live", "feature structure for", "data manager design", "routing setup", "pub/sub architecture", "bridge communication", or when designing how a Cells app or feature package should be structured.
+description: "Use when designing Cells app or feature structure, data managers, routing, bridge communication, pub/sub, composition boundaries, or separation of responsibilities."
 license: MIT
 metadata:
   author: D. J

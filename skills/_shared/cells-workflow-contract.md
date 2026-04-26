@@ -48,7 +48,7 @@ Every workflow phase returns the same structured envelope:
 
 ## Source Decisions
 
-Every workflow artifact MUST include a compact `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
+Every workflow artifact MUST include an explicit `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
 
 When a phase stays on canonical evidence, record that explicitly.
 When historical legacy context is mentioned for archive continuity or migration compatibility, record it as inactive history or compatibility-only evidence and do not treat it as active canonical fallback.

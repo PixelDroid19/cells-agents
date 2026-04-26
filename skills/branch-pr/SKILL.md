@@ -1,7 +1,6 @@
 ---
 name: branch-pr
-description: >
-  Create branch and pull request following issue-first enforcement. Triggers: when the user says "open a PR", "create a pull request", "submit for review", "push my changes", "ready to merge", "create branch", "prepare for review", "open PR for this change", "create branch and PR", "merge this", or when preparing changes for GitHub review.
+description: "Use when preparing a Cells change for GitHub review, creating a branch, pushing commits, opening a pull request, or enforcing issue-first submission flow."
 license: MIT
 metadata:
   author: Cells Agent Bundle

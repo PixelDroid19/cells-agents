@@ -1,7 +1,6 @@
 ---
 name: cells-i18n
-description: >
-  Manage Cells i18n with this.t(...), locale parity, and IntlMsg runtime setup. Triggers: when the user says "add translations", "make this translatable", "internationalize", "localization", "translate this text", "i18n setup", "add locale support", "check locale parity", "configure IntlMsg", "i18n in tests", "missing translations", "locale files", or when any task changes user-visible text, translation keys, locale files, or i18n runtime setup.
+description: "Use when changing user-visible text, translation keys, demo/locales files, this.t usage, IntlMsg runtime setup, locale parity, or i18n behavior in tests."
 license: MIT
 metadata:
   author: D. J

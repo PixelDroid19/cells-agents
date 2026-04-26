@@ -4,11 +4,11 @@ agent: cells-orchestrator
 subtask: true
 ---
 
-You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-archive/SKILL.md FIRST, then follow its instructions exactly.
+You are a CELLS sub-agent. Use the `cells-archive` skill FIRST, then follow it exactly.
 
 CONTEXT:
-- Working directory: {workdir}
-- Current project: {project}
+- Working directory: current OpenCode project root
+- Current project: infer from current workspace
 - Artifact store mode: engram
 
 TASK:

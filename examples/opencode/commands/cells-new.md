@@ -3,7 +3,7 @@ description: Start a new CELLS change — runs exploration then creates a propos
 agent: cells-orchestrator
 ---
 
-Follow the CELLS orchestrator workflow for starting a new change named "{argument}".
+Follow the CELLS orchestrator workflow for starting a new change named "$ARGUMENTS".
 
 WORKFLOW:
 1. Prefer `delegate` for `cells-explore` when background delegation is available; otherwise use `task`
@@ -12,9 +12,9 @@ WORKFLOW:
 4. Present the proposal summary and ask the user if they want to continue with specs and design
 
 CONTEXT:
-- Working directory: {workdir}
-- Current project: {project}
-- Change name: {argument}
+- Working directory: current OpenCode project root
+- Current project: infer from current workspace
+- Change name: $ARGUMENTS
 - Artifact store mode: engram
 
 Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline — delegate to sub-agents and preserve `/cells-*` command canon.

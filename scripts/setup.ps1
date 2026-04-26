@@ -63,11 +63,11 @@ $SkillsPaths = @{
 
 $PromptPaths = @{
     'opencode'    = Join-Path $env:USERPROFILE '.config\opencode\AGENTS.md'
-    'vscode'      = Join-Path $env:APPDATA 'Code\User\prompts\cells-agent-bundle.instructions.md'
+    'vscode'      = Join-Path $env:USERPROFILE '.copilot\instructions\cells-orchestrator.instructions.md'
 }
 
 $ExampleFiles = @{
-    'vscode'      = Join-Path $RepoDir '.github\\instructions\\copilot-instructions.md'
+    'vscode'      = Join-Path $ExamplesDir 'vscode\instructions\cells-orchestrator.instructions.md'
 }
 
 $AgentBinaries = @{
@@ -172,24 +172,12 @@ function Install-Skills {
 
     $count = 0
 
-    # Copy all cells-* skills
-    $cellsSkills = @(Get-ChildItem -Path $SkillsSrc -Directory -Filter 'cells-*')
-    foreach ($skillDir in $cellsSkills) {
+    # Copy all bundle skills with SKILL.md
+    $installableSkills = @(Get-ChildItem -Path $SkillsSrc -Directory | Where-Object {
+        $_.Name -notin @('_shared', 'scripts', 'evals')
+    })
+    foreach ($skillDir in $installableSkills) {
         Install-SkillDirectory -SourceDir $skillDir.FullName -TargetRoot $TargetDir
-        $count++
-    }
-
-    # Copy skill-registry if present
-    $registryDir = Join-Path $SkillsSrc 'skill-registry'
-    if (Test-Path $registryDir) {
-        Install-SkillDirectory -SourceDir $registryDir -TargetRoot $TargetDir
-        $count++
-    }
-
-    # Copy agent-browser if present
-    $browserDir = Join-Path $SkillsSrc 'agent-browser'
-    if (Test-Path $browserDir) {
-        Install-SkillDirectory -SourceDir $browserDir -TargetRoot $TargetDir
         $count++
     }
 
@@ -426,6 +414,22 @@ function Set-OpenCode {
     }
 }
 
+function Set-VSCodeUserAssets {
+    $vscodeSrc = Join-Path $ExamplesDir 'vscode'
+    $instructionsTarget = Join-Path $env:USERPROFILE '.copilot\instructions'
+    $agentsTarget = Join-Path $env:USERPROFILE '.copilot\agents'
+
+    New-Item -ItemType Directory -Path $instructionsTarget -Force | Out-Null
+    New-Item -ItemType Directory -Path $agentsTarget -Force | Out-Null
+
+    Copy-Item -Path (Join-Path $vscodeSrc 'instructions\cells-orchestrator.instructions.md') -Destination $instructionsTarget -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'agents\*.agent.md') -Destination $agentsTarget -Force
+
+    Write-Ok "VS Code user instructions installed ($instructionsTarget)"
+    Write-Ok "VS Code custom agents installed ($agentsTarget)"
+    Write-Info 'For workspace slash prompts, hooks, plugin manifest, and project skills, run: .\scripts\install.ps1 -Agent vscode from the target repository'
+}
+
 # ============================================================================
 # Full Setup for One Agent
 # ============================================================================
@@ -442,11 +446,7 @@ function Set-Agent {
         Set-OpenCode
     }
     else {
-        $promptPath = $PromptPaths[$AgentName]
-        $exampleFile = $ExampleFiles[$AgentName]
-        if ($exampleFile) {
-            Set-Orchestrator -PromptPath $promptPath -ExampleFile $exampleFile
-        }
+        Set-VSCodeUserAssets
     }
 }
 
@@ -481,13 +481,15 @@ try {
         exit 1
     }
 
-    $cellsSkills = @(Get-ChildItem -Path $SkillsSrc -Directory -Filter 'cells-*')
-    if ($cellsSkills.Count -eq 0) {
-        Write-Fail "No cells-* skills found in $SkillsSrc"
+    $installableSkills = @(Get-ChildItem -Path $SkillsSrc -Directory | Where-Object {
+        $_.Name -notin @('_shared', 'scripts', 'evals')
+    })
+    if ($installableSkills.Count -eq 0) {
+        Write-Fail "No installable skills found in $SkillsSrc"
         exit 1
     }
 
-    foreach ($dir in $cellsSkills) {
+    foreach ($dir in $installableSkills) {
         if (-not (Test-Path (Join-Path $dir.FullName 'SKILL.md'))) {
             Write-Fail "Missing: $($dir.Name)\SKILL.md"
             exit 1
