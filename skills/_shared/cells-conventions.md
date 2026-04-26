@@ -57,8 +57,8 @@ Read sources in this order when they exist:
    - `package.json`
    - `custom-elements.json`
 2. Real feature repositories provided as reference:
-   - `bbva-feature-oc-account-fx-co`
-   - `bbva-feature-product-detail-debit-card`
+   - use `skills/_shared/real-cells-patterns.md` for distilled reusable patterns
+   - do not cite private local reference paths or folder names in repo assets
 3. Internal component catalog:
    - `skills/cells-components-catalog/`
    - use `scripts/search_docs.py` to shortlist packages, tags, props, events, and snippets quickly

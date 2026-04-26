@@ -20,7 +20,7 @@
       "prompt": "Increase coverage for the target file to 100% in Statements, Branches, Functions, and Lines using only public API.",
       "expected_output": "Updates existing tests to cover guards, branches, and error paths without coupling to internal details.",
       "files": [
-        "build/coverage-reports/lcov-report/bbva-feature-oc-account-fx-co/src/styles-overrides/shared-style-overrides.js.html"
+        "build/coverage-reports/lcov-report/src/styles-overrides/shared-style-overrides.js.html"
       ],
       "expectations": [
         "Tests do not invoke private functions directly",

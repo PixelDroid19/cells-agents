@@ -302,6 +302,41 @@ def scenario_real_cells_patterns_contract() -> tuple[bool, str]:
     return True, "Real Cells pattern contract is present and routed from key skills."
 
 
+def scenario_no_private_reference_paths() -> tuple[bool, str]:
+    private_tokens = (
+        "/" + "Users" + "/admin",
+        "glomo-" + "co",
+        "bbva-feature-" + "oc-account-fx-co",
+        "bbva-feature-" + "product-detail-debit-card",
+    )
+    checked_suffixes = {
+        ".md",
+        ".py",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".sh",
+        ".ps1",
+    }
+    skip_parts = {".git", "node_modules", "__pycache__"}
+    findings: list[str] = []
+    for path in ROOT.rglob("*"):
+        if (
+            not path.is_file()
+            or path.suffix not in checked_suffixes
+            or any(part in skip_parts for part in path.parts)
+        ):
+            continue
+        content = path.read_text(encoding="utf-8", errors="ignore")
+        for token in private_tokens:
+            if token in content:
+                findings.append(f"{path.relative_to(ROOT)} contains private reference")
+                break
+    if findings:
+        return False, "Private reference paths or folder names found: " + ", ".join(findings)
+    return True, "No private local reference paths or folder names found."
+
+
 SCENARIOS.update(
     {
         "workflow-contract-parity": scenario_workflow_contract_parity,
@@ -314,6 +349,7 @@ SCENARIOS.update(
         "code-hygiene-enforced": scenario_code_hygiene_enforced,
         "task-scope-isolation-enforced": scenario_task_scope_isolation_enforced,
         "real-cells-patterns-contract": scenario_real_cells_patterns_contract,
+        "no-private-reference-paths": scenario_no_private_reference_paths,
     }
 )
 

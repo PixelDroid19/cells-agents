@@ -2,19 +2,19 @@
 
 ## Purpose
 
-This file captures reusable Cells implementation patterns observed in real local projects. Use it as practical evidence together with official docs and catalog lookups. It is not a replacement for project-local code inspection.
+This file captures reusable Cells implementation patterns observed in real reference projects during skill authoring. Use it as practical evidence together with official docs and catalog lookups. It is not a replacement for project-local code inspection.
 
-Evidence sources:
-- `/Users/admin/Documents/glomo-co`
-- `/Users/admin/Documents/bbva-feature-oc-account-fx-co`
-- `/Users/admin/Documents/bbva-feature-product-detail-debit-card`
-- `/Users/admin/Documents/bbva/@bbva-spherica-components`
+Evidence categories:
+- modern Lit 3 feature component packages
+- legacy Cells app runtime samples
+- Spherica component catalog examples
+- OpenWC/Sinon feature test suites
 
 ## Source Scope
 
-- Treat `bbva-feature-oc-account-fx-co` and `bbva-feature-product-detail-debit-card` as modern Lit 3 feature evidence.
-- Treat `@bbva-spherica-components` as component API and design-system evidence.
-- Treat `glomo-co` as legacy app/runtime evidence. Do not copy legacy bower/gulp-era patterns into modern Lit 3 Spherica components unless the active project is also legacy.
+- Treat modern Lit 3 feature packages as feature-composition evidence.
+- Treat Spherica component catalog examples as component API and design-system evidence.
+- Treat legacy app/runtime samples as migration or app-shell evidence only. Do not copy legacy bower/gulp-era patterns into modern Lit 3 Spherica components unless the active project is also legacy.
 - Never copy business data, customer data, or product-specific logic from reference projects. Extract only reusable structure, naming, and testing patterns.
 
 ## Modern Feature Component Baseline
@@ -74,7 +74,7 @@ Use `this.t(...)` for component-owned visible strings.
 
 Rules:
 - Never use `this.t('key') || ''`; missing keys render as key text and are not falsy.
-- Prefer component-prefixed keys such as `bbva-feature-product-detail-debit-card-search-movements-title`.
+- Prefer component-prefixed keys such as `component-name-flow-action-title`.
 - Keep `demo/locales/locales.json` as the mandatory runtime/demo locale source.
 - Preserve placeholders such as `{amount}`, `{from}`, and `{to}` exactly across locales.
 - Preserve project convention when English values are placeholder-wrapped or incomplete; do not invent translations as part of unrelated code work.
