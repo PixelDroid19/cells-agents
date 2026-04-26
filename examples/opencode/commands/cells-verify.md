@@ -24,4 +24,4 @@ Mandatory shared sources:
 
 Run the verification gates defined by the skill and contracts. Do not claim translation/i18n correctness without consulting `skills/cells-i18n/` and runtime or locale evidence. Use Cells-native commands only unless the user explicitly requests otherwise.
 
-Return a structured verification report with `status`, `executive_summary`, `gate_results`, `detailed_report`, `artifacts`, and `next_recommended`.
+Return a structured verification report with `status`, `executive_summary`, `gate_results`, `detailed_report`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, and `evidence_required`.

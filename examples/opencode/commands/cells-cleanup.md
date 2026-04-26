@@ -18,4 +18,4 @@ Zero behavior change is mandatory. Apply only changes the skill marks safe; repo
 
 Do not duplicate cleanup categories in this command. `cells-cleanup/SKILL.md`, `skills/cells-cleanup/resources/references.md`, and shared contracts are authoritative.
 
-Return `status`, `executive_summary`, `cleanup_report`, `suggestions`, and `next_recommended`.
+Return `status`, `executive_summary`, `cleanup_report`, `suggestions`, `next_recommended`, `risks`, `skill_resolution`, and `evidence_required`.

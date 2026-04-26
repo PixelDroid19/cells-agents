@@ -16,4 +16,4 @@ Do not claim translation/i18n correctness without consulting `skills/cells-i18n/
 
 ## Output envelope
 
-Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.
+Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`.

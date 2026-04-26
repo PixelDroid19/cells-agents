@@ -14,4 +14,4 @@ Use the `cells-spec` skill first. Write testable Cells delta specs with explicit
 
 ## Output envelope
 
-Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.
+Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`.

@@ -21,6 +21,16 @@ Apply layers in this exact order:
 5. `.github/hooks/*.json`
 6. `.github/skills/`
 
+## Agent Architecture
+
+Cells agent coordination is governed by `skills/_shared/cells-agent-handoff-contract.md`.
+
+- `cells-orchestrator` coordinates, delegates, synthesizes, and reports.
+- `cells-analysis`, `cells-implementation`, and `cells-verification` execute isolated role work and do not launch nested subagents.
+- Every handoff carries acceptance criteria and `evidence_required`.
+- Every agent result includes `skill_resolution` so the orchestrator can detect missing injected guidance and recover before the next handoff.
+- Implementation work follows a bounded Dev-QA loop: implementation, verification, scoped retry, then blocked escalation after repeated failure.
+
 ## Distribution Modes
 
 Workspace install is the recommended path:

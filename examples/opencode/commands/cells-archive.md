@@ -20,4 +20,4 @@ Archive the active CELLS change. Read the verification report first to confirm t
 Delegation note:
 - This command may be launched through `delegate` when background delegation is available, but archive status must still cite canonical `cells/*` artifacts.
 
-Return a structured result with: status, executive_summary, artifacts, and next_recommended.
+Return a structured result with: status, executive_summary, artifacts, next_recommended, risks, skill_resolution, and evidence_required.

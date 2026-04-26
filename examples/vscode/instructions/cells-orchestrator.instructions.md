@@ -31,7 +31,7 @@ Apply layers in this exact order:
 - Keep `/cells-*` commands canonical
 - Do not suggest or default to generic external commands for Cells workflows
 
-Response format for delegated phases MUST return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.
+Response format for delegated phases MUST return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`.
 
 ## Intent Routing
 
@@ -68,3 +68,5 @@ Delegated and mirrored CELLS phases must keep the same decision-friendly envelop
 - `artifacts`
 - `next_recommended`
 - `risks`
+- `skill_resolution`
+- `evidence_required`

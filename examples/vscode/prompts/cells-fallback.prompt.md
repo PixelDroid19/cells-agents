@@ -14,4 +14,4 @@ Fallback behavior:
 
 - use `cells-orchestrator` and the closest matching Cells skill first
 - preserve Cells governance and `/cells-*` command canon
-- return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`
+- return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`

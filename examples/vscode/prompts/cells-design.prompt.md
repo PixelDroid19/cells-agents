@@ -16,4 +16,4 @@ Use `cells-analysis` for additional read-only evidence before choosing architect
 
 ## Output envelope
 
-Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.
+Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`.

@@ -14,4 +14,4 @@ Use the `cells-tasks` skill first. Break approved Cells work into dependency-ord
 
 ## Output envelope
 
-Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.
+Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`.

@@ -50,6 +50,7 @@ SOURCE_REQUIRED_FILES = [
     "scripts/cells-pretool-policy.js",
     "scripts/cells-stop-reminder.js",
     "plugin/plugin.json",
+    "../../skills/_shared/cells-agent-handoff-contract.md",
 ]
 
 INSTALLED_REQUIRED_FILES = [
@@ -74,6 +75,7 @@ INSTALLED_REQUIRED_FILES = [
     "hooks/scripts/cells-stop-reminder.js",
     "plugin/plugin.json",
     "skills/_shared/cells-governance-contract.md",
+    "skills/_shared/cells-agent-handoff-contract.md",
     "skills/_shared/cells-policy-matrix.yaml",
     "skills/_shared/persistence-contract.md",
     "skills/cells-apply/SKILL.md",
@@ -309,11 +311,46 @@ def validate_vscode_format(base: Path) -> list[str]:
                 invalid.append(f"{display(path)} handoff references missing agent: {handoff_agent}")
 
         invalid.extend(validate_tools(path, frontmatter))
+        invalid.extend(validate_agent_contract(path, name or expected_name))
 
     for path in sorted((base / "instructions").glob("*.instructions.md")):
         frontmatter = parse_frontmatter(path)
         if "applyTo" not in frontmatter:
             invalid.append(f"{display(path)} missing VS Code frontmatter token: applyTo:")
+
+    return invalid
+
+
+def validate_agent_contract(path: Path, agent_name: str) -> list[str]:
+    invalid: list[str] = []
+    text = path.read_text(encoding="utf-8")
+
+    required_tokens = [
+        "cells-agent-handoff-contract",
+        "skill_resolution",
+        "evidence_required",
+    ]
+    for token in required_tokens:
+        if token not in text:
+            invalid.append(f"{display(path)} missing agent contract token: {token}")
+
+    if agent_name == "cells-orchestrator":
+        orchestrator_tokens = [
+            "coordinator, not executor",
+            "Handoff Packet",
+            "Dev-QA loop",
+        ]
+        for token in orchestrator_tokens:
+            if token not in text:
+                invalid.append(f"{display(path)} missing orchestrator behavior token: {token}")
+    else:
+        executor_tokens = [
+            "Do not delegate",
+            "Do not launch subagents",
+        ]
+        for token in executor_tokens:
+            if token not in text:
+                invalid.append(f"{display(path)} missing executor isolation token: {token}")
 
     return invalid
 

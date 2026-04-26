@@ -16,4 +16,4 @@ Initialize CELLS workflow context in this project. Detect the tech stack, existi
 
 If Cells is detected, inspect `package.json`, `custom-elements.json`, `src/`, and `test/`, and summarize the concrete evidence you found before bootstrapping the active persistence backend.
 
-Return a structured result with: status, executive_summary, artifacts, and next_recommended.
+Return a structured result with: status, executive_summary, artifacts, next_recommended, risks, skill_resolution, and evidence_required.

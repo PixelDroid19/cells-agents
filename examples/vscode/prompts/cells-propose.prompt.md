@@ -16,4 +16,4 @@ Use VS Code planning or `cells-analysis` for missing context before proposing im
 
 ## Output envelope
 
-Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`.
+Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`.

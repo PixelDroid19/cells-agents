@@ -42,4 +42,4 @@ Intent routing for this command:
 - Cells documentation/knowledge topics (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> consult `skills/cells-official-docs-catalog/` first.
 - Use the other catalog only as fallback when the first one is insufficient.
 
-Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.
+Return a structured result with: status, executive_summary, detailed_report, artifacts, next_recommended, risks, skill_resolution, and evidence_required.

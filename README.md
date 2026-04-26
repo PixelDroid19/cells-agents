@@ -135,7 +135,9 @@ Every delegated run should return the same decision-friendly structure:
     }
   ],
   "next_recommended": ["cells-spec", "cells-design"],
-  "risks": ["optional risk list"]
+  "risks": ["optional risk list"],
+  "skill_resolution": "injected | fallback-registry | fallback-path | none",
+  "evidence_required": ["evidence gathered, unavailable, or blocked"]
 }
 ```
 
@@ -300,7 +302,7 @@ For any `/cells-*` command, the runtime sequence is:
 2. Orchestrator selects the phase/specialist skill.
 3. Sub-agent reads the target `SKILL.md` first.
 4. Skill gathers evidence in deterministic order (catalogs, docs, code, tests, artifacts).
-5. Skill returns structured envelope (`status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`).
+5. Skill returns structured envelope (`status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`).
 6. Orchestrator summarizes and asks to continue when the next phase needs user approval.
 
 ### End-to-End Planning and Delivery Flow
@@ -642,8 +644,9 @@ This creates the official VS Code Copilot layout:
 
 2. Use `cells-orchestrator` as the main custom agent. It can invoke `cells-analysis`, `cells-implementation`, and `cells-verification` as subagents when the VS Code `agent` tool is available.
 3. Skills are first-class VS Code Agent Skills under `.github/skills/`; repository-local `skills/` remains the source of truth in this bundle.
-4. Hooks are installed as guardrails for destructive commands and non-Cells command drift. They are intentionally narrow and do not replace `cells-verify`.
-5. Validate VS Code customization assets before release:
+4. Agent handoffs follow `skills/_shared/cells-agent-handoff-contract.md`: orchestrator is a coordinator, executor agents do not delegate, every handoff carries `evidence_required`, and every result reports `skill_resolution`.
+5. Hooks are installed as guardrails for destructive commands and non-Cells command drift. They are intentionally narrow and do not replace `cells-verify`.
+6. Validate VS Code customization assets before release:
 
 ```bash
 python3 scripts/validate_vscode_copilot_assets.py

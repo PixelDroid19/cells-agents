@@ -2,6 +2,8 @@
 
 `skills/` is the canonical behavior layer. OpenCode agents and VS Code Copilot agents only route to the same skills and shared contracts; host prompts must not fork policy.
 
+Agent coordination, handoffs, Dev-QA loops, `skill_resolution`, and `evidence_required` are defined in `skills/_shared/cells-agent-handoff-contract.md`.
+
 | OpenCode agent or command | VS Code Copilot equivalent | Shared authority |
 | --- | --- | --- |
 | `cells-orchestrator` primary agent | `cells-orchestrator.agent.md` | `skills/_shared/*.md`, `skills/_shared/cells-policy-matrix.yaml` |
@@ -22,4 +24,5 @@
 - OpenCode phase agents are phase-shaped. VS Code agents are role-shaped: orchestration, analysis, implementation, and verification.
 - VS Code prompt files map phase intent to role agents. This keeps role agents stable while allowing phase prompts to stay small.
 - Shared contracts in `skills/_shared/` remain authoritative for governance, source routing, command policy, persistence, and result envelope.
+- Every delegated phase must return `skill_resolution` and `evidence_required` so the orchestrator can detect missing rules and blocked proof.
 - Hook behavior is host-specific guardrail code and must not redefine workflow policy.

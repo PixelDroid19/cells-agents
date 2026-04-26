@@ -24,4 +24,4 @@ Mandatory shared sources:
 
 Do not duplicate the implementation rules in this command. The skill and shared contracts are authoritative for BBVA-first, i18n, command policy, task scope isolation, no TypeScript, conditions-by-method, event patterns, and code hygiene.
 
-Return the standard Cells result envelope: `status`, `executive_summary`, `detailed_report`, `artifacts`, `next_recommended`, and `risks`.
+Return the standard Cells result envelope: `status`, `executive_summary`, `detailed_report`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, and `evidence_required`.

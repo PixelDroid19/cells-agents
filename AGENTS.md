@@ -27,6 +27,16 @@ For any Cells test intent, consult skills in this **exact order** before any oth
 
 Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
 
+## Agent Handoff Contract (Always)
+
+For any orchestrator, subagent, handoff, delegation, implementation loop, or verification loop:
+
+1. Read `skills/_shared/cells-agent-handoff-contract.md`
+2. Treat orchestrators as coordinators, not executors
+3. Treat executor agents as isolated workers: no nested delegation
+4. Use the standard Handoff Packet with `evidence_required`
+5. Return the standard envelope including `skill_resolution` and `evidence_required`
+
 ## CELLS Workflow Skills
 
 | Skill | Trigger | Path |
