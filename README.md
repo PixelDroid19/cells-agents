@@ -499,6 +499,28 @@ If you only want to copy skills (without prompt/config orchestration), use `./sc
 
 Compatibility note: project-local install copies skills to `./.opencode/skills/`, which is OpenCode's documented project-local discovery path. OpenCode commands, config, and optional background-delegation assets live under `examples/opencode/` and install into user-level `~/.config/opencode/` unless you copy them to `./.opencode/commands/` yourself.
 
+### Corporate macOS / Manual Copy Install
+
+For restrictive bank-managed Macs where terminal setup is limited or `mkdir`, `sudo`, or `su` are not practical, use the prebuilt portable assets already included in the repo:
+
+- `portable/opencode-home/.config/opencode/`
+- `portable/project-local/.opencode/`
+- `portable/vscode/.github/`
+
+These are ready to copy with Finder or with `cp -R` from an existing parent directory. No `mkdir` is required on the destination machine.
+
+Examples:
+
+```bash
+cp -R portable/opencode-home/.config "$HOME/"
+cp -R /path/to/cells-agents/portable/vscode/.github .
+cp -R /path/to/cells-agents/portable/project-local/.opencode .
+```
+
+For VS Code manual install, that single `.github` copy already includes the plugin built under `.github/plugin/`. No extra build step is required.
+
+See `portable/README.md` for the exact manual steps.
+
 ### Supported Hosts
 
 - OpenCode
@@ -654,13 +676,13 @@ python3 scripts/validate_vscode_copilot_assets.py --installed-root .github
 python3 scripts/validate_vscode_copilot_assets.py --plugin-root .github/plugin
 ```
 
-Workspace install is the recommended VS Code path. The `.github/plugin/` package is optional/experimental because Copilot hooks, plugins, custom agents, and subagents can depend on VS Code version, preview flags, workspace trust, and organization policy. See `examples/vscode/docs/opencode-vscode-equivalence.md` for the OpenCode phase-agent to VS Code role-agent mapping.
+Workspace install is the recommended VS Code path. The portable manual-install copy is:
 
-To build a standalone optional plugin package from canonical assets:
-
-```bash
-bash scripts/build_vscode_plugin.sh dist/vscode-plugin
+```text
+portable/vscode/.github/
 ```
+
+That copy already includes the built plugin under `.github/plugin/`. The separate standalone plugin package remains available for advanced distribution use at `portable/vscode-plugin/`. See `examples/vscode/docs/opencode-vscode-equivalence.md` for the OpenCode phase-agent to VS Code role-agent mapping.
 
 ## Project Structure
 

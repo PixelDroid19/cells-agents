@@ -1,0 +1,64 @@
+{
+  "scenarios": [
+    {
+      "id": "bbva-component-discovery",
+      "prompt": "Necesito saber si ya existe un componente BBVA para un boton de transferencia con icono.",
+      "expected_skill": "skill-registry",
+      "required_description_terms": ["routing", "bbva components", "official docs"]
+    },
+    {
+      "id": "cells-cli-test-command",
+      "prompt": "Cual es el comando correcto para correr tests de un lit component en Cells sin usar npm test.",
+      "expected_skill": "cells-cli-usage",
+      "required_description_terms": ["commands", "tests", "coverage"]
+    },
+    {
+      "id": "repo-wrapper-vs-doc-command",
+      "prompt": "El repo usa cells lit-component:test pero quiero saber cual es el comando documentado oficial y cual es solo wrapper local.",
+      "expected_skill": "cells-cli-usage",
+      "required_description_terms": ["commands", "tests", "coverage"]
+    },
+    {
+      "id": "official-i18n-guidance",
+      "prompt": "Necesito la guia oficial de Cells para i18n y demo locales.",
+      "expected_skill": "cells-official-docs-catalog",
+      "required_description_terms": ["official cells guidance", "i18n", "demos"]
+    },
+    {
+      "id": "app-i18n-test-locales",
+      "prompt": "Necesito validar i18n en tests con IntlMsg, forTesting y locales generados para una app Cells.",
+      "expected_skill": "cells-i18n",
+      "required_description_terms": ["intlmsg", "locale parity", "tests"]
+    },
+    {
+      "id": "widgetmixin-emit-event",
+      "prompt": "Quiero entender el patron real de WidgetMixin y emitEvent en un feature Cells.",
+      "expected_skill": "cells-official-docs-catalog",
+      "required_description_terms": ["official cells guidance", "architecture", "runtime"]
+    },
+    {
+      "id": "scoped-elements-composition",
+      "prompt": "Necesito guidance real de composicion con scopedElements y eventos entre componentes.",
+      "expected_skill": "cells-official-docs-catalog",
+      "required_description_terms": ["official cells guidance", "composition", "component api"]
+    },
+    {
+      "id": "public-behavior-tests",
+      "prompt": "Agrega o mejora tests OpenWC y Sinon sin tocar miembros privados.",
+      "expected_skill": "cells-test-creator",
+      "required_description_terms": ["openwc", "sinon", "public-behavior coverage"]
+    },
+    {
+      "id": "cells-verification",
+      "prompt": "Verifica si la implementacion cumple specs, tests, coverage e i18n.",
+      "expected_skill": "cells-verify",
+      "required_description_terms": ["specs", "tests", "coverage", "i18n"]
+    },
+    {
+      "id": "cells-exploration",
+      "prompt": "Explora la arquitectura actual, el area afectada y las opciones antes de proponer cambios.",
+      "expected_skill": "cells-explore",
+      "required_description_terms": ["codebase", "architecture", "before proposing changes"]
+    }
+  ]
+}

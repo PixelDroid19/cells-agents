@@ -9,6 +9,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 INSTALL_SCRIPT="$SCRIPT_DIR/install.sh"
+PORTABLE_BUILDER="$SCRIPT_DIR/build_portable_assets.sh"
 VSCODE_VALIDATOR="$SCRIPT_DIR/validate_vscode_copilot_assets.py"
 
 TESTS_RUN=0
@@ -76,6 +77,18 @@ assert_all_skills_installed() {
         assert_dir_exists "$base_dir/$skill" || { echo "  Missing dir: $base_dir/$skill"; return 1; }
         assert_file_exists "$base_dir/$skill/SKILL.md" || { echo "  Missing file: $base_dir/$skill/SKILL.md"; return 1; }
     done
+}
+
+assert_opencode_portable_bundle() {
+    local base_dir="$1"
+    local opencode_root="$base_dir/.config/opencode"
+    assert_all_skills_installed "$opencode_root/skills" || return 1
+    assert_file_exists "$opencode_root/opencode.json" || return 1
+    assert_file_exists "$opencode_root/plugins/background-agents.ts" || return 1
+    assert_file_exists "$opencode_root/plugins/BACKGROUND-AGENTS-README.md" || return 1
+    local count
+    count=$(find "$opencode_root/commands" -name "cells-*.md" | wc -l | tr -d ' ')
+    assert_eq "$EXPECTED_COMMAND_COUNT" "$count"
 }
 
 assert_vscode_assets_installed() {
@@ -226,6 +239,37 @@ test_output_shows_detected_os() {
     echo "$output" | grep -q "Detected:"
 }
 
+# Portable/manual distributions
+
+test_repo_portable_assets_valid() {
+    assert_opencode_portable_bundle "$REPO_DIR/portable/opencode-home" || return 1
+    assert_vscode_assets_installed "$REPO_DIR/portable/vscode" || return 1
+    assert_vscode_workspace_valid "$REPO_DIR/portable/vscode" || return 1
+    python3 "$VSCODE_VALIDATOR" --plugin-root "$REPO_DIR/portable/vscode-plugin" > /dev/null
+}
+
+test_manual_copy_opencode_bundle() {
+    cp -R "$REPO_DIR/portable/opencode-home/.config" "$HOME/"
+    assert_opencode_portable_bundle "$HOME"
+}
+
+test_manual_copy_vscode_workspace() {
+    local project="$TEST_TMPDIR/manual-vscode-project"
+    mkdir -p "$project"
+    (cd "$project" && cp -R "$REPO_DIR/portable/vscode/.github" .)
+    assert_vscode_assets_installed "$project" || return 1
+    assert_vscode_workspace_valid "$project"
+}
+
+test_build_portable_assets() {
+    local out_dir="$TEST_TMPDIR/portable-build"
+    bash "$PORTABLE_BUILDER" "$out_dir" > /dev/null 2>&1
+    assert_opencode_portable_bundle "$out_dir/opencode-home" || return 1
+    assert_vscode_assets_installed "$out_dir/vscode" || return 1
+    assert_vscode_workspace_valid "$out_dir/vscode" || return 1
+    python3 "$VSCODE_VALIDATOR" --plugin-root "$out_dir/vscode-plugin" > /dev/null
+}
+
 echo ""
 echo -e "${CYAN}${BOLD}╔══════════════════════════════════════════╗${NC}"
 echo -e "${CYAN}${BOLD}║    Cells Agent Bundle — Install Tests    ║${NC}"
@@ -244,6 +288,10 @@ run_test "OpenCode idempotente" test_idempotent_opencode
 run_test "VS Code idempotente" test_idempotent_vscode
 run_test "Salida incluye Done" test_output_shows_done_message
 run_test "Salida incluye OS detectado" test_output_shows_detected_os
+run_test "Portable del repo es valido" test_repo_portable_assets_valid
+run_test "Copia manual OpenCode funciona" test_manual_copy_opencode_bundle
+run_test "Copia manual VS Code funciona" test_manual_copy_vscode_workspace
+run_test "Builder portable regenera assets validos" test_build_portable_assets
 
 echo -e "${BOLD}════════════════════════════════════════════${NC}"
 echo -e "${BOLD}Results: $TESTS_PASSED/$TESTS_RUN passed${NC}"

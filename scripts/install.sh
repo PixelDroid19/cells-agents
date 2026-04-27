@@ -10,6 +10,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 SKILLS_SRC="$REPO_DIR/skills"
+PORTABLE_SRC="$REPO_DIR/portable"
 
 CORE_WORKFLOW_COMMANDS=(
     "cells-init.md"
@@ -152,6 +153,8 @@ show_help() {
     echo "  -h, --help      Show this help"
     echo ""
     echo "Agents: opencode, vscode, project-local, all-global"
+    echo ""
+    echo "Manual/corporate install assets: portable/README.md"
 }
 
 # ============================================================================
@@ -180,6 +183,130 @@ validate_source() {
         echo -e "\n${RED}${BOLD}Source validation failed.${NC} Is this a complete clone of the repository?"
         exit 1
     fi
+}
+
+portable_bundle_exists() {
+    local bundle="$1"
+    case "$bundle" in
+        opencode) [ -d "$PORTABLE_SRC/opencode-home/.config/opencode/skills" ] ;;
+        vscode) [ -d "$PORTABLE_SRC/vscode/.github/skills" ] ;;
+        project-local) [ -d "$PORTABLE_SRC/project-local/.opencode/skills" ] ;;
+        *) return 1 ;;
+    esac
+}
+
+copy_tree_into_parent() {
+    local source_tree="$1"
+    local target_parent="$2"
+
+    if [ ! -d "$source_tree" ]; then
+        print_error "Portable source not found: $source_tree"
+        return 1
+    fi
+
+    if [ ! -d "$target_parent" ]; then
+        print_error "Target parent directory does not exist: $target_parent"
+        print_warn "Use Finder/manual copy with the portable assets under $PORTABLE_SRC"
+        return 1
+    fi
+
+    cp -R "$source_tree" "$target_parent/"
+}
+
+clear_managed_skill_targets() {
+    local base_dir="$1"
+
+    rm -rf "$base_dir/_shared"
+
+    for skill_dir in "$SKILLS_SRC"/*/; do
+        [ -d "$skill_dir" ] || continue
+        local skill_name
+        skill_name="$(basename "${skill_dir%/}")"
+        case "$skill_name" in
+            _shared|scripts|evals) continue ;;
+        esac
+        rm -rf "$base_dir/$skill_name"
+    done
+}
+
+install_opencode_from_portable() {
+    local tool_name="$1"
+    local home_root
+    case "$OS" in
+        windows) home_root="$USERPROFILE" ;;
+        *) home_root="$HOME" ;;
+    esac
+    local opencode_root="$home_root/.config/opencode"
+    local config_target="$opencode_root/opencode.json"
+    local config_backup=""
+
+    echo -e "\n${BLUE}Installing portable ${BOLD}$tool_name${NC}${BLUE} bundle...${NC}"
+
+    if [ -f "$config_target" ]; then
+        config_backup="$(mktemp)"
+        cp "$config_target" "$config_backup"
+    fi
+
+    clear_managed_skill_targets "$opencode_root/skills"
+    for cmd_name in "${CORE_WORKFLOW_COMMANDS[@]}"; do
+        rm -f "$opencode_root/commands/$cmd_name"
+    done
+    rm -f "$opencode_root/plugins/background-agents.ts"
+    rm -f "$opencode_root/plugins/BACKGROUND-AGENTS-README.md"
+
+    copy_tree_into_parent "$PORTABLE_SRC/opencode-home/.config" "$home_root"
+
+    if [ -n "$config_backup" ]; then
+        cp "$config_backup" "$config_target"
+        rm -f "$config_backup"
+        print_warn "OpenCode config already exists at $config_target"
+        print_warn "Merge cells-orchestrator from examples/opencode/opencode.json"
+    else
+        print_skill "opencode.json ($(dirname "$config_target"))"
+    fi
+
+    print_skill "portable OpenCode skills"
+    print_skill "portable OpenCode commands"
+    print_skill "portable OpenCode plugins"
+    echo -e "\n  ${GREEN}${BOLD}Portable bundle installed${NC} → $opencode_root"
+}
+
+install_project_local_from_portable() {
+    local target_root="$PWD"
+
+    echo -e "\n${BLUE}Installing portable ${BOLD}Project-local${NC}${BLUE} bundle...${NC}"
+
+    clear_managed_skill_targets "$target_root/.opencode/skills"
+    copy_tree_into_parent "$PORTABLE_SRC/project-local/.opencode" "$target_root"
+
+    print_skill ".opencode/skills"
+    echo -e "\n  ${GREEN}${BOLD}Portable bundle installed${NC} → $target_root/.opencode"
+}
+
+install_vscode_from_portable() {
+    local target_root="$PWD/.github"
+
+    echo -e "\n${BLUE}Installing portable ${BOLD}VS Code (Copilot)${NC}${BLUE} workspace assets...${NC}"
+
+    rm -f "$target_root/copilot-instructions.md"
+    rm -f "$target_root/instructions/cells-orchestrator.instructions.md"
+    rm -f "$target_root/prompts"/cells-*.prompt.md
+    rm -f "$target_root/agents"/cells-*.agent.md
+    rm -f "$target_root/hooks/cells-policy.json"
+    rm -f "$target_root/hooks/scripts/cells-pretool-policy.js"
+    rm -f "$target_root/hooks/scripts/cells-session-context.js"
+    rm -f "$target_root/hooks/scripts/cells-stop-reminder.js"
+    rm -rf "$target_root/plugin"
+    clear_managed_skill_targets "$target_root/skills"
+
+    copy_tree_into_parent "$PORTABLE_SRC/vscode/.github" "$PWD"
+
+    print_skill ".github/copilot-instructions.md"
+    print_skill ".github/instructions/*.instructions.md"
+    print_skill ".github/prompts/*.prompt.md"
+    print_skill ".github/agents/*.agent.md"
+    print_skill ".github/hooks/*.json"
+    print_skill ".github/plugin/ (optional Copilot plugin package)"
 }
 
 install_skills() {
@@ -396,10 +523,15 @@ install_for_agent() {
 
     case "$agent" in
         opencode)
-            install_skills "$(get_tool_path opencode)" "OpenCode"
-            install_opencode_commands
-            install_opencode_config
-            install_opencode_plugins
+            if portable_bundle_exists opencode; then
+                install_opencode_from_portable "OpenCode"
+            else
+                print_warn "Portable OpenCode bundle not found; falling back to file-by-file installer"
+                install_skills "$(get_tool_path opencode)" "OpenCode"
+                install_opencode_commands
+                install_opencode_config
+                install_opencode_plugins
+            fi
             echo ""
             echo -e "${YELLOW}${BOLD}╔══════════════════════════════════════════════════════════════╗${NC}"
             echo -e "${YELLOW}${BOLD}║  ACTION REQUIRED: Add the cells-orchestrator agent config     ║${NC}"
@@ -413,20 +545,35 @@ install_for_agent() {
             echo -e "${YELLOW}${BOLD}╚══════════════════════════════════════════════════════════════╝${NC}"
             ;;
         vscode)
-            install_skills "$(get_tool_path vscode)" "VS Code (Copilot)"
-            install_vscode_assets
+            if portable_bundle_exists vscode; then
+                install_vscode_from_portable
+            else
+                print_warn "Portable VS Code bundle not found; falling back to file-by-file installer"
+                install_skills "$(get_tool_path vscode)" "VS Code (Copilot)"
+                install_vscode_assets
+            fi
             echo -e "  ${YELLOW}Note:${NC} VS Code workspace assets installed in current project (.github/)"
             ;;
         project-local)
-            install_skills "$(get_tool_path project-local)" "Project-local"
+            if portable_bundle_exists project-local; then
+                install_project_local_from_portable
+            else
+                print_warn "Portable project-local bundle not found; falling back to file-by-file installer"
+                install_skills "$(get_tool_path project-local)" "Project-local"
+            fi
             echo -e "\n${YELLOW}Note:${NC} Skills installed in ${BOLD}./.opencode/skills/${NC} — OpenCode project-local discovery path"
             echo -e "  ${YELLOW}Commands:${NC} use ${BOLD}--agent opencode${NC} for global commands or copy ${BOLD}examples/opencode/commands/${NC} to ${BOLD}./.opencode/commands/${NC}"
             ;;
         all-global)
-            install_skills "$(get_tool_path opencode)" "OpenCode"
-            install_opencode_commands
-            install_opencode_config
-            install_opencode_plugins
+            if portable_bundle_exists opencode; then
+                install_opencode_from_portable "OpenCode"
+            else
+                print_warn "Portable OpenCode bundle not found; falling back to file-by-file installer"
+                install_skills "$(get_tool_path opencode)" "OpenCode"
+                install_opencode_commands
+                install_opencode_config
+                install_opencode_plugins
+            fi
             echo -e "\n${YELLOW}Next steps:${NC}"
             echo -e "  1. ${YELLOW}${BOLD}[REQUIRED]${NC} Add orchestrator agent to ${BOLD}~/.config/opencode/opencode.json${NC}"
             echo -e "     ${YELLOW}See: examples/opencode/opencode.json — without this, /cells-* commands won't work${NC}"

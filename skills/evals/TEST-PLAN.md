@@ -6,6 +6,7 @@ For each critical skill, I'll verify:
 1. Does the description trigger correctly for the right prompts?
 2. Does the skill body load and provide clear guidance?
 3. Does it reference the right skills/references?
+4. Does `python3 scripts/validate_skill_quality.py` pass the routing metadata checks in `skills/evals/critical-skill-routing.json`?
 
 ## Phase 2: Test Real Usage
 
@@ -69,3 +70,13 @@ I'll run each scenario through the actual skills and check if they produce the e
 - ✅ Pass: Skill triggers correctly and produces expected output
 - ⚠️ Partial: Skill works but has gaps
 - ❌ Fail: Skill doesn't trigger or produces wrong output
+
+## Fast Repo-Local Gates
+
+Run these before broader manual evaluation:
+
+```bash
+python3 scripts/validate_skill_quality.py
+python3 scripts/validate_governance_behavior.py
+bash scripts/install_test.sh
+```

@@ -1,0 +1,214 @@
+version: 1
+change_scope: generic-cells-governance
+policy_rows:
+  - layer: instructions
+    file: examples/vscode/instructions/cells-orchestrator.instructions.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CROSS-LAYER-PARITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-DELEGATE-FIRST
+      - REQ-CONTRIBUTION-GATES
+    required_tokens:
+      - "Apply intent routing before choosing Cells skills"
+      - "fallback"
+      - "structured result envelope"
+      - "non-destructive"
+      - "delegate-first"
+      - "issue -> approved issue -> PR -> review -> merge"
+
+  - layer: shared-skills
+    file: skills/_shared/persistence-contract.md
+    requirement_ids:
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Behavior Per Mode"
+      - "none"
+      - "engram"
+      - "SKILL: Load"
+
+  - layer: shared-skills
+    file: skills/_shared/cells-workflow-contract.md
+    requirement_ids:
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CROSS-LAYER-PARITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Canonical Artifact Lineage"
+      - "Result Envelope"
+      - "Source Decisions"
+      - "delegate-first"
+
+  - layer: shared-skills
+    file: skills/_shared/cells-conventions.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Intent Routing Rules"
+      - "Source Priority"
+      - "Mandatory Testing Stack"
+
+  - layer: shared-skills
+    file: skills/_shared/cells-governance-contract.md
+
+  - layer: shared-skills
+    file: skills/_shared/cells-source-routing-contract.md
+    requirement_ids:
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+      - REQ-CONTRIBUTION-GATES
+    required_tokens:
+      - "Contribution Lifecycle Enforcement"
+      - "Non-SDD Specialist Routing"
+      - "cells-cli-usage` -> `cells-coverage` -> `cells-test-creator"
+
+  - layer: shared-skills
+    file: skills/_shared/cells-rules-contract.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "BBVA-First Rule"
+      - "scopedElements"
+      - "WidgetMixin"
+      - "this.t("
+
+  - layer: shared-skills
+    file: skills/_shared/browser-testing-convention.md
+    requirement_ids:
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "agent-browser"
+      - "Conservative Execution Policy"
+      - "Snapshot first"
+
+  - layer: phase-skills
+    file: skills/cells-explore/SKILL.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DETERMINISTIC-FALLBACK
+      - REQ-TRACEABILITY
+    required_tokens:
+      - "Read relevant code"
+      - "SQL/database-backed lookup"
+      - "structured envelope"
+
+  - layer: phase-skills
+    file: skills/cells-propose/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Affected Areas"
+      - "Risks"
+      - "Rollback Plan"
+
+  - layer: phase-skills
+    file: skills/cells-spec/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Given/When/Then"
+      - "RFC 2119"
+
+  - layer: phase-skills
+    file: skills/cells-design/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Architecture Decisions"
+      - "File Changes"
+
+  - layer: phase-skills
+    file: skills/cells-tasks/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+    required_tokens:
+      - "Task Writing Rules"
+      - "ordered by dependency"
+
+  - layer: phase-skills
+    file: skills/cells-apply/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-CROSS-LAYER-PARITY
+    required_tokens:
+      - "Dependencies"
+      - "Output envelope"
+      - "delegate"
+      - "Cells-native"
+
+  - layer: phase-skills
+    file: skills/cells-verify/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-EVIDENCE-QUALITY-GATES
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Evidence requirements"
+      - "Stop conditions"
+      - "Cells-native"
+
+  - layer: phase-skills
+    file: skills/cells-archive/SKILL.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+      - REQ-NON-DESTRUCTIVE-ENFORCEMENT
+    required_tokens:
+      - "Closeout criteria"
+      - "Stop conditions"
+
+  - layer: phase-skills
+    file: skills/cells-init/SKILL.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DETERMINISTIC-FALLBACK
+    required_tokens:
+      - "Detect tech stack"
+      - "Initialize project context"
+
+  - layer: docs
+    file: docs/changelog.md
+    requirement_ids:
+      - REQ-TRACEABILITY
+    required_tokens:
+      - "version"
+      - "cells teams"
+
+  - layer: docs
+    file: AGENTS.md
+    requirement_ids:
+      - REQ-CATALOG-FIRST
+      - REQ-DELEGATE-FIRST
+      - REQ-CONTRIBUTION-GATES
+    required_tokens:
+      - "BBVA-First Rule"
+      - "i18n Rule"
+      - "Triggers"
+
+  - layer: docs
+    file: docs/architecture.md
+    requirement_ids:
+      - REQ-CROSS-LAYER-PARITY
+      - REQ-TRACEABILITY
+    required_tokens:
+      - "4-layer"
+      - "Host"
+      - "Orchestrator"
+      - "Skills"

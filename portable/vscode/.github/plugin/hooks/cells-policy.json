@@ -1,0 +1,25 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "type": "command",
+        "command": "node .github/plugin/hooks/scripts/cells-session-context.js",
+        "timeout": 10
+      }
+    ],
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "node .github/plugin/hooks/scripts/cells-pretool-policy.js",
+        "timeout": 10
+      }
+    ],
+    "Stop": [
+      {
+        "type": "command",
+        "command": "node .github/plugin/hooks/scripts/cells-stop-reminder.js",
+        "timeout": 10
+      }
+    ]
+  }
+}

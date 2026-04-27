@@ -42,12 +42,19 @@ python3 scripts/validate_vscode_copilot_assets.py --installed-root .github
 
 The installer also materializes `.github/plugin/` as a self-contained package with internal `skills`, `agents`, and `hooks` paths. This plugin path is optional and experimental; use it only when your VS Code/Copilot environment exposes plugin discovery for the workspace.
 
-For an external distributable package, build from canonical assets instead of copying `examples/vscode/plugin/` alone:
+For restrictive corporate environments, the repo already ships a ready-to-copy VS Code workspace tree:
+
+- `portable/vscode/.github/`
+
+You can copy that directly with Finder or `cp -R`, without relying on `mkdir` in the destination environment. The built plugin is already included under `.github/plugin/`.
+
+Manual workspace install:
 
 ```bash
-bash scripts/build_vscode_plugin.sh dist/vscode-plugin
-python3 scripts/validate_vscode_copilot_assets.py --plugin-root dist/vscode-plugin
+cp -R /path/to/cells-agents/portable/vscode/.github .
 ```
+
+The standalone `portable/vscode-plugin/` package remains available only for advanced distribution cases.
 
 Hooks, plugins, custom agents, and subagents can depend on VS Code version, Copilot preview settings, organization policy, and feature flags. Treat automated validation as structure and coherence evidence, then confirm real loading in VS Code before claiming production readiness.
 

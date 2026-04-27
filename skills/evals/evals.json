@@ -9,7 +9,7 @@
     {
       "id": 2,
       "prompt": "Create a new Cells component called bbva-account-summary that displays account balance, last transactions, and available credit. It should reuse existing BBVA components, use WidgetMixin, emit events for user interactions, and have i18n support.",
-      "expected_output": "Component scaffold with proper structure. Reuses BBVA components (searched catalog first). Uses WidgetMixin + this.emitEvent(). i18n via this.t() with keys in demo/locales/locales.json. No raw HTML elements. scopedElements registered. Uses static get properties(), not decorators. No trailing commas, semicolons, compact JSDoc."
+      "expected_output": "Component scaffold with proper structure. Reuses BBVA components (searched catalog first). Uses WidgetMixin + this.emitEvent(). i18n via this.t() with keys in the correct repo locale source for the touched surface. No raw HTML elements. scopedElements registered. Uses static get properties(), not decorators. No trailing commas, semicolons, compact JSDoc."
     },
     {
       "id": 3,
