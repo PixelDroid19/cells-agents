@@ -1,0 +1,11 @@
+{
+  "name": "cells-agent-bundle",
+  "description": "BBVA Cells workflow skills, custom agents, prompts, and hooks for VS Code Copilot.",
+  "version": "2.1.0",
+  "author": {
+    "name": "D. J"
+  },
+  "skills": "skills",
+  "agents": "agents",
+  "hooks": "hooks/cells-policy.json"
+}

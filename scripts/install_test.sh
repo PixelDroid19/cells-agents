@@ -9,6 +9,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 INSTALL_SCRIPT="$SCRIPT_DIR/install.sh"
+VSCODE_VALIDATOR="$SCRIPT_DIR/validate_vscode_copilot_assets.py"
 
 TESTS_RUN=0
 TESTS_PASSED=0
@@ -77,6 +78,30 @@ assert_all_skills_installed() {
     done
 }
 
+assert_vscode_assets_installed() {
+    local project="$1"
+    assert_file_exists "$project/.github/copilot-instructions.md" || return 1
+    assert_file_exists "$project/.github/instructions/cells-orchestrator.instructions.md" || return 1
+    assert_file_exists "$project/.github/prompts/cells-apply.prompt.md" || return 1
+    assert_file_exists "$project/.github/prompts/cells-verify.prompt.md" || return 1
+    assert_file_exists "$project/.github/agents/cells-orchestrator.agent.md" || return 1
+    assert_file_exists "$project/.github/agents/cells-implementation.agent.md" || return 1
+    assert_file_exists "$project/.github/hooks/cells-policy.json" || return 1
+    assert_file_exists "$project/.github/hooks/scripts/cells-pretool-policy.js" || return 1
+    assert_file_exists "$project/.github/plugin/plugin.json" || return 1
+    assert_file_exists "$project/.github/plugin/agents/cells-orchestrator.agent.md" || return 1
+    assert_file_exists "$project/.github/plugin/hooks/cells-policy.json" || return 1
+    assert_file_exists "$project/.github/plugin/hooks/scripts/cells-pretool-policy.js" || return 1
+    assert_file_exists "$project/.github/plugin/skills/cells-apply/SKILL.md" || return 1
+    assert_file_exists "$project/.github/skills/_shared/cells-policy-matrix.yaml" || return 1
+}
+
+assert_vscode_workspace_valid() {
+    local project="$1"
+    python3 "$VSCODE_VALIDATOR" --installed-root "$project/.github" > /dev/null
+    python3 "$VSCODE_VALIDATOR" --plugin-root "$project/.github/plugin" > /dev/null
+}
+
 run_test() {
     local name="$1"
     local func="$2"
@@ -138,6 +163,8 @@ test_install_vscode() {
     mkdir -p "$project"
     (cd "$project" && bash "$INSTALL_SCRIPT" --agent vscode > /dev/null 2>&1)
     assert_all_skills_installed "$project/.github/skills"
+    assert_vscode_assets_installed "$project"
+    assert_vscode_workspace_valid "$project"
 }
 
 # Project-local
@@ -146,7 +173,7 @@ test_install_project_local() {
     local project="$TEST_TMPDIR/local-project"
     mkdir -p "$project"
     (cd "$project" && bash "$INSTALL_SCRIPT" --agent project-local > /dev/null 2>&1)
-    assert_all_skills_installed "$project/skills"
+    assert_all_skills_installed "$project/.opencode/skills"
 }
 
 # Custom
@@ -181,6 +208,8 @@ test_idempotent_vscode() {
     (cd "$project" && bash "$INSTALL_SCRIPT" --agent vscode > /dev/null 2>&1)
     (cd "$project" && bash "$INSTALL_SCRIPT" --agent vscode > /dev/null 2>&1)
     assert_all_skills_installed "$project/.github/skills"
+    assert_vscode_assets_installed "$project"
+    assert_vscode_workspace_valid "$project"
 }
 
 # Output checks

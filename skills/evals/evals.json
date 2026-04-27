@@ -4,17 +4,17 @@
     {
       "id": 1,
       "prompt": "Implement task 1.1: Add icon-left='transfer' to the transfer button in src/account-actions.js. The design says to use bbva-button-default with the icon-left prop. Register it in scopedElements if not already there.",
-      "expected_output": "Modified src/account-actions.js to add icon-left prop to transfer button. Component uses bbva-button-default from @bbva-spherica-components. scopedElements includes the button if it wasn't there. No trailing commas, semicolons present, JSDoc is compact, max 3 if statements per function, code uses .map() if handling multiple buttons."
+      "expected_output": "Modified src/account-actions.js to add icon-left prop to transfer button. Component uses bbva-button-default from @bbva-spherica-components. scopedElements includes the button if it wasn't there. No trailing commas, semicolons present, JSDoc is compact, max 2 conditions per method block, code uses .map() if handling multiple buttons."
     },
     {
       "id": 2,
       "prompt": "Create a new Cells component called bbva-account-summary that displays account balance, last transactions, and available credit. It should reuse existing BBVA components, use WidgetMixin, emit events for user interactions, and have i18n support.",
-      "expected_output": "Component scaffold with proper structure. Reuses BBVA components (searched catalog first). Uses WidgetMixin + this.emitEvent(). i18n via this.t() with keys in demo/locales/locales.json. No raw HTML elements. scopedElements registered. @property decorators. No trailing commas, semicolons, compact JSDoc."
+      "expected_output": "Component scaffold with proper structure. Reuses BBVA components (searched catalog first). Uses WidgetMixin + this.emitEvent(). i18n via this.t() with keys in demo/locales/locales.json. No raw HTML elements. scopedElements registered. Uses static get properties(), not decorators. No trailing commas, semicolons, compact JSDoc."
     },
     {
       "id": 3,
       "prompt": "Add unit tests for the account-actions component. Cover the button click emitting 'action-selected' event, loading state, and disabled state. The test file should follow OpenWC + Sinon conventions.",
-      "expected_output": "Test file at test/account-actions.test.js. Tests public behavior only (no private members). Uses suite/test/test syntax with Sinon. English descriptions. No comments. 100/100/100/100 coverage target. Reuses mocks from test/mocks/ if applicable. No trailing commas, semicolons, max 3 if per helper."
+      "expected_output": "Test file at test/account-actions.test.js. Tests public behavior only (no private members). Uses suite/test/test syntax with Sinon. English descriptions. No comments. 100/100/100/100 coverage target. Reuses mocks from test/mocks/ if applicable. No trailing commas, semicolons, max 2 conditions per helper."
     }
   ]
 }

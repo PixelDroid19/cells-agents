@@ -4,11 +4,26 @@ This repository is a **Cells-focused orchestration workspace**. Follow these ins
 
 ## Read first (in order)
 
-1. `examples/vscode/instructions/copilot-instructions.md`
-2. `examples/vscode/docs/README.md`
-3. `skills/_shared/persistence-contract.md`
-4. `skills/_shared/cells-governance-contract.md`
-5. `skills/_shared/cells-policy-matrix.yaml`
+1. `.github/instructions/cells-orchestrator.instructions.md`
+2. `.github/prompts/cells-explore.prompt.md` or the matching `.github/prompts/cells-*.prompt.md`
+3. `.github/agents/cells-orchestrator.agent.md`
+4. `.github/skills/_shared/persistence-contract.md`
+5. `.github/skills/_shared/cells-governance-contract.md`
+6. `.github/skills/_shared/cells-policy-matrix.yaml`
+
+Use repository-local `skills/` as fallback only when `.github/skills/` has not been installed yet.
+
+## VS Code Copilot assets
+
+This workspace follows the current VS Code Copilot customization layout:
+
+- project-wide instructions: `.github/copilot-instructions.md`
+- file/task-scoped instructions: `.github/instructions/*.instructions.md`
+- reusable prompts: `.github/prompts/*.prompt.md`
+- custom agents and subagents: `.github/agents/*.agent.md`
+- project skills: `.github/skills/*/SKILL.md`
+- workspace hooks: `.github/hooks/*.json`
+- optional plugin manifest: `.github/plugin/plugin.json`
 
 ## Command policy (critical)
 
@@ -25,14 +40,14 @@ Do **not** default to generic `npm run ...`, `npm test`, or `npx web-test-runner
 
 For any testing, coverage, or test-creation task, consult in this order:
 
-1. `skills/cells-cli-usage/`
-2. `skills/cells-coverage/`
-3. `skills/cells-test-creator/`
+1. `.github/skills/cells-cli-usage/`
+2. `.github/skills/cells-coverage/`
+3. `.github/skills/cells-test-creator/`
 
 ## Source selection and retrieval
 
-- For UI/component lookup, use `skills/cells-components-catalog/` first.
-- For official docs, workflows, CLI, architecture, testing, i18n/theming, use `skills/cells-official-docs-catalog/` first.
+- For UI/component lookup, use `.github/skills/cells-components-catalog/` first.
+- For official docs, workflows, CLI, architecture, testing, i18n/theming, use `.github/skills/cells-official-docs-catalog/` first.
 - Use fallback only when primary source is insufficient, and record why.
 
 ## Project boundaries
@@ -46,6 +61,7 @@ For any testing, coverage, or test-creation task, consult in this order:
 - Do not auto-select `openspec` or `hybrid` unless explicitly requested.
 - Engram recovery is always 2-step: `mem_search` -> `mem_get_observation`.
 - Sub-agents MUST load skill registry as Step 1: Engram first (`mem_search` + `mem_get_observation`) with `.atl/skill-registry.md` fallback.
+- If VS Code memory is available, keep stable repository facts in repository memory and keep task-specific plans in session memory.
 
 ## Common pitfalls
 
@@ -53,6 +69,8 @@ For any testing, coverage, or test-creation task, consult in this order:
 - Forgetting `-c <config>` on `cells app:serve` / `cells app:build`.
 - Using unsupported Node version for older Cells CLI flows (Node 18 is often required).
 - Placing locale files outside `demo/locales`.
+- Treating VS Code prompt files as plain `.md` files instead of `.prompt.md`.
+- Treating VS Code custom agents as plain `.md` files instead of `.agent.md`.
 
 ## Quick agent checklist
 
@@ -60,16 +78,18 @@ For any testing, coverage, or test-creation task, consult in this order:
 - Read the “Read first” files before making edits.
 - Use catalog-first retrieval for docs/components.
 - Follow testing stack order strictly.
+- Use `cells-orchestrator`, `cells-analysis`, `cells-implementation`, and `cells-verification` custom agents when role separation matters.
 - Run governance validators when changing prompts/instructions/skills:
   - `scripts/validate_vscode_copilot_assets.py`
   - `scripts/validate_governance_behavior.py`
 
 ## High-signal reference files
 
-- `examples/vscode/prompts/cells-fallback.md`
-- `examples/vscode/agents/analysis-agent.md`
-- `examples/vscode/agents/implementation-agent.md`
-- `examples/vscode/agents/verification-agent.md`
+- `.github/prompts/cells-fallback.prompt.md`
+- `.github/agents/cells-orchestrator.agent.md`
+- `.github/agents/cells-analysis.agent.md`
+- `.github/agents/cells-implementation.agent.md`
+- `.github/agents/cells-verification.agent.md`
 - `README.md`
 - `skills/_shared/cells-conventions.md`
 - `skills/_shared/cells-official-reference.md`

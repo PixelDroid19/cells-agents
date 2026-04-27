@@ -2,7 +2,7 @@ version: 1
 change_scope: generic-cells-governance
 policy_rows:
   - layer: instructions
-    file: examples/vscode/instructions/copilot-instructions.md
+    file: examples/vscode/instructions/cells-orchestrator.instructions.md
     requirement_ids:
       - REQ-CATALOG-FIRST
       - REQ-DETERMINISTIC-FALLBACK

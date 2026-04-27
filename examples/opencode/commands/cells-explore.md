@@ -6,17 +6,17 @@ subtask: true
 
 # Cells Explore Command
 
-You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-explore/SKILL.md FIRST, then follow its instructions exactly.
+You are a CELLS sub-agent. Use the `cells-explore` skill FIRST, then follow it exactly.
 
 CONTEXT:
 
-- Working directory: {workdir}
-- Current project: {project}
-- Topic to explore: {argument}
+- Working directory: current OpenCode project root
+- Current project: infer from current workspace
+- Topic to explore: $ARGUMENTS
 - Artifact store mode: engram
 
 TASK:
-Explore the topic "{argument}" in this codebase. Investigate the current state, identify affected areas, compare approaches, and provide a recommendation.
+Explore the topic "$ARGUMENTS" in this codebase. Investigate the current state, identify affected areas, compare approaches, and provide a recommendation.
 
 This is an exploration only — do NOT create any files or modify code. Just research and return your analysis.
 
@@ -38,8 +38,8 @@ Mandatory testing stack for Cells testing-related explorations:
 
 Intent routing for this command:
 
-- UI/component discovery, element selection, or screen composition topics -> run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "{argument}"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory).
+- UI/component discovery, element selection, or screen composition topics -> run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "$ARGUMENTS"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory).
 - Cells documentation/knowledge topics (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> consult `skills/cells-official-docs-catalog/` first.
 - Use the other catalog only as fallback when the first one is insufficient.
 
-Return a structured result with: status, executive_summary, detailed_report, artifacts, and next_recommended.
+Return a structured result with: status, executive_summary, detailed_report, artifacts, next_recommended, risks, skill_resolution, and evidence_required.

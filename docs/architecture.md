@@ -131,7 +131,7 @@ cells teams/
 ├── README.md                          ← Project overview and quick start
 ├── AGENTS.md                         ← Skills index with triggers (THIS FILE IS THE INDEX)
 ├── LICENSE
-├── skills/                           ← 14 Cells skills + shared contracts
+├── skills/                           ← Cells workflow and specialist skills + shared contracts
 │   ├── _shared/                      ← Shared conventions (referenced by all skills)
 │   │   ├── cells-governance-contract.md
 │   │   ├── cells-workflow-contract.md
@@ -178,9 +178,13 @@ cells teams/
 │   │   ├── commands/cells-*.md        ← Slash commands
 │   │   └── plugins/
 │   └── vscode/                        ← VS Code Copilot layered assets
+│       ├── copilot-instructions.md
 │       ├── instructions/
-│       ├── prompts/
-│       ├── agents/
+│       ├── prompts/                   ← `*.prompt.md`
+│       ├── agents/                    ← `*.agent.md`
+│       ├── hooks/
+│       ├── scripts/
+│       ├── plugin/
 │       ├── docs/
 │       └── skills/
 └── scripts/

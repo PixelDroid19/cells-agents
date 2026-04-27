@@ -1,7 +1,6 @@
-﻿---
+---
 name: cells-init
-description: >
-  Initialize a Cells project by detecting the tech stack, analyzing conventions, and setting up the persistence backend. Triggers: when the user says "analyze my project", "what tech stack is this", "initialize Cells", "bootstrap my project", "set up persistence", "detect the framework", "what is this project built with", "start a Cells workflow", or before any other Cells phase (/cells-explore, /cells-new, /cells-ff). Also triggers when the user asks about project structure, linting rules, test framework, or Cells conventions in use.
+description: "Use when starting a Cells workflow, detecting stack and conventions, bootstrapping persistence, refreshing skill registry, or establishing project context before other phases."
 license: MIT
 metadata:
   author: D. J

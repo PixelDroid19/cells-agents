@@ -42,7 +42,7 @@ $ToolPaths = @{
     'opencode'          = Join-Path $env:USERPROFILE '.config\opencode\skills'
     'opencode-commands' = Join-Path $env:USERPROFILE '.config\opencode\commands'
     'vscode'            = Join-Path '.' '.github\skills'
-    'project-local'     = Join-Path '.' 'skills'
+    'project-local'     = Join-Path (Join-Path '.' '.opencode') 'skills'
 }
 
 $CoreWorkflowCommands = @(
@@ -136,7 +136,9 @@ function Show-Usage {
 
 function Test-SourceTree {
     $missing = 0
-    $skillDirs = Get-ChildItem -Path $SkillsSrc -Directory -Filter 'cells-*'
+    $skillDirs = Get-ChildItem -Path $SkillsSrc -Directory | Where-Object {
+        $_.Name -notin @('_shared', 'scripts', 'evals')
+    }
     foreach ($skillDir in $skillDirs) {
         $skillFile = Join-Path $skillDir.FullName 'SKILL.md'
         if (-not (Test-Path $skillFile)) {
@@ -145,11 +147,6 @@ function Test-SourceTree {
         }
     }
 
-    $agentBrowserDir = Join-Path $SkillsSrc 'agent-browser'
-    if ((Test-Path $agentBrowserDir) -and (-not (Test-Path (Join-Path $agentBrowserDir 'SKILL.md')))) {
-        Write-Err 'Missing: agent-browser/SKILL.md'
-        $missing++
-    }
     if (-not (Test-Path (Join-Path $SkillsSrc '_shared'))) {
         Write-Err 'Missing: _shared/ directory'
         $missing++
@@ -181,7 +178,9 @@ function Install-Skills {
 
     if (Test-Path $sharedSrc) {
         New-Item -ItemType Directory -Path $sharedTarget -Force | Out-Null
-        $sharedFiles = Get-ChildItem -Path $sharedSrc -Filter '*.md'
+        $sharedFiles = Get-ChildItem -Path $sharedSrc -File | Where-Object {
+            $_.Extension -in @('.md', '.yaml')
+        }
         $sharedCount = 0
         foreach ($file in $sharedFiles) {
             Copy-Item -Path $file.FullName -Destination $sharedTarget -Force
@@ -195,7 +194,9 @@ function Install-Skills {
     }
 
     $count = 0
-    $skillDirs = Get-ChildItem -Path $SkillsSrc -Directory -Filter 'cells-*'
+    $skillDirs = Get-ChildItem -Path $SkillsSrc -Directory | Where-Object {
+        $_.Name -notin @('_shared', 'scripts', 'evals')
+    }
 
     foreach ($skillDir in $skillDirs) {
         $skillName = $skillDir.Name
@@ -226,43 +227,85 @@ function Install-Skills {
         $count++
     }
 
-    $agentBrowserDir = Join-Path $SkillsSrc 'agent-browser'
-    if (Test-Path $agentBrowserDir) {
-        $agentBrowserSkill = Join-Path $agentBrowserDir 'SKILL.md'
-        if (Test-Path $agentBrowserSkill) {
-            $targetAgentBrowserDir = Join-Path $TargetDir 'agent-browser'
-            if (Test-Path $targetAgentBrowserDir) {
-                Remove-Item -Path $targetAgentBrowserDir -Recurse -Force
-            }
-
-            Copy-Item -Path $agentBrowserDir -Destination $TargetDir -Recurse -Force
-
-            Get-ChildItem -Path $targetAgentBrowserDir -Directory -Recurse -Filter '__pycache__' -ErrorAction SilentlyContinue | ForEach-Object {
-                Remove-Item -Path $_.FullName -Recurse -Force
-            }
-
-            Write-Skill 'agent-browser'
-            $count++
-        }
-        else {
-            Write-Warn 'Skipping agent-browser (SKILL.md not found in source)'
-        }
-    }
-
-    $registryDir = Join-Path $SkillsSrc 'skill-registry'
-    if (Test-Path (Join-Path $registryDir 'SKILL.md')) {
-        $targetRegistryDir = Join-Path $TargetDir 'skill-registry'
-        if (Test-Path $targetRegistryDir) {
-            Remove-Item -Path $targetRegistryDir -Recurse -Force
-        }
-        Copy-Item -Path $registryDir -Destination $TargetDir -Recurse -Force
-        Write-Skill 'skill-registry'
-        $count++
-    }
-
     Write-Host ''
     Write-Host "  $count skills installed" -ForegroundColor Green -NoNewline
     Write-Host " -> $TargetDir"
+}
+
+function Install-VSCodeAssets {
+    $vscodeSrc = Join-Path $RepoDir 'examples\vscode'
+    $githubTarget = Join-Path '.' '.github'
+
+    if (-not (Test-Path $vscodeSrc)) {
+        Write-Warn "Skipping VS Code assets (source not found: $vscodeSrc)"
+        return
+    }
+
+    Write-Host ''
+    Write-Host 'Installing VS Code Copilot workspace assets...' -ForegroundColor Blue
+
+    $instructionsTarget = Join-Path $githubTarget 'instructions'
+    $promptsTarget = Join-Path $githubTarget 'prompts'
+    $agentsTarget = Join-Path $githubTarget 'agents'
+    $hooksTarget = Join-Path $githubTarget 'hooks'
+    $hookScriptsTarget = Join-Path $hooksTarget 'scripts'
+    $pluginTarget = Join-Path $githubTarget 'plugin'
+    $pluginAgentsTarget = Join-Path $pluginTarget 'agents'
+    $pluginHooksTarget = Join-Path $pluginTarget 'hooks'
+    $pluginHookScriptsTarget = Join-Path $pluginHooksTarget 'scripts'
+    $pluginSkillsTarget = Join-Path $pluginTarget 'skills'
+
+    if (Test-Path $pluginTarget) {
+        Remove-Item -Path $pluginTarget -Recurse -Force
+    }
+
+    @($githubTarget, $instructionsTarget, $promptsTarget, $agentsTarget, $hooksTarget, $hookScriptsTarget, $pluginTarget, $pluginAgentsTarget, $pluginHooksTarget, $pluginHookScriptsTarget, $pluginSkillsTarget) |
+        ForEach-Object { New-Item -ItemType Directory -Path $_ -Force | Out-Null }
+
+    Copy-Item -Path (Join-Path $vscodeSrc 'copilot-instructions.md') -Destination (Join-Path $githubTarget 'copilot-instructions.md') -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'instructions\*.instructions.md') -Destination $instructionsTarget -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'prompts\*.prompt.md') -Destination $promptsTarget -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'agents\*.agent.md') -Destination $agentsTarget -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'hooks\*.json') -Destination $hooksTarget -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'scripts\*.js') -Destination $hookScriptsTarget -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'plugin\plugin.json') -Destination (Join-Path $pluginTarget 'plugin.json') -Force
+    Copy-Item -Path (Join-Path $vscodeSrc 'agents\*.agent.md') -Destination $pluginAgentsTarget -Force
+
+    $pluginHookPolicy = Get-Content -Path (Join-Path $vscodeSrc 'hooks\cells-policy.json') -Raw
+    $pluginHookPolicy = $pluginHookPolicy -replace '\.github/hooks/scripts/', '.github/plugin/hooks/scripts/'
+    Set-Content -Path (Join-Path $pluginHooksTarget 'cells-policy.json') -Value $pluginHookPolicy -Encoding UTF8
+    Copy-Item -Path (Join-Path $vscodeSrc 'scripts\*.js') -Destination $pluginHookScriptsTarget -Force
+
+    $sharedSrc = Join-Path $SkillsSrc '_shared'
+    if (Test-Path $sharedSrc) {
+        $sharedTarget = Join-Path $pluginSkillsTarget '_shared'
+        New-Item -ItemType Directory -Path $sharedTarget -Force | Out-Null
+        Get-ChildItem -Path $sharedSrc -File | Where-Object {
+            $_.Extension -in @('.md', '.yaml')
+        } | ForEach-Object {
+            Copy-Item -Path $_.FullName -Destination $sharedTarget -Force
+        }
+    }
+
+    Get-ChildItem -Path $SkillsSrc -Directory | Where-Object {
+        $_.Name -notin @('_shared', 'scripts', 'evals') -and (Test-Path (Join-Path $_.FullName 'SKILL.md'))
+    } | ForEach-Object {
+        Copy-Item -Path $_.FullName -Destination $pluginSkillsTarget -Recurse -Force
+    }
+
+    Get-ChildItem -Path $pluginTarget -Directory -Recurse -Filter '__pycache__' -ErrorAction SilentlyContinue | ForEach-Object {
+        Remove-Item -Path $_.FullName -Recurse -Force
+    }
+    Get-ChildItem -Path $pluginTarget -File -Recurse -Filter '.DS_Store' -ErrorAction SilentlyContinue | ForEach-Object {
+        Remove-Item -Path $_.FullName -Force
+    }
+
+    Write-Skill '.github\copilot-instructions.md'
+    Write-Skill '.github\instructions\*.instructions.md'
+    Write-Skill '.github\prompts\*.prompt.md'
+    Write-Skill '.github\agents\*.agent.md'
+    Write-Skill '.github\hooks\*.json'
+    Write-Skill '.github\plugin\ (optional Copilot plugin package)'
 }
 
 function Install-OpenCodeCommands {
@@ -333,14 +376,14 @@ function Install-ForAgent {
         }
         'vscode' {
             Install-Skills -TargetDir $ToolPaths['vscode'] -ToolName 'VS Code (Copilot)'
-            Write-NextStep '.github\copilot-instructions.md' '.github\instructions\copilot-instructions.md'
-            Write-Warn 'Skills installed in current project (.github\skills\)'
+            Install-VSCodeAssets
+            Write-Warn 'VS Code workspace assets installed in current project (.github\)'
         }
         'project-local' {
             Install-Skills -TargetDir $ToolPaths['project-local'] -ToolName 'Project-local'
             Write-Host ''
-            Write-Warn "Skills installed in .\skills\ - relative to this project"
-            Write-Warn "Compatibility: project-local no longer creates .\.opencode\ ; use examples\opencode\ with user-level .config\opencode setup instead"
+            Write-Warn "Skills installed in .\.opencode\skills\ - OpenCode project-local discovery path"
+            Write-Warn "Commands: use -Agent opencode for global commands or copy examples\opencode\commands\ to .\.opencode\commands\"
         }
         'all-global' {
             Install-Skills -TargetDir $ToolPaths['opencode'] -ToolName 'OpenCode'

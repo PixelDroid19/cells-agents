@@ -1,7 +1,6 @@
 ---
 name: cells-feature-analyzer
-description: >
-  Extract reusable patterns from real Cells feature implementations. Triggers: when the user says "analyze this feature", "study how X works", "what patterns does this use", "extract lessons from", "how is this implemented in production", "what can I reuse from", "reverse engineer this", "what architecture does this follow", or when studying real feature repos to find patterns for new work.
+description: "Use when extracting reusable patterns from real Cells feature implementations, production examples, data flow, event wiring, architecture, or composition choices."
 license: MIT
 metadata:
   author: D. J
@@ -18,6 +17,7 @@ Read and follow:
 - `skills/_shared/persistence-contract.md`
 - `skills/_shared/cells-conventions.md`
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 
 ## What To Read
 
@@ -36,6 +36,7 @@ Always extract:
 - main public component and child component tree
 - reused BBVA packages
 - `scopedElements` registrations
+- `ScopedElementsMixin`, `WidgetMixin`, `configurationScopedElements`, `scopedElementsFromClasses`, and `getComponentSharedStyles` usage when present
 - mixins and helpers
 - event wiring and upward emissions
 - state/view toggles

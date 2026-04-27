@@ -92,7 +92,7 @@ get_tool_path() {
             esac
             ;;
         vscode)      echo "./.github/skills" ;;
-        project-local) echo "./skills" ;;
+        project-local) echo "./.opencode/skills" ;;
     esac
 }
 
@@ -160,17 +160,18 @@ show_help() {
 
 validate_source() {
     local missing=0
-    for skill_dir in "$SKILLS_SRC"/cells-*/; do
+    for skill_dir in "$SKILLS_SRC"/*/; do
         [ -d "$skill_dir" ] || continue
+        local skill_name
+        skill_name="$(basename "${skill_dir%/}")"
+        case "$skill_name" in
+            _shared|scripts|evals) continue ;;
+        esac
         if [ ! -f "$skill_dir/SKILL.md" ]; then
-            print_error "Missing: $(basename "$skill_dir")/SKILL.md"
+            print_error "Missing: $skill_name/SKILL.md"
             missing=$((missing + 1))
         fi
     done
-    if [ -d "$SKILLS_SRC/agent-browser" ] && [ ! -f "$SKILLS_SRC/agent-browser/SKILL.md" ]; then
-        print_error "Missing: agent-browser/SKILL.md"
-        missing=$((missing + 1))
-    fi
     if [ ! -d "$SKILLS_SRC/_shared" ]; then
         print_error "Missing: _shared/ directory"
         missing=$((missing + 1))
@@ -198,7 +199,7 @@ install_skills() {
         mkdir -p "$shared_target" 2>/dev/null || {
             make_writable "$shared_target"
         }
-        for shared_file in "$shared_src"/*.md; do
+        for shared_file in "$shared_src"/*.md "$shared_src"/*.yaml; do
             if [ -f "$shared_file" ]; then
                 cp "$shared_file" "$shared_target/" 
                 shared_count=$((shared_count + 1))
@@ -212,11 +213,14 @@ install_skills() {
     fi
 
     local count=0
-    for skill_dir in "$SKILLS_SRC"/cells-*/; do
+    for skill_dir in "$SKILLS_SRC"/*/; do
         [ -d "$skill_dir" ] || continue
         local source_dir="${skill_dir%/}"
         local skill_name
         skill_name=$(basename "$source_dir")
+        case "$skill_name" in
+            _shared|scripts|evals) continue ;;
+        esac
         local target_skill_dir="$target_dir/$skill_name"
 
         # Verify source SKILL.md exists before creating target directory
@@ -237,35 +241,6 @@ install_skills() {
         print_skill "$skill_name"
         count=$((count + 1))
     done
-
-    if [ -d "$SKILLS_SRC/agent-browser" ]; then
-        if [ -f "$SKILLS_SRC/agent-browser/SKILL.md" ]; then
-            local agent_browser_src="$SKILLS_SRC/agent-browser"
-            local agent_browser_target="$target_dir/agent-browser"
-
-            rm -rf "$agent_browser_target"
-            cp -R "$agent_browser_src" "$agent_browser_target"
-
-            if [ ! -f "$agent_browser_target/SKILL.md" ]; then
-                print_error "Failed to install agent-browser (destination SKILL.md missing)"
-                exit 1
-            fi
-
-            find "$agent_browser_target" -type d -name "__pycache__" -prune -exec rm -rf {} +
-            print_skill "agent-browser"
-            count=$((count + 1))
-        else
-            print_warn "Skipping agent-browser (SKILL.md not found in source)"
-        fi
-    fi
-
-    if [ -d "$SKILLS_SRC/skill-registry" ] && [ -f "$SKILLS_SRC/skill-registry/SKILL.md" ]; then
-        local registry_target="$target_dir/skill-registry"
-        rm -rf "$registry_target"
-        cp -R "$SKILLS_SRC/skill-registry" "$registry_target"
-        print_skill "skill-registry"
-        count=$((count + 1))
-    fi
 
     echo -e "\n  ${GREEN}${BOLD}$count skills installed${NC} → $target_dir"
 }
@@ -343,6 +318,75 @@ install_opencode_plugins() {
     print_skill "OpenCode optional background delegation assets"
 }
 
+install_vscode_assets() {
+    local vscode_src="$REPO_DIR/examples/vscode"
+    local github_target="./.github"
+
+    if [ ! -d "$vscode_src" ]; then
+        print_warn "Skipping VS Code assets (source not found: $vscode_src)"
+        return
+    fi
+
+    echo -e "\n${BLUE}Installing VS Code Copilot workspace assets...${NC}"
+
+    local plugin_target="$github_target/plugin"
+
+    mkdir -p \
+        "$github_target/instructions" \
+        "$github_target/prompts" \
+        "$github_target/agents" \
+        "$github_target/hooks/scripts"
+
+    rm -rf "$plugin_target"
+    mkdir -p \
+        "$plugin_target/agents" \
+        "$plugin_target/hooks/scripts" \
+        "$plugin_target/skills"
+
+    cp "$vscode_src/copilot-instructions.md" "$github_target/copilot-instructions.md"
+    cp "$vscode_src/instructions"/*.instructions.md "$github_target/instructions/"
+    cp "$vscode_src/prompts"/*.prompt.md "$github_target/prompts/"
+    cp "$vscode_src/agents"/*.agent.md "$github_target/agents/"
+    cp "$vscode_src/hooks"/*.json "$github_target/hooks/"
+    cp "$vscode_src/scripts"/*.js "$github_target/hooks/scripts/"
+    cp "$vscode_src/plugin/plugin.json" "$plugin_target/plugin.json"
+    cp "$vscode_src/agents"/*.agent.md "$plugin_target/agents/"
+    sed 's#\.github/hooks/scripts/#.github/plugin/hooks/scripts/#g' \
+        "$vscode_src/hooks/cells-policy.json" > "$plugin_target/hooks/cells-policy.json"
+    cp "$vscode_src/scripts"/*.js "$plugin_target/hooks/scripts/"
+
+    if [ -d "$SKILLS_SRC/_shared" ]; then
+        mkdir -p "$plugin_target/skills/_shared"
+        for shared_file in "$SKILLS_SRC/_shared"/*.md "$SKILLS_SRC/_shared"/*.yaml; do
+            [ -f "$shared_file" ] || continue
+            cp "$shared_file" "$plugin_target/skills/_shared/"
+        done
+    fi
+
+    for skill_dir in "$SKILLS_SRC"/*/; do
+        [ -d "$skill_dir" ] || continue
+        local source_dir="${skill_dir%/}"
+        local skill_name
+        skill_name=$(basename "$source_dir")
+        case "$skill_name" in
+            _shared|scripts|evals) continue ;;
+        esac
+        if [ -f "$source_dir/SKILL.md" ]; then
+            cp -R "$source_dir" "$plugin_target/skills/$skill_name"
+        fi
+    done
+
+    find "$plugin_target" -type d -name "__pycache__" -prune -exec rm -rf {} +
+    find "$plugin_target" -name ".DS_Store" -delete
+
+    print_skill ".github/copilot-instructions.md"
+    print_skill ".github/instructions/*.instructions.md"
+    print_skill ".github/prompts/*.prompt.md"
+    print_skill ".github/agents/*.agent.md"
+    print_skill ".github/hooks/*.json"
+    print_skill ".github/plugin/ (optional Copilot plugin package)"
+}
+
 # ============================================================================
 # Agent install dispatcher
 # ============================================================================
@@ -370,13 +414,13 @@ install_for_agent() {
             ;;
         vscode)
             install_skills "$(get_tool_path vscode)" "VS Code (Copilot)"
-            print_next_step ".github/copilot-instructions.md" ".github/instructions/copilot-instructions.md"
-            echo -e "  ${YELLOW}Note:${NC} Skills installed in current project (.github/skills/)"
+            install_vscode_assets
+            echo -e "  ${YELLOW}Note:${NC} VS Code workspace assets installed in current project (.github/)"
             ;;
         project-local)
             install_skills "$(get_tool_path project-local)" "Project-local"
-            echo -e "\n${YELLOW}Note:${NC} Skills installed in ${BOLD}./skills/${NC} — relative to this project"
-            echo -e "  ${YELLOW}Compatibility:${NC} project-local no longer creates ${BOLD}./.opencode/${NC}; use ${BOLD}examples/opencode/${NC} with user-level ${BOLD}~/.config/opencode/${NC} setup instead"
+            echo -e "\n${YELLOW}Note:${NC} Skills installed in ${BOLD}./.opencode/skills/${NC} — OpenCode project-local discovery path"
+            echo -e "  ${YELLOW}Commands:${NC} use ${BOLD}--agent opencode${NC} for global commands or copy ${BOLD}examples/opencode/commands/${NC} to ${BOLD}./.opencode/commands/${NC}"
             ;;
         all-global)
             install_skills "$(get_tool_path opencode)" "OpenCode"

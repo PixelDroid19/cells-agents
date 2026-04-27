@@ -1,7 +1,6 @@
 ---
 name: skill-registry
-description: >
-  Route Cells queries to the right specialist skill or catalog. Triggers: when the user says "which skill should I use", "what exists for X", "show me available skills", "what BBVA components are available", "how do I find official docs", "what tools do I have", "list available skills", "how do I start a Cells workflow", "what skills handle", "routing for", or before starting any Cells workflow phase to discover available resources. Acts as knowledge gateway, not a code-writing skill.
+description: "Use when routing Cells work to specialist skills, finding available skills, discovering BBVA components, choosing official docs, or starting a workflow with resource lookup."
 license: MIT
 metadata:
   author: Cells Agent Bundle
@@ -20,21 +19,15 @@ Complete these gates **in order** before writing ANY code or proposing ANY compo
 
 ---
 
-### Gate 1: BBVA Components Lookup (ALWAYS FIRST for UI work)
+### Gate 1: BBVA Components Lookup
 
-**NEVER invent a BBVA component.** If the task involves UI, typography, forms, buttons, tables, navigation, or feedback — search the catalog FIRST.
+For UI, typography, forms, buttons, tables, navigation, or feedback, follow the BBVA lookup rule in `skills/_shared/cells-rules-contract.md` and the routing order in `skills/_shared/cells-source-routing-contract.md`.
 
 ```bash
 python skills/cells-components-catalog/scripts/search_docs.py --query "<what you need>"
 ```
 
-Examples of wrong behavior this prevents:
-- Writing `<p>`, `<h3>`, or `<span>` when `bbva-type-text` exists
-- Building a custom toast when `bbva-notification-toast` exists
-- Creating a stepper from scratch when `bbva-progress-step` exists
-- Implementing a button with `<div onclick>` instead of `bbva-button-default`
-
-When the search returns a match: **use the component and stop**. When the search is ambiguous: inspect the package:
+When the search is ambiguous, inspect the package:
 
 ```bash
 python skills/cells-components-catalog/scripts/search_docs.py --package <package-name>
@@ -86,17 +79,9 @@ Load these skills **before** the phase that needs them:
 
 ---
 
-## Cells Component Non-Negotiables (Summary)
+## Cells Component Non-Negotiables
 
-Before closing any task that touches UI or components, verify via `cells-rules-contract.md`:
-
-1. **Searched** the BBVA components catalog for existing solutions
-2. **Used** the correct BBVA component (not HTML elements)
-3. **Applied** `scopedElements` registration for every template dependency
-4. **Routed** all user-facing literals through `this.t(...)`
-5. **Verified** the component works in browser (via `agent-browser`)
-6. **Checked** locale parity in `demo/locales/locales.json`
-7. **Ran** the correct Cells test command (via `cells-cli-usage`)
+Before closing any task that touches UI or components, verify the checklist in `skills/_shared/cells-rules-contract.md`. Do not copy the checklist into this registry; the shared contract is authoritative.
 
 ---
 

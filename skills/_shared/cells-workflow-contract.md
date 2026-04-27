@@ -30,6 +30,7 @@ If a required canonical artifact is missing, stop and report the phase as `block
 ## Orchestrator Delegation Policy
 
 - CELLS orchestration remains delegate-first for both SDD and non-SDD work.
+- Agent role boundaries, handoff packets, Dev-QA loops, skill resolution feedback, and evidence gates are defined in `skills/_shared/cells-agent-handoff-contract.md`.
 - When OpenCode exposes `delegate`, `delegation_read`, and `delegation_list`, the orchestrator SHOULD prefer `delegate` for non-blocking or parallel work.
 - When background delegation is unavailable, the orchestrator MUST fall back to synchronous `task` without weakening governance, evidence gates, specialist routing, or approval flow.
 - `/cells-*` commands remain canonical even when historical pre-Cells artifacts are consulted for migration continuity.
@@ -45,10 +46,12 @@ Every workflow phase returns the same structured envelope:
 - `artifacts`
 - `next_recommended`
 - `risks`
+- `skill_resolution`
+- `evidence_required`
 
 ## Source Decisions
 
-Every workflow artifact MUST include a compact `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
+Every workflow artifact MUST include an explicit `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
 
 When a phase stays on canonical evidence, record that explicitly.
 When historical legacy context is mentioned for archive continuity or migration compatibility, record it as inactive history or compatibility-only evidence and do not treat it as active canonical fallback.

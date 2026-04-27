@@ -1,7 +1,6 @@
 ---
 name: cells-archive
-description: >
-  Archive a completed change and sync final state. Triggers: when the user says "close this change", "we're done", "wrap up the change", "archive this", "finalize the change", "merge the specs", "mark as complete", "closure for", or after cells-verify passes and the change is ready for final archiving.
+description: "Use when cells-verify has passed and a Cells change needs final closure, archive reporting, spec merge, lineage recording, or completed-change cleanup."
 license: MIT
 metadata:
   author: D. J

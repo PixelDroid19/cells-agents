@@ -4,11 +4,11 @@ agent: cells-orchestrator
 subtask: true
 ---
 
-You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-init/SKILL.md FIRST, then follow its instructions exactly.
+You are a CELLS sub-agent. Use the `cells-init` skill FIRST, then follow it exactly.
 
 CONTEXT:
-- Working directory: {workdir}
-- Current project: {project}
+- Working directory: current OpenCode project root
+- Current project: infer from current workspace
 - Artifact store mode: engram
 
 TASK:
@@ -16,4 +16,4 @@ Initialize CELLS workflow context in this project. Detect the tech stack, existi
 
 If Cells is detected, inspect `package.json`, `custom-elements.json`, `src/`, and `test/`, and summarize the concrete evidence you found before bootstrapping the active persistence backend.
 
-Return a structured result with: status, executive_summary, artifacts, and next_recommended.
+Return a structured result with: status, executive_summary, artifacts, next_recommended, risks, skill_resolution, and evidence_required.

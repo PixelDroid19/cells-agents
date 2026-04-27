@@ -4,11 +4,11 @@ agent: cells-orchestrator
 subtask: true
 ---
 
-You are an CELLS sub-agent. Read the skill file at ~/.config/opencode/skills/cells-archive/SKILL.md FIRST, then follow its instructions exactly.
+You are a CELLS sub-agent. Use the `cells-archive` skill FIRST, then follow it exactly.
 
 CONTEXT:
-- Working directory: {workdir}
-- Current project: {project}
+- Working directory: current OpenCode project root
+- Current project: infer from current workspace
 - Artifact store mode: engram
 
 TASK:
@@ -20,4 +20,4 @@ Archive the active CELLS change. Read the verification report first to confirm t
 Delegation note:
 - This command may be launched through `delegate` when background delegation is available, but archive status must still cite canonical `cells/*` artifacts.
 
-Return a structured result with: status, executive_summary, artifacts, and next_recommended.
+Return a structured result with: status, executive_summary, artifacts, next_recommended, risks, skill_resolution, and evidence_required.

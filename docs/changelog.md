@@ -9,14 +9,14 @@ Initial release of the Cells Agent Bundle — a BBVA Cells-focused orchestration
 #### What's New
 
 - **OpenCode-first orchestration** for BBVA Cells projects using skill-driven delegated runs
-- **14 Cells specialist skills** covering the full SDD lifecycle plus component research, authoring, testing, i18n, and coverage
+- **Cells workflow and specialist skills** covering the full SDD lifecycle plus component research, authoring, testing, i18n, and coverage
 - **3 indexed knowledge catalogs**: `cells-components-catalog` (SQLite FTS5), `cells-official-docs-catalog` (SQLite FTS5), and `cells-visual-intent-demo`
 - **Catalog-first evidence routing**: component discovery via SQL, documentation via official-docs catalog, with deterministic fallback order
 - **Mandatory Cells testing stack**: `cells-cli-usage` → `cells-coverage` → `cells-test-creator` (never skip or reorder)
 - **Engram-first persistence** with openspec/hybrid/none modes
 - **Cells-native command policy**: `/cells-*`, `cells app:*`, `cells lit-component:*` as canonical commands
 - **Browser integration** via `agent-browser` skill with session reuse and CDP support
-- **VS Code Copilot support** via layered instruction precedence
+- **VS Code Copilot support** via official `.github` customizations: instructions, prompt files, custom agents, Agent Skills, hooks, and plugin manifest
 - **Governance contracts** and policy matrix for evidence quality gates, fallback rules, and source decision tracing
 
 #### Supported Hosts
@@ -24,13 +24,13 @@ Initial release of the Cells Agent Bundle — a BBVA Cells-focused orchestration
 | Tool | Support | Setup |
 |------|---------|-------|
 | OpenCode | Full (delegate/task) | `./scripts/setup.sh --agent opencode` |
-| VS Code Copilot | Inline only | `./scripts/setup.sh --agent vscode` |
+| VS Code Copilot | Workspace customizations | `./scripts/install.sh --agent vscode` |
 
 #### Project Structure
 
 ```
 cells teams/
-├── skills/                          14 Cells skills + shared contracts
+├── skills/                          Cells workflow and specialist skills + shared contracts
 │   ├── _shared/                    Governance, workflow, persistence, routing contracts
 │   ├── cells-init/                  Phase 1: detect stack + bootstrap persistence
 │   ├── cells-explore/               Phase 2: investigate problem space
@@ -57,7 +57,7 @@ cells teams/
 │   └── skill-registry/
 ├── examples/
 │   ├── opencode/                   OpenCode config + commands
-│   └── vscode/                    VS Code Copilot instructions
+│   └── vscode/                    VS Code Copilot `.github` assets
 ├── docs/                           (this directory)
 └── scripts/                        Setup, install, validation scripts
 ```

@@ -1,7 +1,6 @@
 ---
 name: cells-i18n
-description: >
-  Manage Cells i18n with this.t(...), locale parity, and IntlMsg runtime setup. Triggers: when the user says "add translations", "make this translatable", "internationalize", "localization", "translate this text", "i18n setup", "add locale support", "check locale parity", "configure IntlMsg", "i18n in tests", "missing translations", "locale files", or when any task changes user-visible text, translation keys, locale files, or i18n runtime setup.
+description: "Use when changing user-visible text, translation keys, demo/locales files, this.t usage, IntlMsg runtime setup, locale parity, or i18n behavior in tests."
 license: MIT
 metadata:
   author: D. J
@@ -17,6 +16,7 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 ## Read and follow
 
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 - `skills/cells-official-docs-catalog/` topics `demo-docs-i18n-assets` and `testing`
 - `references/i18n-runtime-and-locales.md`
 
@@ -39,6 +39,7 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 
 - Do not leave component-owned user-facing literals hardcoded when they should be localized
 - Keep keys stable, component-prefixed, and aligned exactly across code and locale files
+- Use `skills/_shared/real-cells-patterns.md` for observed key naming, placeholder preservation, and root `locales/locales.json` vs `demo/locales/locales.json` conventions before changing an existing repo
 - Prefer region-free keys like `en` and `es` unless regional override is necessary
 - In Cells projects, locale files are mandatory under `demo/locales` and must not be created or referenced outside `demo/locales`
 - If tests or demos depend on locales, mention `IntlMsg.lang`, `IntlMsg.localesHost`, and any required wait for locale loading

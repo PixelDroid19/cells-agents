@@ -1,7 +1,6 @@
 ---
 name: cells-app-architecture
-description: >
-  Plan Cells feature structure, data managers, routing, bridge communication, and app-level composition. Triggers: when the user says "how should I organize", "where does this code go", "structure my app", "app architecture", "how to separate concerns", "where should API logic live", "feature structure for", "data manager design", "routing setup", "pub/sub architecture", "bridge communication", or when designing how a Cells app or feature package should be structured.
+description: "Use when designing Cells app or feature structure, data managers, routing, bridge communication, pub/sub, composition boundaries, or separation of responsibilities."
 license: MIT
 metadata:
   author: D. J
@@ -18,6 +17,7 @@ This skill explains how Cells applications and feature packages should be struct
 
 Read and follow:
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 - `skills/cells-official-docs-catalog/` topics `architecture`, `application-runtime`, `application-communication`, and `advanced-application`
 - `references/feature-structure.md`
 - `references/data-managers.md`
@@ -58,6 +58,7 @@ A standard Cells feature commonly organizes code into:
 - `styles/`
 
 Use this as a baseline, then adapt only when the existing app architecture already establishes a different proven pattern.
+Use `skills/_shared/real-cells-patterns.md` to distinguish modern Lit 3 feature evidence from legacy app evidence such as older GloMo runtimes.
 
 ### 2. Main Feature Host
 

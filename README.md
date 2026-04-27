@@ -135,7 +135,9 @@ Every delegated run should return the same decision-friendly structure:
     }
   ],
   "next_recommended": ["cells-spec", "cells-design"],
-  "risks": ["optional risk list"]
+  "risks": ["optional risk list"],
+  "skill_resolution": "injected | fallback-registry | fallback-path | none",
+  "evidence_required": ["evidence gathered, unavailable, or blocked"]
 }
 ```
 
@@ -300,7 +302,7 @@ For any `/cells-*` command, the runtime sequence is:
 2. Orchestrator selects the phase/specialist skill.
 3. Sub-agent reads the target `SKILL.md` first.
 4. Skill gathers evidence in deterministic order (catalogs, docs, code, tests, artifacts).
-5. Skill returns structured envelope (`status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`).
+5. Skill returns structured envelope (`status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`).
 6. Orchestrator summarizes and asks to continue when the next phase needs user approval.
 
 ### End-to-End Planning and Delivery Flow
@@ -495,7 +497,7 @@ Setup options:
 
 If you only want to copy skills (without prompt/config orchestration), use `./scripts/install.sh` or `.\scripts\install.ps1`.
 
-Compatibility note: project-local install copies `./skills/` only. OpenCode commands, config, and optional background-delegation assets live under `examples/opencode/` and install into user-level `~/.config/opencode/`; this bundle no longer uses a committed package-root `./.opencode/` folder.
+Compatibility note: project-local install copies skills to `./.opencode/skills/`, which is OpenCode's documented project-local discovery path. OpenCode commands, config, and optional background-delegation assets live under `examples/opencode/` and install into user-level `~/.config/opencode/` unless you copy them to `./.opencode/commands/` yourself.
 
 ### Supported Hosts
 
@@ -611,7 +613,7 @@ Multi mode example:
 
 Notes:
 
-- Do not remove required agent fields (`prompt`, `tools`, `permission`) when editing.
+- Do not remove required agent fields (`prompt`, `permission`) when editing. OpenCode's `tools` field is deprecated; use `permission`.
 - In multi mode, phases without explicit `model` use your OpenCode default model.
 - Re-running `setup.sh` / `setup.ps1` preserves existing `model` fields for Cells phase agents.
 
@@ -624,20 +626,40 @@ Troubleshooting (`database table is locked`):
 
 ### VS Code Copilot
 
-1. Keep Copilot runtime assets under `examples/vscode/` in the project root.
-2. Use `examples/vscode/instructions/copilot-instructions.md` as the orchestrator instructions source.
-3. Skills act as context files rather than separate delegated runs.
-4. Apply the layered VS Code model documented in `examples/vscode/docs/README.md`:
-   - baseline instructions (`copilot-instructions.md`)
-   - CELLS prompt catalog (`examples/vscode/prompts/`)
-   - specialized agents (`examples/vscode/agents/`)
-   - operational hooks (`examples/vscode/docs/hooks.md`)
-   - model/fallback policy (`examples/vscode/docs/models.md`)
-   - shared convention mirrors (`examples/vscode/skills/`)
-5. Validate VS Code customization assets before release:
+1. Install workspace assets from the target repository:
 
 ```bash
-python scripts/validate_vscode_copilot_assets.py
+./scripts/install.sh --agent vscode
+```
+
+This creates the official VS Code Copilot layout:
+
+- `.github/copilot-instructions.md`
+- `.github/instructions/cells-orchestrator.instructions.md`
+- `.github/prompts/cells-*.prompt.md`
+- `.github/agents/*.agent.md`
+- `.github/skills/*/SKILL.md`
+- `.github/hooks/*.json`
+- `.github/plugin/` optional Copilot plugin package
+
+2. Use `cells-orchestrator` as the main custom agent. It can invoke `cells-analysis`, `cells-implementation`, and `cells-verification` as subagents when the VS Code `agent` tool is available.
+3. Skills are first-class VS Code Agent Skills under `.github/skills/`; repository-local `skills/` remains the source of truth in this bundle.
+4. Agent handoffs follow `skills/_shared/cells-agent-handoff-contract.md`: orchestrator is a coordinator, executor agents do not delegate, every handoff carries `evidence_required`, and every result reports `skill_resolution`.
+5. Hooks are installed as guardrails for destructive commands and non-Cells command drift. They are intentionally narrow and do not replace `cells-verify`.
+6. Validate VS Code customization assets before release:
+
+```bash
+python3 scripts/validate_vscode_copilot_assets.py
+python3 scripts/validate_vscode_copilot_assets.py --installed-root .github
+python3 scripts/validate_vscode_copilot_assets.py --plugin-root .github/plugin
+```
+
+Workspace install is the recommended VS Code path. The `.github/plugin/` package is optional/experimental because Copilot hooks, plugins, custom agents, and subagents can depend on VS Code version, preview flags, workspace trust, and organization policy. See `examples/vscode/docs/opencode-vscode-equivalence.md` for the OpenCode phase-agent to VS Code role-agent mapping.
+
+To build a standalone optional plugin package from canonical assets:
+
+```bash
+bash scripts/build_vscode_plugin.sh dist/vscode-plugin
 ```
 
 ## Project Structure

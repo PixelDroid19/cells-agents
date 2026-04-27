@@ -9,27 +9,15 @@ When working on a BBVA Cells project, load the relevant skill(s) **before** writ
 3. Follow ALL patterns and rules from the loaded skill
 4. Multiple skills can apply simultaneously
 
-## BBVA-First Rule (Always)
+## Cells Rules Contract (Always)
 
-For any UI, typography, form, button, navigation, or feedback work:
+For UI, typography, forms, buttons, navigation, feedback, i18n, command policy, test routing, scoped elements, events, and Cells component rules:
 
-1. **Search `cells-components-catalog`** — if a BBVA component exists, use it and stop
-2. **Only if no match exists**, use `cells-component-authoring` to create one correctly
-3. **Never** use raw HTML elements (`<p>`, `<h3>`, `<span>`) when a BBVA component is available
+1. Read `skills/_shared/cells-rules-contract.md`
+2. Follow `skills/_shared/cells-source-routing-contract.md` for source order
+3. Do not duplicate or weaken those rules in phase-specific work
 
-## i18n Rule (Always)
-
-- **Never** use `this.t('key') || ''` — the i18n runtime renders the key itself as fallback when missing (it is not falsy). This hides real missing translations.
-- If a key is missing, add it to `demo/locales/locales.json`.
-- Locale files **MUST** live under `demo/locales` ONLY.
-
-## Cells Command Policy (Strict)
-
-- **ALLOWED**: `/cells-*`, `cells app:*`, `cells lit-component:*`
-- **FORBIDDEN** (unless user explicitly requests): `npm test`, `npm run test`, `npx web-test-runner`, `npm run start`
-- If uncertain — ask user before running non-Cells command
-
-## Mandatory Testing Stack (Strict Order)
+## Mandatory Testing Stack
 
 For any Cells test intent, consult skills in this **exact order** before any other testing source:
 
@@ -38,6 +26,16 @@ For any Cells test intent, consult skills in this **exact order** before any oth
 3. `skills/cells-test-creator/` — test design, creation, conventions
 
 Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
+
+## Agent Handoff Contract (Always)
+
+For any orchestrator, subagent, handoff, delegation, implementation loop, or verification loop:
+
+1. Read `skills/_shared/cells-agent-handoff-contract.md`
+2. Treat orchestrators as coordinators, not executors
+3. Treat executor agents as isolated workers: no nested delegation
+4. Use the standard Handoff Packet with `evidence_required`
+5. Return the standard envelope including `skill_resolution` and `evidence_required`
 
 ## CELLS Workflow Skills
 
@@ -80,4 +78,3 @@ When running `/cells-cleanup`:
 - Changes that are safe to auto-apply: formatting, JSDoc, attribute fields, conditions-by-method, Rules Table Pattern, `.map()` refactors
 - Changes that require user approval: reusability improvements, constants extraction, layer-responsibility moves
 - Do NOT touch: `test/`, `demo/locales/`, `.scss`, `.css.js`, `custom-elements.json`
-

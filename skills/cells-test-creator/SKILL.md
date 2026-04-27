@@ -1,7 +1,6 @@
 ---
 name: cells-test-creator
-description: >
-  Create or improve unit tests for Cells components with OpenWC + Sinon, targeting public-behavior only and 100% file-level coverage. Triggers: when the user says "write tests", "I need tests for", "test this component", "add test coverage", "fix failing tests", "improve test quality", "generate test file", "increase coverage", "create unit tests", "write integration tests", or when adding, updating, or validating test files for Cells components.
+description: "Use when creating, updating, validating, or improving Cells OpenWC/Sinon tests, public-behavior coverage, mocks, fixtures, or test convention compliance."
 compatibility: python>=3.9,node>=18
 ---
 
@@ -12,6 +11,7 @@ Create and improve unit tests following repository conventions, with a file-leve
 Before large test work, read:
 
 - `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
 - `skills/cells-cli-usage/` FIRST to resolve canonical Cells-native test command/invocation
 - `skills/cells-coverage/` SECOND for coverage thresholds/reporting strategy and artifact triage
 - `skills/cells-test-creator/` THIRD (this skill) for test design/creation/update conventions
@@ -190,8 +190,9 @@ Read these references before major changes:
 5. Run the resolved repo-local test command.
 6. Confirm 100/100/100/100 for the target file using `lcov.info` file-level record, not only runner summary.
 7. If a new test fails due to DOM wiring side effects, prefer test-local stubs with explicit selector mappings instead of mutating shared DOM behavior.
-8. Use the 4-agent orchestration loop and keep each agent output as evidence.
-9. If the component or tests use i18n, consult `skills/cells-i18n/` and verify `IntlMsg` initialization plus locale parity before closing.
+8. Apply the real patterns in `skills/_shared/real-cells-patterns.md` for `cells lit-component:test`, `data-tag-name`, `CustomEvent(..., { bubbles: true, composed: true })`, `await el.updateComplete`, and teardown hygiene.
+9. Use the 4-agent orchestration loop and keep each agent output as evidence.
+10. If the component or tests use i18n, consult `skills/cells-i18n/` and verify `IntlMsg` initialization plus locale parity before closing.
 
 ## Reusable mock and harness pattern
 

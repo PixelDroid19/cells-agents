@@ -1,7 +1,6 @@
 ---
 name: cells-cli-usage
-description: >
-  Resolve the correct Cells-native CLI command for building, serving, linting, documenting, and testing. Triggers: when the user says "what command do I run", "how do I build this", "how to serve", "run tests", "generate docs", "which command for X", "how do I lint", "serve the demo", "build the app", "run the tests", "generate documentation", "collect locales", or when any task needs the correct Cells command resolved. Load before cells-apply or cells-verify.
+description: "Use when resolving Cells-native commands for build, serve, lint, documentation, locales, tests, coverage, or any task that needs command ownership confirmed."
 license: MIT
 metadata:
   author: D. J

@@ -1,7 +1,6 @@
-﻿---
+---
 name: cells-components-catalog
-description: >
-  Find existing BBVA Cells components before writing code. Triggers: when the user says "what component for X", "is there a component for", "find a button/form/table component", "discover available components", "search for BBVA components", "what BBVA packages exist", "look up component API", "check if X already exists", "component catalog", "search components database", or before any UI/component work to avoid reinventing existing components.
+description: "Use when discovering existing BBVA Cells components, package names, tags, properties, events, slots, examples, or checking whether UI should reuse a catalog component."
 license: MIT
 metadata:
   author: D. J

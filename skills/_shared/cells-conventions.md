@@ -57,8 +57,8 @@ Read sources in this order when they exist:
    - `package.json`
    - `custom-elements.json`
 2. Real feature repositories provided as reference:
-   - `bbva-feature-oc-account-fx-co`
-   - `bbva-feature-product-detail-debit-card`
+   - use `skills/_shared/real-cells-patterns.md` for distilled reusable patterns
+   - do not cite private local reference paths or folder names in repo assets
 3. Internal component catalog:
    - `skills/cells-components-catalog/`
    - use `scripts/search_docs.py` to shortlist packages, tags, props, events, and snippets quickly
@@ -237,7 +237,9 @@ When building, modifying, or reviewing a real Cells component or feature UI, app
 
 - Use JSDoc for public API, emitted events, or non-obvious contracts that need durable documentation.
 - Do not leave placeholder comments, TODO comments, commented-out code, or narrative inline comments when clear naming and extracted methods are enough.
+- do not leave TODO comments, commented-out code, or placeholder implementation notes in delivered work.
 - Do not leave unnecessary blank lines, trailing whitespace, or formatting noise unrelated to the change.
+- Avoid unnecessary whitespace-only edits.
 - Prefer separation of responsibilities:
   - data/business orchestration in data managers
   - page/view composition in pages
