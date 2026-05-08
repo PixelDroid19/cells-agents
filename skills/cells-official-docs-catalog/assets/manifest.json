@@ -1,83 +1,942 @@
 {
   "metadata": {
-    "generated_at": "2026-04-27T20:20:55Z",
-    "normalization_version": "1",
+    "schema_version": "2",
+    "generated_at": "2026-05-04T20:59:50Z",
     "generator": "skills/cells-official-docs-catalog/scripts/build_index.py",
     "source_root": "/home/monasterios/Documents/cells/cellsjs-guides-resources-master@2bfdc69d580/docs",
-    "source_revision": "2bfdc69d580"
+    "source_revision": "cellsjs-guides-resources-master@2bfdc69d580",
+    "content_hash": "e3328f71b9fa33ca8487e483e6d6baf3b6958e2cef9ba4ab61eab1d0a8586bf0"
   },
-  "topic_count": 14,
   "database": "skills/cells-official-docs-catalog/assets/cells_official_docs.db",
-  "topics": [
+  "document_count": 115,
+  "chunk_count": 964,
+  "legacy_document_count": 41,
+  "total_markdown_files": 115,
+  "skipped": {
+    "asset": 0,
+    "hidden": 0,
+    "empty": 0
+  },
+  "docs": [
     {
-      "slug": "advanced-application",
-      "title": "Advanced Application",
-      "path": "skills/cells-official-docs-catalog/references/advanced-application.md"
+      "slug": "cells-applications-analytics",
+      "title": "Cells Analytics Collector",
+      "area": "applications",
+      "path": "cells-applications/analytics.md",
+      "chunk_count": 10,
+      "hash": "25e9bf332f174224c686e1161094da81e3d61196d281233588f97de7aefe7a65"
     },
     {
-      "slug": "application-communication",
-      "title": "Application Communication",
-      "path": "skills/cells-official-docs-catalog/references/application-communication.md"
+      "slug": "cells-applications-bootstrapping-application-configuration",
+      "title": "Application Configuration",
+      "area": "applications",
+      "path": "cells-applications/bootstrapping/application-configuration.md",
+      "chunk_count": 4,
+      "hash": "5a1b602e0e5447d71538a139160c1e874b18f80a2525b140d7440dfae735c9bf"
     },
     {
-      "slug": "application-runtime",
-      "title": "Application Runtime",
-      "path": "skills/cells-official-docs-catalog/references/application-runtime.md"
+      "slug": "cells-applications-bootstrapping-the-bridge-instance",
+      "title": "Cells Bridge Instance",
+      "area": "applications",
+      "path": "cells-applications/bootstrapping/the-bridge-instance.md",
+      "chunk_count": 2,
+      "hash": "646ed5024124450bb76559142a8a448118d015ff171d0340980a481aae888558"
     },
     {
-      "slug": "application-testing",
-      "title": "Application Testing",
-      "path": "skills/cells-official-docs-catalog/references/application-testing.md"
+      "slug": "cells-applications-ci-cd",
+      "title": "CI-CD: Continuous Integration & Continuous Delivery",
+      "area": "applications",
+      "path": "cells-applications/ci-cd.md",
+      "chunk_count": 2,
+      "hash": "0f5045c1eb0e31bbc8d8e8342ac16cb0836979e7710f0d50e1f2cac003d7332f"
     },
     {
-      "slug": "architecture",
-      "title": "Architecture",
-      "path": "skills/cells-official-docs-catalog/references/architecture.md"
+      "slug": "cells-applications-components-in-applications-cross-components",
+      "title": "Cross components",
+      "area": "applications",
+      "path": "cells-applications/components-in-applications/cross-components.md",
+      "chunk_count": 2,
+      "hash": "054f33ff4106a16c1dac54ff3a51c364f3097454b308ed4c2b0116ed2beb2dc7"
     },
     {
-      "slug": "cli",
-      "title": "CLI",
-      "path": "skills/cells-official-docs-catalog/references/cli.md"
+      "slug": "cells-applications-components-in-applications-data-components",
+      "title": "Data components",
+      "area": "applications",
+      "path": "cells-applications/components-in-applications/data-components.md",
+      "chunk_count": 17,
+      "hash": "ff5f8c2ea66c9c8b1b3045a8f727509a45ec4a88f515f2b78f92faa9e53eb13a"
     },
     {
-      "slug": "component-api",
-      "title": "Component API",
-      "path": "skills/cells-official-docs-catalog/references/component-api.md"
+      "slug": "cells-applications-components-in-applications-overview",
+      "title": "Overview",
+      "area": "applications",
+      "path": "cells-applications/components-in-applications/overview.md",
+      "chunk_count": 8,
+      "hash": "57bde41251f8acda9a16546ee3958086dc41047c5463909c844f04e95db0e459"
     },
     {
-      "slug": "composition",
-      "title": "Composition",
-      "path": "skills/cells-official-docs-catalog/references/composition.md"
+      "slug": "cells-applications-components-in-applications-templates",
+      "title": "Templates in apps",
+      "area": "applications",
+      "path": "cells-applications/components-in-applications/templates.md",
+      "chunk_count": 18,
+      "hash": "8c51f56febd37f73ffda5b9437145a6509cb38113b42c5139730152e8accf56a"
     },
     {
-      "slug": "demo-docs-i18n-assets",
-      "title": "Demo Docs I18n Assets",
-      "path": "skills/cells-official-docs-catalog/references/demo-docs-i18n-assets.md"
+      "slug": "cells-applications-components-in-applications-ui-components",
+      "title": "UI components",
+      "area": "applications",
+      "path": "cells-applications/components-in-applications/ui-components.md",
+      "chunk_count": 9,
+      "hash": "2de94df5669aa3af3ff0f31c570881723b7d2a652758528c0e7282c323ac8b94"
     },
     {
-      "slug": "lit-authoring",
-      "title": "Lit Authoring",
-      "path": "skills/cells-official-docs-catalog/references/lit-authoring.md"
+      "slug": "cells-applications-feature-flag",
+      "title": "Feature Flag",
+      "area": "applications",
+      "path": "cells-applications/feature-flag.md",
+      "chunk_count": 8,
+      "hash": "5ac9c3a61e79c93420e822165efc3eaa8188992c4de62bc15e56cd96ec55481d"
     },
     {
-      "slug": "monitoring",
+      "slug": "cells-applications-internationalization",
+      "title": "Internationalization (i18n)",
+      "area": "applications",
+      "path": "cells-applications/internationalization.md",
+      "chunk_count": 7,
+      "hash": "5543d01b0acf6735bc7cf221aac0f3fa93b1459112de703e1ecb2970d3f9a26c"
+    },
+    {
+      "slug": "cells-applications-monitoring",
       "title": "Monitoring",
-      "path": "skills/cells-official-docs-catalog/references/monitoring.md"
+      "area": "applications",
+      "path": "cells-applications/monitoring.md",
+      "chunk_count": 8,
+      "hash": "6b19fe14c3fb8e9cb36b22191d61042e2ad6fb02b9b245797284dd39ba72bbc7"
     },
     {
-      "slug": "testing",
-      "title": "Testing",
-      "path": "skills/cells-official-docs-catalog/references/testing.md"
+      "slug": "cells-applications-overview-application-structure",
+      "title": "Cells Application",
+      "area": "applications",
+      "path": "cells-applications/overview/application-structure.md",
+      "chunk_count": 2,
+      "hash": "be3a57f896dde42a8abaf6eb6c518023d78c8791977a75682ea4ffcfda3eb6fb"
     },
     {
-      "slug": "theming",
+      "slug": "cells-applications-overview-managing-dependencies",
+      "title": "Managing dependencies",
+      "area": "applications",
+      "path": "cells-applications/overview/managing-dependencies.md",
+      "chunk_count": 3,
+      "hash": "64e9c527aa41790c4c57f605a0400ee82eed820cbf16e8128c0261cdc1e50157"
+    },
+    {
+      "slug": "cells-applications-overview-technical-design",
+      "title": "Cells App Technical design",
+      "area": "applications",
+      "path": "cells-applications/overview/technical-design.md",
+      "chunk_count": 4,
+      "hash": "69b9b1e01b7d9facad6f7f73a6b533d10b76342500aa60330d7749297ebfb507"
+    },
+    {
+      "slug": "cells-applications-pages-routing-declarative-pages",
+      "title": "Cells Pages",
+      "area": "applications",
+      "path": "cells-applications/pages-routing/declarative-pages.md",
+      "chunk_count": 11,
+      "hash": "1e6e07c6c79120f9b0688b98e1ca10242e9807b1c0312018174ef2fcc72b8fe1"
+    },
+    {
+      "slug": "cells-applications-pages-routing-delegated-routes",
+      "title": "Delegated routes",
+      "area": "applications",
+      "path": "cells-applications/pages-routing/delegated-routes.md",
+      "chunk_count": 6,
+      "hash": "fc6af61c384c1d48d8f799631492041ccddc9f357266f2159d5d515cf4fce21f"
+    },
+    {
+      "slug": "cells-applications-pages-routing-interceptors",
+      "title": "Router Interceptor",
+      "area": "applications",
+      "path": "cells-applications/pages-routing/interceptors.md",
+      "chunk_count": 6,
+      "hash": "fb4f59b89ed4779ac15e174645bea5862324ca248a753658add6099998b7bfa6"
+    },
+    {
+      "slug": "cells-applications-pages-routing-rendering",
+      "title": "Page rendering",
+      "area": "applications",
+      "path": "cells-applications/pages-routing/rendering.md",
+      "chunk_count": 3,
+      "hash": "a3f934fb8ef434e51fba8c03b19462647ff94d34d4ff7e2532a54eeebd967105"
+    },
+    {
+      "slug": "cells-applications-pages-routing-routes",
+      "title": "Routes",
+      "area": "applications",
+      "path": "cells-applications/pages-routing/routes.md",
+      "chunk_count": 3,
+      "hash": "9959c0ef904cfef1ae7cbbb9823eb8e9fd7426ff3dd905431a167bb2a7d215cc"
+    },
+    {
+      "slug": "cells-applications-service-workers",
+      "title": "Service worker support",
+      "area": "applications",
+      "path": "cells-applications/service-workers.md",
+      "chunk_count": 3,
+      "hash": "38fb7a6a77db27bc7d38c110a0f1b7c1700ef76bfca32b021b413cd38d2ce1bf"
+    },
+    {
+      "slug": "cells-applications-state-management-channels",
+      "title": "Channels",
+      "area": "applications",
+      "path": "cells-applications/state-management/channels.md",
+      "chunk_count": 6,
+      "hash": "34e6e6c9f7b75f16e189a66083e7e3cbec5fb9e39a3e3312bc1bc8c88b7e9a7a"
+    },
+    {
+      "slug": "cells-applications-state-management-logout",
+      "title": "Logout",
+      "area": "applications",
+      "path": "cells-applications/state-management/logout.md",
+      "chunk_count": 1,
+      "hash": "c318e00c8307a4b167ce956825ca6c848fe4c249483aa7f934159eeceaa53331"
+    },
+    {
+      "slug": "cells-applications-testing-e2e-testing-e2e-app",
+      "title": "E2E App Testing",
+      "area": "applications",
+      "path": "cells-applications/testing/e2e-testing/e2e-app.md",
+      "chunk_count": 10,
+      "hash": "ba193c0e8c8b904312717f5a30b3dfba9e2e121f5e6321d0d3b892ec615a2211"
+    },
+    {
+      "slug": "cells-applications-testing-e2e-testing-web-components-api",
+      "title": "Web Components communication and interaction API",
+      "area": "applications",
+      "path": "cells-applications/testing/e2e-testing/web-components-api.md",
+      "chunk_count": 5,
+      "hash": "43319efdc075114133bdaf5a0f2b722357c3cab43cb77d89681d4789c4d24100"
+    },
+    {
+      "slug": "cells-applications-testing-unit-testing",
+      "title": "Unit testing for LitElement pages and components in applications",
+      "area": "applications",
+      "path": "cells-applications/testing/unit-testing.md",
+      "chunk_count": 2,
+      "hash": "d70c247f3ab967644efa9ebc14d14bcbc76122c9713a7d6442b97c076bcb8056"
+    },
+    {
+      "slug": "cli-overview",
+      "title": "Overview",
+      "area": "cli",
+      "path": "cli/overview.md",
+      "chunk_count": 10,
+      "hash": "6e2655a04286843a4ca01533322c44d3c563b8d55160c05a4a16790943e11067"
+    },
+    {
+      "slug": "cli-working-with-applications",
+      "title": "Working with applications",
+      "area": "cli",
+      "path": "cli/working-with-applications.md",
+      "chunk_count": 15,
+      "hash": "b828eebb48ea68e075a669c4a09228cff7a5af579940b99a0542bf7faee689ef"
+    },
+    {
+      "slug": "cli-working-with-components",
+      "title": "Working with components",
+      "area": "cli",
+      "path": "cli/working-with-components.md",
+      "chunk_count": 14,
+      "hash": "90acb7b0ad16eeba8f8145c427ad08992c5c8de4ae379d21b375fe9f0f49e184"
+    },
+    {
+      "slug": "guides-akamai-bmp",
+      "title": "Akamai Bot Manager Premier (BMP)",
+      "area": "guides",
+      "path": "guides/akamai-bmp.md",
+      "chunk_count": 3,
+      "hash": "bdb4bd7547876c5ad7e0c3e04bba92b35f5ec27a6fd98817038ae7426416c425"
+    },
+    {
+      "slug": "guides-bridge4-cli5-legacy-components",
+      "title": "Migration Guide: Legacy components structure",
+      "area": "guides",
+      "path": "guides/bridge4-cli5/legacy-components.md",
+      "chunk_count": 14,
+      "hash": "57995657f75f7aa8999e15d1d83bb8855a9181859f1f2f772ee2c833552e95bc"
+    },
+    {
+      "slug": "guides-bridge4-cli5-migration-guide",
+      "title": "Migration Guide: Cells Bridge v3 to v4",
+      "area": "guides",
+      "path": "guides/bridge4-cli5/migration-guide.md",
+      "chunk_count": 15,
+      "hash": "afaec81941878de7b06f3f120928181b9ddd74c365d16941c39e9f208bbade8e"
+    },
+    {
+      "slug": "guides-bridge4-cli5-overview",
+      "title": "Bridge 4 & CLI 5: Overview",
+      "area": "guides",
+      "path": "guides/bridge4-cli5/overview.md",
+      "chunk_count": 8,
+      "hash": "78eaf402b78aef82da915a2954aa4102cda6ca6be80e421f7e1ff2aaf64809f2"
+    },
+    {
+      "slug": "guides-bridge4-cli5-quickstart",
+      "title": "Bridge 4 & CLI 5: Quick start guide",
+      "area": "guides",
+      "path": "guides/bridge4-cli5/quickstart.md",
+      "chunk_count": 8,
+      "hash": "ac577c70c8c525edd871e04141ed1145a9d76146bf9b3078ba1d93b4edfcc4e7"
+    },
+    {
+      "slug": "guides-employee-applications",
+      "title": "Cells Employee App",
+      "area": "guides",
+      "path": "guides/employee-applications.md",
+      "chunk_count": 5,
+      "hash": "f54a0253cd0af57c943aad1437cc247e30af4d475b199fbd4dffb04ec042668d"
+    },
+    {
+      "slug": "guides-github-copilot-for-cells",
+      "title": "Github Copilot for Cells",
+      "area": "guides",
+      "path": "guides/github-copilot-for-cells.md",
+      "chunk_count": 10,
+      "hash": "3b25ebca4a9bb613afa77786e698fd5873eeaa9b5d37384331cb4b06765d55c4"
+    },
+    {
+      "slug": "guides-microfrontends",
+      "title": "Micro frontends support",
+      "area": "guides",
+      "path": "guides/microfrontends.md",
+      "chunk_count": 7,
+      "hash": "be7df6634a709c940abc7b35b32064308f5476ab1ee5f571d619b99add1b9ad1"
+    },
+    {
+      "slug": "guides-migrate-from-polymer-to-lit",
+      "title": "Migrating from Polymer 2 to Lit",
+      "area": "guides",
+      "path": "guides/migrate-from-polymer-to-lit.md",
+      "chunk_count": 14,
+      "hash": "d91b3297271b82c0133889959ac8ca6ca1555ac352ec59b7f7d40f3f040c8ed7"
+    },
+    {
+      "slug": "guides-optimize-component-registration",
+      "title": "Optimization of component registration and dependency installation with Scoped Elements and PNPM",
+      "area": "guides",
+      "path": "guides/optimize-component-registration.md",
+      "chunk_count": 8,
+      "hash": "1f3b8ba207041c973e4e3d079ab3102b7b3a748f04d9bd06216ec117a6e28cde"
+    },
+    {
+      "slug": "guides-performance",
+      "title": "Performance optimization",
+      "area": "guides",
+      "path": "guides/performance.md",
+      "chunk_count": 5,
+      "hash": "0eed28ed2e4c4e4acda9b23c39529ed3355407b8439f001edb5237bb79bc43e6"
+    },
+    {
+      "slug": "guides-security-best-practices.en",
+      "title": "Cells Secure Development Guide - GSD Security",
+      "area": "guides",
+      "path": "guides/security-best-practices.en.md",
+      "chunk_count": 13,
+      "hash": "5ed15f82576f3b6b6daa33147e31c9864a7025c913a22a1ad8bcad5ed1412d8c"
+    },
+    {
+      "slug": "guides-security-best-practices",
+      "title": "Cells Gu\u00eda de desarrollo seguro - GSD Security",
+      "area": "guides",
+      "path": "guides/security-best-practices.md",
+      "chunk_count": 13,
+      "hash": "c3e0d2829b7a1cf263ed0184bc4e217a93803f8a85a8710988e212a8050e371c"
+    },
+    {
+      "slug": "guides-seo",
+      "title": "Search Engine Optimization",
+      "area": "guides",
+      "path": "guides/seo.md",
+      "chunk_count": 8,
+      "hash": "d597cf04358e8b3eab7f3fa144dafe842c49ab3838aefb0bf575e9f630d4698d"
+    },
+    {
+      "slug": "guides-upgrade-to-lit3",
+      "title": "Upgrade from Lit1 to Lit3",
+      "area": "guides",
+      "path": "guides/upgrade-to-lit3.md",
+      "chunk_count": 23,
+      "hash": "15900c56e7061090e16d7177f9527f8d7895ca6ded72c2a638df54d5f14f9fe0"
+    },
+    {
+      "slug": "help-report-an-issue",
+      "title": "Report an issue",
+      "area": "help",
+      "path": "help/report-an-issue.md",
+      "chunk_count": 7,
+      "hash": "38cc3cd8166741854cdab256742e1e20220cb7614e34feb09ba9888f9c7ccfc9"
+    },
+    {
+      "slug": "help-support-guidelines",
+      "title": "Support Guidelines",
+      "area": "help",
+      "path": "help/support-guidelines.md",
+      "chunk_count": 5,
+      "hash": "06e8ec2681ca5f0c5d0179fe40be409d84ed9645b9fad262de1160d8a644d48d"
+    },
+    {
+      "slug": "introduction-browser-support",
+      "title": "Browser support",
+      "area": "introduction",
+      "path": "introduction/browser-support.md",
+      "chunk_count": 1,
+      "hash": "91a7747ea1463df168c326e25767ff68c1dfc7c427dcbc1e1670dd15bd71b6de"
+    },
+    {
+      "slug": "introduction-ecosystem",
+      "title": "Ecosystem",
+      "area": "introduction",
+      "path": "introduction/ecosystem.md",
+      "chunk_count": 7,
+      "hash": "15b3e4f7cce9761e73fe2a3683d4e8b03ce98dba17b349f4227facd786762790"
+    },
+    {
+      "slug": "introduction-foundations",
+      "title": "Foundations",
+      "area": "introduction",
+      "path": "introduction/foundations.md",
+      "chunk_count": 7,
+      "hash": "9e44c1f540615c465f9b604bc8b924a99f04d6a1266e1616e2ec99304e2dffa8"
+    },
+    {
+      "slug": "introduction-getting-started",
+      "title": "Getting Started with Cells",
+      "area": "introduction",
+      "path": "introduction/getting-started.md",
+      "chunk_count": 7,
+      "hash": "cb7a87a903b46bb78e94928e8092a4d285026519050ee2d134a53168efe73993"
+    },
+    {
+      "slug": "introduction-how-to-use-these-guides",
+      "title": "Introduction How To Use These Guides",
+      "area": "introduction",
+      "path": "introduction/how-to-use-these-guides.md",
+      "chunk_count": 11,
+      "hash": "106ee4fe696e1cfe5838340b52316aba2195a2396c4ab4451aabdf71a2f3afef"
+    },
+    {
+      "slug": "introduction-open-cells",
+      "title": "Open Cells: Our Open Source commitment",
+      "area": "introduction",
+      "path": "introduction/open-cells.md",
+      "chunk_count": 3,
+      "hash": "ca359fafd72335130d51740539d04a34cfc3fcc0ab2c2974a942b8f2656e5223"
+    },
+    {
+      "slug": "introduction-overview",
+      "title": "Introduction to Cells",
+      "area": "introduction",
+      "path": "introduction/overview.md",
+      "chunk_count": 7,
+      "hash": "b33ed78c00dbcf682a29cff952a5fbf4d73f58d6d123eae88fdbbbec6feda5d9"
+    },
+    {
+      "slug": "learn-web-components-resources",
+      "title": "Resources",
+      "area": "learn",
+      "path": "learn/web-components-resources.md",
+      "chunk_count": 1,
+      "hash": "9c3f8c9ac58fdf35f4955137236ea30ef77721c74a172842b74fd314b328f689"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-akamai-bmp",
+      "title": "Akamai Bot Manager Premier (BMP)",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/akamai-bmp.md",
+      "chunk_count": 3,
+      "hash": "f3bfd8f175cb8d3d79878f741e2a56f29d2d17ada8eca067290e2a6cd0f14305"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-analytics",
+      "title": "Cells Analytics Collector",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/analytics.md",
+      "chunk_count": 13,
+      "hash": "c02d05fe073bd1d4f7f9a01415c9b35147fb79916b2d8fb0f37e71e943a42893"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-employee-apps",
+      "title": "Cells employee apps",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/employee-apps.md",
+      "chunk_count": 5,
+      "hash": "dbbf93d42f73d368ca632c7ec29503301ce324275f1619f098903d9f12200146"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-feature-flag",
+      "title": "FeatureFlag",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/feature-flag.md",
+      "chunk_count": 9,
+      "hash": "c4e06ac23d98e2f8d2aeab6843f7c67377e37f1f31d7f3a617f2b1c459af6c44"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-lit-element-support",
+      "title": "LitElement support",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/lit-element-support.md",
+      "chunk_count": 17,
+      "hash": "16a1bf0c0de3860396ea39e52c90a944d3fc7ef91b792360a04dcfacc3b2f772"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-microfrontends",
+      "title": "Micro frontends support",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/microfrontends.md",
+      "chunk_count": 8,
+      "hash": "f1b6c5c64976340c9e9a3c77c827cefbf4c9ecc155baa3314afd5e5f111ae9cc"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-monitoring",
+      "title": "Monitoring",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/monitoring.md",
+      "chunk_count": 10,
+      "hash": "c80eaecf5a374bdcd1f6fb0cb4e7e23bbbecb3e3e8817754995a11a5417f3daa"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-native-mobile-communication",
+      "title": "Native mobile communication",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/native-mobile-communication.md",
+      "chunk_count": 9,
+      "hash": "2a76aa9c3fbf90c0b952aad06ecfbceeb7481bdd28ac3c1f8de9a13d80fda915"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-performance",
+      "title": "Performance optimization",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/performance.md",
+      "chunk_count": 5,
+      "hash": "6ce7e1fafdee0f684ccca221bcf260e32c9f0e5e0df1326d32ac03bcc18f50d7"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-advanced-features-service-workers",
+      "title": "Service worker support",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/advanced-features/service-workers.md",
+      "chunk_count": 3,
+      "hash": "1283d3055a4f83e69ad590e037a365a101cfa5431dad8b6daaf35fe0543bb7ca"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-application-state-management-channels",
+      "title": "Channels",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/application-state-management/channels.md",
+      "chunk_count": 7,
+      "hash": "a76d27c73646c6c2c203a491b6d9ed904a095daba0a4c8f791152acb9446eb06"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-application-state-management-pub-sub-pattern",
+      "title": "Pub/Sub Pattern",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/application-state-management/pub-sub-pattern.md",
+      "chunk_count": 3,
+      "hash": "6c492c4ce7c58626d8cda4832b197459a78a8adf2a7d3051899f40ca4601804e"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-build-and-serve",
+      "title": "Building and serving Cells apps",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/build-and-serve.md",
+      "chunk_count": 9,
+      "hash": "009e256f3c41a1b5358e72ce6e93616c76a0e77c2cf08486fb5b07cd1b44c5ed"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-Internationalization",
+      "title": "Internationalization (i18n)",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/Internationalization.md",
+      "chunk_count": 6,
+      "hash": "f92c1fef5b5913088096118c32c3c926e7dd6b9d96bff664e3cf6b9b0ee4f7df"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-application-configuration",
+      "title": "Application configuration",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/application-configuration.md",
+      "chunk_count": 4,
+      "hash": "bb673861ad0faf5c1890fad3da42e314adee28b26734002fe4dc69cd3b185917"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-application-structure",
+      "title": "Cells Application",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/application-structure.md",
+      "chunk_count": 2,
+      "hash": "db22e1b36eafd4f16b71315e740cfe23599312353dcfd88e67627f7221131694"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-dependency-management",
+      "title": "Managing dependencies",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/dependency-management.md",
+      "chunk_count": 3,
+      "hash": "f1a95045fc7cb1ac1b34028393c6b68c3fb03ecccedba3fb8a36387c8d73e088"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-hooks",
+      "title": "Hooks (Event Channels)",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/hooks.md",
+      "chunk_count": 31,
+      "hash": "a8606308ced702a94da202a76376a5b105b6fb26d8103dbf8b8609176e79ae2f"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-logout",
+      "title": "Logout",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/logout.md",
+      "chunk_count": 1,
+      "hash": "2a3a423eb58202f374d814a4404e54bcd0f7bcb4d9e543dad4695e0490008b0e"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-technical-design",
+      "title": "Technical design",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/technical-design.md",
+      "chunk_count": 6,
+      "hash": "289107dc429f66168466b69fb0907aa344bfb89e7a1d276e527e8cd82daea0ca"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-the-bridge-instance",
+      "title": "Cells Bridge Instance",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/the-bridge-instance.md",
+      "chunk_count": 2,
+      "hash": "02d6e6fa4bee4ff0c2a52dfd498b26a23c894357a062bd1878a6681fd2ad4ed8"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-cells-applications-unit-testing",
+      "title": "Unit testing for LitElement pages and components in applications",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/cells-applications/unit-testing.md",
+      "chunk_count": 1,
+      "hash": "fc3cc87df25d3341b7e2ae1673443d862abab0eba55c6723710eda994c2d887b"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-components-in-apps-cross-components",
+      "title": "Cross components",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/components-in-apps/cross-components.md",
+      "chunk_count": 3,
+      "hash": "3ea54cf790ac0369c251b1f83a6f070d879f801693165f6f0b0b402c0c7ed470"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-components-in-apps-data-components",
+      "title": "Data components",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/components-in-apps/data-components.md",
+      "chunk_count": 12,
+      "hash": "d7f6921dd25b472fe1ef7701aca66bbf867755eb3ee215ffbe5eb9c5a0efd38b"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-components-in-apps-overview",
+      "title": "Components in your app",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/components-in-apps/overview.md",
+      "chunk_count": 1,
+      "hash": "38054108d4d5c8767e8667e7c4dfc6a1cfd4c7b64b21e9b0e01d7abe769741b5"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-components-in-apps-templates",
+      "title": "Templates in apps",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/components-in-apps/templates.md",
+      "chunk_count": 18,
+      "hash": "7c481106145e74ee679b658445d7f09f8e1fb2ee90b85b97c838e8653c31fdf1"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-components-in-apps-ui-components",
+      "title": "UI components",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/components-in-apps/ui-components.md",
+      "chunk_count": 1,
+      "hash": "f56aa0e461fac9fdd89f408c569b846678f0da622d3b7d959611a85d9af17f73"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-introduction",
+      "title": "Introduction",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/introduction.md",
+      "chunk_count": 6,
+      "hash": "d853566228e5fa3ea49657665548727cbae2b92f1e0fd39fc675e6cdd9fd6ea8"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-web-components-api",
+      "title": "Web Components communication and interaction API",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/web-components-api.md",
+      "chunk_count": 5,
+      "hash": "cec673bba86925fbd5feb8edf19928fbb512fdf955a92d02983ce89fba72995d"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-components-working-with-components",
+      "title": "Working with components",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/components/working-with-components.md",
+      "chunk_count": 13,
+      "hash": "05e1c4778b7ba4163977a567bc0bfe85e3fa8f5bc8203f5bb76c66416d2fef68"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-deploy",
+      "title": "Deployment",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/deploy.md",
+      "chunk_count": 6,
+      "hash": "8a9b545ff14eb15fd0a4b3fc2cec90ad3e34b09a9c808f959369175aa016705d"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-pages-declarative-pages",
+      "title": "Declarative pages / Routable Components",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/pages/declarative-pages.md",
+      "chunk_count": 15,
+      "hash": "70295a277626e157052f506ea13cec1b9cc097b0848f1ee5522648ec26650a04"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-pages-dynamic-pages",
+      "title": "Dynamic pages",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/pages/dynamic-pages.md",
+      "chunk_count": 13,
+      "hash": "58170506d36acfce30d696a0ac46bdc528c3018d3389da7345514dbc74cb4a43"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-routing-animations",
+      "title": "Animations",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/routing/animations.md",
+      "chunk_count": 1,
+      "hash": "33a28de50241a587782e18c2ac0b051d3350d0ce37cc599fe525e064007ea937"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-routing-delegated-routes",
+      "title": "Delegated routes",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/routing/delegated-routes.md",
+      "chunk_count": 6,
+      "hash": "7feea469bacc767534195c6295fd6044d446d5fed324d5e849680e832de4f491"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-routing-navigation",
+      "title": "Navigation",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/routing/navigation.md",
+      "chunk_count": 6,
+      "hash": "882ec4e0e088096f956f2568984f722af7221a2e1f0519d0dd48c4f60caee59b"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-routing-rendering",
+      "title": "Page rendering",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/routing/rendering.md",
+      "chunk_count": 3,
+      "hash": "845ecb170c16107fe92a44027c7e5a034aeea3603ec6c36966d6cb118c3e5d33"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-basic-features-routing-routes",
+      "title": "Routing",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/basic-features/routing/routes.md",
+      "chunk_count": 12,
+      "hash": "afb240577b3860dd78d284d5df3ca15abd7643b4fa4833fa7d7592f987516e0d"
+    },
+    {
+      "slug": "older-versions-cli4-bridge3-cli-overview",
+      "title": "Cells-cli Overview",
+      "area": "legacy",
+      "path": "older-versions/cli4-bridge3/cli/overview.md",
+      "chunk_count": 6,
+      "hash": "298b78a9f9177fd97d3914eb6c530cb293f7f980da369f8d52003afab737bb55"
+    },
+    {
+      "slug": "older-versions-e2e-testing-e2e-app",
+      "title": "E2E app testing",
+      "area": "legacy",
+      "path": "older-versions/e2e-testing/e2e-app.md",
+      "chunk_count": 15,
+      "hash": "f366ed9cbdfef7291d97d02e0fa09746162e6c8ac1b9f8b4f051d825135c051a"
+    },
+    {
+      "slug": "older-versions-e2e-testing-e2e-components",
+      "title": "E2E component testing",
+      "area": "legacy",
+      "path": "older-versions/e2e-testing/e2e-components.md",
+      "chunk_count": 3,
+      "hash": "168ac16e80dc75bf1c00a1b878326c22bc575024b12f9e515a1eb5c5592c222a"
+    },
+    {
+      "slug": "web-components-overview-development-basics",
+      "title": "BBVA Web Components development basics",
+      "area": "web-components",
+      "path": "web-components/overview/development-basics.md",
+      "chunk_count": 5,
+      "hash": "61432107227f8ad91b3a47680405757bda01a38bf0ab36618a5239de59ea7e95"
+    },
+    {
+      "slug": "web-components-overview-fundamentals",
+      "title": "Web Components fundamental guidelines",
+      "area": "web-components",
+      "path": "web-components/overview/fundamentals.md",
+      "chunk_count": 5,
+      "hash": "8e67959993106a51f825cff69f8df9a5a9d357c765c555a57c3ff6e238d996d3"
+    },
+    {
+      "slug": "web-components-overview-web-components",
+      "title": "BBVA Web Components",
+      "area": "web-components",
+      "path": "web-components/overview/web-components.md",
+      "chunk_count": 6,
+      "hash": "efe12480030433c12c716fff1b1ed7ef45985677545859ea7fb3d0932df8b4df"
+    },
+    {
+      "slug": "web-components-reference-ci-cd",
+      "title": "CI-CD: Continuous Integration & Continuous Delivery",
+      "area": "web-components",
+      "path": "web-components/reference/ci-cd.md",
+      "chunk_count": 2,
+      "hash": "0f5045c1eb0e31bbc8d8e8342ac16cb0836979e7710f0d50e1f2cac003d7332f"
+    },
+    {
+      "slug": "web-components-reference-class-properties",
+      "title": "Class & properties",
+      "area": "web-components",
+      "path": "web-components/reference/class-properties.md",
+      "chunk_count": 11,
+      "hash": "4d5ade9e0f5e59af3ff1c00b300cfc3f9aa2f2a046149af758ace1ed210e4ea0"
+    },
+    {
+      "slug": "web-components-reference-component-api",
+      "title": "Component API",
+      "area": "web-components",
+      "path": "web-components/reference/component-api.md",
+      "chunk_count": 9,
+      "hash": "421212f93ca9d0afe58bfca2971ad08ce98d23bff0daeb2d5fa7b9c3574ae59e"
+    },
+    {
+      "slug": "web-components-reference-context",
+      "title": "Context",
+      "area": "web-components",
+      "path": "web-components/reference/context.md",
+      "chunk_count": 9,
+      "hash": "af6721d48a729b48350f40420f50debdfb72d6941727e8ee486713433a66ad6c"
+    },
+    {
+      "slug": "web-components-reference-custom-elements",
+      "title": "Custom Elements",
+      "area": "web-components",
+      "path": "web-components/reference/custom-elements.md",
+      "chunk_count": 10,
+      "hash": "549633f69d74d71fa13bb9a5d0af1613efcdc842e7a24266d39aa0a4a90b7dba"
+    },
+    {
+      "slug": "web-components-reference-demo",
+      "title": "Demo",
+      "area": "web-components",
+      "path": "web-components/reference/demo.md",
+      "chunk_count": 17,
+      "hash": "39dec6c2095462686194cceb18b13dff80017701a9148a67fbc5102aac4300b2"
+    },
+    {
+      "slug": "web-components-reference-documentation",
+      "title": "Documentation",
+      "area": "web-components",
+      "path": "web-components/reference/documentation.md",
+      "chunk_count": 22,
+      "hash": "409384c7490d022bb26ef77f05f29450fb065209cacf6c76019cc31d2d5302a2"
+    },
+    {
+      "slug": "web-components-reference-i18n",
+      "title": "Internationalization",
+      "area": "web-components",
+      "path": "web-components/reference/i18n.md",
+      "chunk_count": 15,
+      "hash": "06c0383a5b57b312aa371f21669a2410477e6dcf692ddb342d45a02aa7187184"
+    },
+    {
+      "slug": "web-components-reference-images-icons",
+      "title": "Images & icons",
+      "area": "web-components",
+      "path": "web-components/reference/images-icons.md",
+      "chunk_count": 19,
+      "hash": "18ad774a0c0fb3da6c292154a6175ccce1fca98dbe42db00dc3c2cc69fbc98a7"
+    },
+    {
+      "slug": "web-components-reference-lifecycle",
+      "title": "Lifecycle",
+      "area": "web-components",
+      "path": "web-components/reference/lifecycle.md",
+      "chunk_count": 8,
+      "hash": "8b7db042d783c7e5adf084da5a3953883c3eafd7cc4a7facd4d73bc064faec05"
+    },
+    {
+      "slug": "web-components-reference-packaging",
+      "title": "Packaging",
+      "area": "web-components",
+      "path": "web-components/reference/packaging.md",
+      "chunk_count": 18,
+      "hash": "063a6cacb435ac02fd34d8c185272d3fbc474d3aa21729bc016469d311176b14"
+    },
+    {
+      "slug": "web-components-reference-reuse-composition",
+      "title": "Reuse & composition",
+      "area": "web-components",
+      "path": "web-components/reference/reuse-composition.md",
+      "chunk_count": 8,
+      "hash": "3096322dcae7ead995ed5e23776bcf58bb2bae55e4bbf2cb291b2b45937bfbf9"
+    },
+    {
+      "slug": "web-components-reference-spherica-integration",
+      "title": "Spherica Integration",
+      "area": "web-components",
+      "path": "web-components/reference/spherica-integration.md",
+      "chunk_count": 15,
+      "hash": "34870579ce9e3bb66883e2892a1c656852b6e3410ef1c66ebcd7c7254cc81ad8"
+    },
+    {
+      "slug": "web-components-reference-styles",
+      "title": "Styles",
+      "area": "web-components",
+      "path": "web-components/reference/styles.md",
+      "chunk_count": 24,
+      "hash": "0e80c763f0c4c1faa7406edca26a83d4e657d78d9d1d6df8f038c7de7805114a"
+    },
+    {
+      "slug": "web-components-reference-templating-in-lit",
+      "title": "Templating in Lit",
+      "area": "web-components",
+      "path": "web-components/reference/templating-in-lit.md",
+      "chunk_count": 16,
+      "hash": "3704ec8bba2fa21df578487e505a7034604ffaed2f6d8b0ebfbd4606f1552e16"
+    },
+    {
+      "slug": "web-components-reference-testing-unit-testing",
+      "title": "Unit Testing",
+      "area": "web-components",
+      "path": "web-components/reference/testing/unit-testing.md",
+      "chunk_count": 18,
+      "hash": "db0f8981d1159f7b4440c5612332284546f2121449b08a5df0d94a054fd32392"
+    },
+    {
+      "slug": "web-components-reference-theming",
       "title": "Theming",
-      "path": "skills/cells-official-docs-catalog/references/theming.md"
-    },
-    {
-      "slug": "web-components-foundations",
-      "title": "Web Components Foundations",
-      "path": "skills/cells-official-docs-catalog/references/web-components-foundations.md"
+      "area": "web-components",
+      "path": "web-components/reference/theming.md",
+      "chunk_count": 16,
+      "hash": "b264ae1224e6dee91681d5120a92c8a92e475087d467c4d518e6e3c4d9851e69"
     }
   ]
 }
