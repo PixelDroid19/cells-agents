@@ -467,266 +467,203 @@ These files keep repeated logic out of individual skills and make routing determ
 
 ## Installation
 
-### Quick Install
+Use `scripts/install.sh` for deterministic installs. It prefers the bundled `portable/` assets when they exist and falls back to the canonical source files when they do not.
 
-On Unix-like shells:
+Use `scripts/setup.sh` only when you specifically want the legacy interactive flow or OpenCode mode selection (`single` vs `multi`).
+
+### Which path to use
+
+| Host | Run from | Recommended command | Result |
+|---|---|---|---|
+| OpenCode global | this bundle repo | `./scripts/install.sh --agent opencode` | installs `~/.config/opencode/skills`, `commands`, `plugins`, and default config assets |
+| OpenCode project-local | target repo root | `/path/to/cells-agents/scripts/install.sh --agent project-local` | installs `./.opencode/skills` |
+| VS Code Copilot | target repo root | `/path/to/cells-agents/scripts/install.sh --agent vscode` | installs `.github/` workspace assets plus `.github/plugin/` |
+| Codex | target repo root | `/path/to/cells-agents/scripts/install.sh --agent codex` | installs `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and `plugins/cells-agent-bundle-codex/` |
+
+Windows PowerShell installer support is currently limited to `opencode`, `vscode`, `project-local`, `all-global`, and `custom`. Codex install is documented and validated through `scripts/install.sh` and the portable copy path.
+
+### Script Install
+
+#### OpenCode
+
+Default OpenCode install:
 
 ```bash
-./scripts/setup.sh
+./scripts/install.sh --agent opencode
 ```
 
-On Windows PowerShell:
+This installs the global OpenCode bundle in `~/.config/opencode/`.
 
-```powershell
-.\scripts\setup.ps1
-```
+Important behavior:
 
-Setup options:
+- if `~/.config/opencode/opencode.json` does not exist, the installer writes the Cells config for you
+- if `~/.config/opencode/opencode.json` already exists, the installer preserves it and asks you to merge the `cells-orchestrator` block manually
+- the default `install.sh` path is the portable/single-agent OpenCode profile
+
+If you want the multi-agent OpenCode layout, use the setup helper instead:
 
 ```bash
-./scripts/setup.sh --all
-./scripts/setup.sh --agent opencode --opencode-mode single
 ./scripts/setup.sh --agent opencode --opencode-mode multi
-./scripts/setup.sh --non-interactive
 ```
+
+PowerShell equivalents:
 
 ```powershell
-.\scripts\setup.ps1 -All
-.\scripts\setup.ps1 -Agent opencode -OpenCodeMode single
+.\scripts\install.ps1 -Agent opencode
 .\scripts\setup.ps1 -Agent opencode -OpenCodeMode multi
-.\scripts\setup.ps1 -NonInteractive
 ```
 
-If you only want to copy skills (without prompt/config orchestration), use `./scripts/install.sh` or `.\scripts\install.ps1`.
+Reference templates:
 
-Compatibility note: project-local install copies skills to `./.opencode/skills/`, which is OpenCode's documented project-local discovery path. OpenCode commands, config, and optional background-delegation assets live under `examples/opencode/` and install into user-level `~/.config/opencode/` unless you copy them to `./.opencode/commands/` yourself.
+- `examples/opencode/opencode.json`
+- `examples/opencode/opencode.single.json`
+- `examples/opencode/opencode.multi.json`
+- `portable/opencode-home/templates/opencode.single.json`
+- `portable/opencode-home/templates/opencode.multi.json`
 
-### Corporate macOS / Manual Copy Install
+#### OpenCode project-local
 
-For restrictive bank-managed Macs where terminal setup is limited or `mkdir`, `sudo`, or `su` are not practical, use the prebuilt portable assets already included in the repo:
+From the target repository root:
+
+```bash
+/path/to/cells-agents/scripts/install.sh --agent project-local
+```
+
+This installs `./.opencode/skills/`. It does not install global OpenCode commands or global OpenCode config.
+
+PowerShell:
+
+```powershell
+\path\to\cells-agents\scripts\install.ps1 -Agent project-local
+```
+
+#### VS Code Copilot
+
+From the target repository root:
+
+```bash
+/path/to/cells-agents/scripts/install.sh --agent vscode
+```
+
+This creates:
+
+- `.github/copilot-instructions.md`
+- `.github/instructions/`
+- `.github/prompts/`
+- `.github/agents/`
+- `.github/hooks/`
+- `.github/skills/`
+- `.github/plugin/`
+
+PowerShell:
+
+```powershell
+\path\to\cells-agents\scripts\install.ps1 -Agent vscode
+```
+
+#### Codex
+
+From the target repository root:
+
+```bash
+/path/to/cells-agents/scripts/install.sh --agent codex
+```
+
+This creates:
+
+- `AGENTS.md`
+- `.codex/`
+- `.agents/plugins/marketplace.json`
+- `plugins/cells-agent-bundle-codex/`
+
+Codex runtime behavior is repo-local: `AGENTS.md` plus the installed `.codex/` layer select `fast-path`, `scoped-change`, `full-workflow`, or `blocked`, and the bundled plugin supplies the canonical Cells skill payload.
+
+### Manual / Portable Install
+
+Use the portable path when the target environment is restrictive or you prefer Finder/manual copy. The portable trees are already built and validated:
 
 - `portable/opencode-home/.config/opencode/`
 - `portable/project-local/.opencode/`
 - `portable/vscode/.github/`
 - `portable/codex-project/`
 
-These are ready to copy with Finder or with `cp -R` from an existing parent directory. No `mkdir` is required on the destination machine.
-
-Examples:
+#### OpenCode manual copy
 
 ```bash
 cp -R portable/opencode-home/.config "$HOME/"
+```
+
+If `~/.config/opencode/opencode.json` already exists, keep your existing file and merge the Cells agent block from either:
+
+- `portable/opencode-home/.config/opencode/opencode.json`
+- `portable/opencode-home/templates/opencode.single.json`
+- `portable/opencode-home/templates/opencode.multi.json`
+
+#### VS Code manual copy
+
+From the target repository root:
+
+```bash
 cp -R /path/to/cells-agents/portable/vscode/.github .
+```
+
+That single copy already includes `.github/plugin/`. No extra build step is required.
+
+#### Codex manual copy
+
+From the target repository root:
+
+```bash
 cp -R /path/to/cells-agents/portable/codex-project/. .
+```
+
+That single copy already includes `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and `plugins/cells-agent-bundle-codex/`.
+
+#### Project-local manual copy
+
+From the target repository root:
+
+```bash
 cp -R /path/to/cells-agents/portable/project-local/.opencode .
 ```
 
-For VS Code manual install, that single `.github` copy already includes the plugin built under `.github/plugin/`. No extra build step is required.
-For Codex manual install, that single project-root copy already includes `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and the bundled plugin under `plugins/cells-agent-bundle-codex/`.
+#### Portable plugin note
 
-See `portable/README.md` for the exact manual steps.
+The standalone VS Code plugin package is also shipped for advanced distribution cases:
 
-### Supported Hosts
+```text
+portable/vscode-plugin/
+```
 
-- OpenCode
-- VS Code Copilot
-- Codex
-- project-local installs
+### Validation
 
-### OpenCode
-
-Use the full setup script:
+Core repo-local validation:
 
 ```bash
-./scripts/setup.sh --agent opencode
+python3 scripts/validate_skill_quality.py
+python3 scripts/validate_governance_behavior.py
+bash scripts/install_test.sh
 ```
 
-OpenCode supports two modes:
-
-- `single` (default): one `cells-orchestrator` handles all phases.
-- `multi`: one hidden sub-agent per CELLS phase (`cells-init`, `cells-explore`, `cells-propose`, `cells-spec`, `cells-design`, `cells-tasks`, `cells-apply`, `cells-verify`, `cells-archive`) plus the orchestrator.
-
-Optional background delegation:
-
-- `setup.sh` / `setup.ps1` also surface optional OpenCode background-delegation assets when bundled.
-- When those assets are available, the orchestrator may use `delegate`, `delegation_read`, and `delegation_list` for non-blocking work.
-- If the plugin is absent, the workflow still works through synchronous `task` fallback.
-
-Explicit mode selection:
+Host-specific validation:
 
 ```bash
-./scripts/setup.sh --agent opencode --opencode-mode single
-./scripts/setup.sh --agent opencode --opencode-mode multi
-```
-
-#### Install mode: normal (single) vs multi-agent
-
-Normal mode (`single`) uses one orchestrator agent for all phases.
-
-Install normal mode:
-
-```bash
-./scripts/setup.sh --agent opencode --opencode-mode single
-```
-
-```powershell
-.\scripts\setup.ps1 -Agent opencode -OpenCodeMode single
-```
-
-Multi-agent mode (`multi`) uses one orchestrator plus one hidden sub-agent per CELLS phase.
-
-Install multi-agent mode:
-
-```bash
-./scripts/setup.sh --agent opencode --opencode-mode multi
-```
-
-```powershell
-.\scripts\setup.ps1 -Agent opencode -OpenCodeMode multi
-```
-
-Defaults and switching:
-
-- If you run setup without `--opencode-mode` / `-OpenCodeMode`, the default mode is `single`.
-- You can switch modes anytime by re-running setup with the other mode.
-- Re-running setup is safe and idempotent; existing `model` values are preserved during config merge.
-
-The setup script installs:
-
-1. skills to `~/.config/opencode/skills/`
-2. commands to `~/.config/opencode/commands/`
-3. merged agent config in `~/.config/opencode/opencode.json` (preserving your existing `model` fields)
-
-Manual merge templates are provided at:
-
-- `examples/opencode/opencode.single.json`
-- `examples/opencode/opencode.multi.json`
-
-#### Configure models per agent (single and multi mode)
-
-After setup, assign models in your OpenCode config file:
-
-- macOS/Linux/WSL: `~/.config/opencode/opencode.json`
-- Windows: `C:\Users\<you>\.config\opencode\opencode.json`
-
-Inside `agent`, add or edit the `model` field for each agent using `provider/model-id`.
-
-Single mode example:
-
-```json
-{
-  "agent": {
-    "cells-orchestrator": {
-      "mode": "all",
-      "model": "anthropic/claude-sonnet-4-6"
-    }
-  }
-}
-```
-
-Multi mode example:
-
-```json
-{
-  "agent": {
-    "cells-orchestrator": { "mode": "primary", "model": "anthropic/claude-sonnet-4-6" },
-    "cells-explore": { "mode": "subagent", "model": "google/gemini-2.5-flash" },
-    "cells-spec": { "mode": "subagent", "model": "anthropic/claude-opus-4-6" },
-    "cells-design": { "mode": "subagent", "model": "anthropic/claude-opus-4-6" },
-    "cells-apply": { "mode": "subagent", "model": "anthropic/claude-sonnet-4-6" },
-    "cells-verify": { "mode": "subagent", "model": "openai/o3" }
-  }
-}
-```
-
-Notes:
-
-- Do not remove required agent fields (`prompt`, `permission`) when editing. OpenCode's `tools` field is deprecated; use `permission`.
-- In multi mode, phases without explicit `model` use your OpenCode default model.
-- Re-running `setup.sh` / `setup.ps1` preserves existing `model` fields for Cells phase agents.
-
-Troubleshooting (`database table is locked`):
-
-- This usually means another suspended OpenCode process is still holding the local DB lock.
-- Close OpenCode sessions, then check active processes (`ps aux | grep opencode` on macOS/Linux, `Get-Process opencode` on Windows).
-- Stop stale processes (`pkill -f opencode` or `Stop-Process -Name opencode -Force`), then start OpenCode again.
-- Avoid leaving suspended OpenCode sessions running in the background.
-
-### VS Code Copilot
-
-1. Install workspace assets from the target repository:
-
-```bash
-./scripts/install.sh --agent vscode
-```
-
-This creates the official VS Code Copilot layout:
-
-- `.github/copilot-instructions.md`
-- `.github/instructions/cells-orchestrator.instructions.md`
-- `.github/prompts/cells-*.prompt.md`
-- `.github/agents/*.agent.md`
-- `.github/skills/*/SKILL.md`
-- `.github/hooks/*.json`
-- `.github/plugin/` optional Copilot plugin package
-
-2. Use `cells-orchestrator` as the main custom agent. It can invoke `cells-analysis`, `cells-implementation`, and `cells-verification` as subagents when the VS Code `agent` tool is available.
-3. Skills are first-class VS Code Agent Skills under `.github/skills/`; repository-local `skills/` remains the source of truth in this bundle.
-4. Agent handoffs follow `skills/_shared/cells-agent-handoff-contract.md`: orchestrator is a coordinator, executor agents do not delegate, every handoff carries `evidence_required`, and every result reports `skill_resolution`.
-5. Hooks are installed as guardrails for destructive commands and non-Cells command drift. They are intentionally narrow and do not replace `cells-verify`.
-6. Validate VS Code customization assets before release:
-
-```bash
+python3 scripts/validate_opencode_assets.py
 python3 scripts/validate_vscode_copilot_assets.py
-python3 scripts/validate_vscode_copilot_assets.py --installed-root .github
-python3 scripts/validate_vscode_copilot_assets.py --plugin-root .github/plugin
-```
-
-Workspace install is the recommended VS Code path. The portable manual-install copy is:
-
-```text
-portable/vscode/.github/
-```
-
-That copy already includes the built plugin under `.github/plugin/`. The separate standalone plugin package remains available for advanced distribution use at `portable/vscode-plugin/`. See `examples/vscode/docs/opencode-vscode-equivalence.md` for the OpenCode phase-agent to VS Code role-agent mapping.
-
-### Codex
-
-1. Install Codex project assets from the target repository root:
-
-```bash
-./scripts/install.sh --agent codex
-```
-
-This creates the native Codex project layout:
-
-- `AGENTS.md`
-- `.codex/config.toml`
-- `.codex/hooks.json`
-- `.codex/rules/default.rules`
-- `.codex/agents/*.toml`
-- `.agents/plugins/marketplace.json`
-- `plugins/cells-agent-bundle-codex/`
-
-2. Codex starts from `AGENTS.md`; the installed guidance applies `cells-work-sizing-contract.md` before selecting skills, subagents, artifacts, or validation depth.
-3. Use `cells-orchestrator` as the coordinating agent only for `full-workflow` or explicitly delegated work. `fast-path` and `scoped-change` stay local unless the user requests delegation or the task has independent non-blocking slices.
-4. The plugin exposes a lightweight `cells-agent-bundle` gateway skill for Codex discovery, while the complete canonical payload lives at `plugins/cells-agent-bundle-codex/.cache/cells-skills/`; `AGENTS.md` and the agent TOMLs route through that payload rather than duplicating policy.
-5. Hooks and rules are intentionally narrow guardrails. They do not replace `cells-verify`.
-6. Validate Codex assets before release:
-
-```bash
 python3 scripts/validate_codex_assets.py
+python3 scripts/validate_official_docs_catalog.py
+```
+
+Portable validation:
+
+```bash
+python3 scripts/validate_opencode_assets.py --installed-root portable/opencode-home
+python3 scripts/validate_vscode_copilot_assets.py --installed-root portable/vscode/.github
+python3 scripts/validate_vscode_copilot_assets.py --plugin-root portable/vscode-plugin
 python3 scripts/validate_codex_assets.py --installed-root portable/codex-project
-python3 scripts/validate_codex_assets.py --plugin-root plugins/cells-agent-bundle-codex
 ```
 
-Portable/manual install path:
-
-```text
-portable/codex-project/
-```
-
-That copy already includes the repo-local plugin source, the complete hidden skills payload, and the marketplace entry. v1 proves structural/runtime-readiness through validators and install tests; live Codex plugin loading should be claimed only after a real Codex smoke run is added.
+For exact manual-copy steps, see [portable/README.md](/home/monasterios/Documents/cells/cells-agents/portable/README.md).
 
 ## Project Structure
 
