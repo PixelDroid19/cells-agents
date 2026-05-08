@@ -2,15 +2,20 @@
 
 This contract defines how Cells agents coordinate work across hosts. It is the authority for agent roles, handoffs, evidence gates, skill resolution, and Dev-QA loops. Host files route to this contract; they must not fork policy.
 
+Apply `cells-work-sizing-contract.md` before using this handoff contract. Handoff is required for `full-workflow` work and explicit delegation requests. It is not required for `fast-path` answers or ordinary `scoped-change` edits.
+
 ## Role Boundaries
 
 ### Orchestrator
 
-The Cells orchestrator is a coordinator, not executor.
+The Cells orchestrator is a coordinator for broad or delegated work, not a mandatory executor for every task.
 
-- Keep the main thread thin: decide, delegate, synthesize, and report.
+- Start by selecting `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
+- For `fast-path`, answer or inspect directly without subagents or artifacts.
+- For `scoped-change`, handle the narrow edit or route to the smallest relevant executor only when isolation adds value or the user requested delegation.
+- For `full-workflow`, keep the main thread thin: decide, delegate, synthesize, and report.
 - Do small inline reads only when they are needed to route or verify a decision.
-- Delegate broad exploration, multi-file implementation, test execution, browser validation, and verification work.
+- Delegate broad exploration, multi-file implementation, broad test execution, browser validation, and verification work when the selected work mode requires that evidence.
 - Never use `/cells-new`, `/cells-continue`, or `/cells-ff` as executor skills; those are workflow intents handled by orchestration.
 - Before delegation, resolve relevant Cells skills and shared contracts, then pass the smallest useful rules and artifact references to the subagent.
 - After delegation, inspect `skill_resolution`. If it is not `injected`, reload the skill registry or referenced contracts before the next handoff.

@@ -50,6 +50,7 @@ SOURCE_REQUIRED_FILES = [
     "scripts/cells-pretool-policy.js",
     "scripts/cells-stop-reminder.js",
     "plugin/plugin.json",
+    "../../skills/_shared/cells-work-sizing-contract.md",
     "../../skills/_shared/cells-agent-handoff-contract.md",
 ]
 
@@ -76,6 +77,7 @@ INSTALLED_REQUIRED_FILES = [
     "plugin/plugin.json",
     "skills/_shared/cells-governance-contract.md",
     "skills/_shared/cells-agent-handoff-contract.md",
+    "skills/_shared/cells-work-sizing-contract.md",
     "skills/_shared/cells-policy-matrix.yaml",
     "skills/_shared/persistence-contract.md",
     "skills/cells-apply/SKILL.md",
@@ -247,6 +249,51 @@ def validate_behavioral_policies() -> list[str]:
     return invalid
 
 
+def validate_proportional_workflow(base: Path) -> list[str]:
+    invalid: list[str] = []
+    required_modes = ("fast-path", "scoped-change", "full-workflow", "blocked")
+    required_paths = [
+        "copilot-instructions.md",
+        "instructions/cells-orchestrator.instructions.md",
+        "agents/cells-orchestrator.agent.md",
+        "agents/cells-analysis.agent.md",
+        "agents/cells-implementation.agent.md",
+        "agents/cells-verification.agent.md",
+        "prompts/cells-apply.prompt.md",
+        "prompts/cells-verify.prompt.md",
+    ]
+    forbidden_phrases = (
+        "always delegate",
+        "always use subagents",
+        "delegate-first",
+        "full workflow for every",
+        "full-workflow for every",
+    )
+
+    for relative in required_paths:
+        path = base / relative
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        if "cells-work-sizing-contract.md" not in text:
+            invalid.append(f"{display(path)} missing proportional work-sizing contract reference")
+        lowered = text.lower()
+        for phrase in forbidden_phrases:
+            if phrase in lowered:
+                invalid.append(f"{display(path)} contains non-proportional instruction: {phrase}")
+
+    for relative in ("copilot-instructions.md", "instructions/cells-orchestrator.instructions.md", "agents/cells-orchestrator.agent.md"):
+        path = base / relative
+        if not path.is_file():
+            continue
+        text = path.read_text(encoding="utf-8")
+        for mode in required_modes:
+            if mode not in text:
+                invalid.append(f"{display(path)} missing work mode token: {mode}")
+
+    return invalid
+
+
 def validate_legacy_markdown(base: Path) -> list[str]:
     invalid: list[str] = []
     patterns = {
@@ -339,6 +386,7 @@ def validate_agent_contract(path: Path, agent_name: str) -> list[str]:
             "coordinator, not executor",
             "Handoff Packet",
             "Dev-QA loop",
+            "cells-work-sizing-contract.md",
         ]
         for token in orchestrator_tokens:
             if token not in text:
@@ -347,10 +395,16 @@ def validate_agent_contract(path: Path, agent_name: str) -> list[str]:
         executor_tokens = [
             "Do not delegate",
             "Do not launch subagents",
+            "cells-work-sizing-contract.md",
         ]
         for token in executor_tokens:
             if token not in text:
                 invalid.append(f"{display(path)} missing executor isolation token: {token}")
+        frontmatter = parse_frontmatter(path)
+        if frontmatter.get("agents", "").strip() != "[]":
+            invalid.append(f"{display(path)} executor agents must declare agents: []")
+        if frontmatter.get("disable-model-invocation", "").lower() != "true":
+            invalid.append(f"{display(path)} executor agents must set disable-model-invocation: true")
 
     return invalid
 
@@ -545,6 +599,7 @@ def validate_source_assets() -> tuple[list[str], list[str]]:
     missing, invalid = validate_required_files(SOURCE_ROOT, SOURCE_REQUIRED_FILES)
     invalid.extend(validate_required_strings(SOURCE_ROOT))
     invalid.extend(validate_behavioral_policies())
+    invalid.extend(validate_proportional_workflow(SOURCE_ROOT))
     invalid.extend(validate_vscode_format(SOURCE_ROOT))
     invalid.extend(
         validate_hooks(
@@ -563,6 +618,7 @@ def validate_installed_assets(installed_root: Path) -> tuple[list[str], list[str
     installed_root = installed_root.resolve()
     missing, invalid = validate_required_files(installed_root, INSTALLED_REQUIRED_FILES)
     invalid.extend(validate_required_strings(installed_root))
+    invalid.extend(validate_proportional_workflow(installed_root))
     invalid.extend(validate_vscode_format(installed_root))
     invalid.extend(
         validate_hooks(

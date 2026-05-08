@@ -5,11 +5,12 @@ This repository is a **Cells-focused orchestration workspace**. Follow these ins
 ## Read first (in order)
 
 1. `.github/instructions/cells-orchestrator.instructions.md`
-2. `.github/prompts/cells-explore.prompt.md` or the matching `.github/prompts/cells-*.prompt.md`
-3. `.github/agents/cells-orchestrator.agent.md`
-4. `.github/skills/_shared/persistence-contract.md`
-5. `.github/skills/_shared/cells-governance-contract.md`
-6. `.github/skills/_shared/cells-policy-matrix.yaml`
+2. `.github/skills/_shared/cells-work-sizing-contract.md`
+3. `.github/prompts/cells-explore.prompt.md` or the matching `.github/prompts/cells-*.prompt.md`
+4. `.github/agents/cells-orchestrator.agent.md`
+5. `.github/skills/_shared/persistence-contract.md`
+6. `.github/skills/_shared/cells-governance-contract.md`
+7. `.github/skills/_shared/cells-policy-matrix.yaml`
 
 Use repository-local `skills/` as fallback only when `.github/skills/` has not been installed yet.
 
@@ -35,6 +36,17 @@ Use **Cells-native** workflows by default:
 - Registry: `skill-registry` (generate/update `.atl/skill-registry.md` and engram mirror when available)
 
 Do **not** default to generic `npm run ...`, `npm test`, or `npx web-test-runner` unless the user explicitly requests a non-Cells path.
+
+## Work sizing (critical)
+
+Choose the smallest safe workflow before loading phase prompts or custom agents:
+
+- `fast-path`: answer questions or inspect narrow facts directly. No subagents, no artifacts, no full CELLS phase flow.
+- `scoped-change`: small localized edits or direct user instructions. Load only relevant skills and run targeted validation.
+- `full-workflow`: multi-file features, architecture, complex UI/i18n/test/coverage work, release closure, or user-requested end-to-end proof.
+- `blocked`: ambiguous scope, missing environment/credentials, destructive risk, or proof that cannot be obtained.
+
+Do not send a simple VS Code task through a full orchestrator/subagent chain unless the user explicitly asks or evidence/risk requires it.
 
 ## Testing stack order (mandatory)
 
@@ -75,10 +87,11 @@ For any testing, coverage, or test-creation task, consult in this order:
 ## Quick agent checklist
 
 - Confirm active flow is Cells-native.
+- Confirm work sizing before phase prompts: `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
 - Read the “Read first” files before making edits.
 - Use catalog-first retrieval for docs/components.
 - Follow testing stack order strictly.
-- Use `cells-orchestrator`, `cells-analysis`, `cells-implementation`, and `cells-verification` custom agents when role separation matters.
+- Use `cells-orchestrator`, `cells-analysis`, `cells-implementation`, and `cells-verification` custom agents only when role separation matters; do not delegate `fast-path` work.
 - Run governance validators when changing prompts/instructions/skills:
   - `scripts/validate_vscode_copilot_assets.py`
   - `scripts/validate_governance_behavior.py`

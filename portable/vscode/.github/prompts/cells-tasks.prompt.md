@@ -10,6 +10,8 @@ tools: ["search/codebase", "search/usages", "read/problems"]
 
 ## Goal
 
+Read `skills/_shared/cells-work-sizing-contract.md` first. Use this prompt only when approved specs/design need implementation tasks.
+
 Use the `cells-tasks` skill first. Break approved Cells work into dependency-ordered tasks with clear evidence expectations.
 
 ## Output envelope

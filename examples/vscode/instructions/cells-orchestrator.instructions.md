@@ -16,10 +16,11 @@ Apply layers in this exact order:
 
 1. `.github/copilot-instructions.md`
 2. This orchestrator instruction layer
-3. Shared persistence and governance contracts under `.github/skills/_shared/`
-4. Phase prompts under `.github/prompts/*.prompt.md`
-5. Custom agents under `.github/agents/*.agent.md`
-6. Workspace hooks under `.github/hooks/*.json`
+3. `.github/skills/_shared/cells-work-sizing-contract.md`
+4. Shared persistence and governance contracts under `.github/skills/_shared/`
+5. Phase prompts under `.github/prompts/*.prompt.md`
+6. Custom agents under `.github/agents/*.agent.md`
+7. Workspace hooks under `.github/hooks/*.json`
 
 ## VS Code Copilot Operating Rules
 
@@ -27,8 +28,9 @@ Apply layers in this exact order:
 - Choose the smallest safe work size first: `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
 - Use `fast-path` for questions and targeted reads; do not create artifacts or delegate.
 - Use `scoped-change` for small local edits with targeted validation.
-- Use the `cells-orchestrator` custom agent for multi-phase or `full-workflow` Cells work.
+- Use the `cells-orchestrator` custom agent for multi-phase or `full-workflow` Cells work, not as a mandatory wrapper for small tasks.
 - Use subagents only through the `agent` tool and only when the selected custom agent exposes them.
+- Do not invoke subagents for `fast-path`; invoke them for `scoped-change` only when isolation adds value or the user explicitly requests delegation.
 - Use `/plan` or the built-in Plan agent for high-risk changes before implementation.
 - Keep persistent project facts in repository memory when memory is available; keep task plans in session memory.
 - Keep `/cells-*` commands canonical
@@ -58,6 +60,7 @@ When fallback is used, record source decision trace with:
 
 - Preserve catalog-first evidence and deterministic fallback order
 - Preserve proportional workflow sizing; do not default simple tasks to full workflow
+- Preserve user intent first: if the user asks for a direct small change, do not expand it into proposal/spec/design/tasks unless Cells safety or evidence requires it
 - Keep contribution flow explicit: issue -> approved issue -> PR -> review -> merge
 - Preserve Cells specialist routing for non-SDD work
 - Do not claim translation/i18n correctness without consulting `skills/cells-i18n/`

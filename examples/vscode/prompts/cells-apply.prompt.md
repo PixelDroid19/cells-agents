@@ -10,7 +10,11 @@ tools: ["search/codebase", "search/usages", "read/problems", "editFiles", "runTe
 
 ## Goal
 
+Read `skills/_shared/cells-work-sizing-contract.md` first and choose `scoped-change`, `full-workflow`, or `blocked`.
+
 Use the `cells-apply` skill first. Implement the assigned Cells task batch while preserving canonical lineage, scope gates, and Cells-native commands.
+
+For a direct `scoped-change`, do not require `cells-init`, proposal, spec, design, or tasks before making the narrow edit. Keep validation targeted unless the user requested end-to-end proof.
 
 If tests are added or changed, consult `cells-cli-usage`, then `cells-coverage`, then `cells-test-creator` before edits and commands.
 

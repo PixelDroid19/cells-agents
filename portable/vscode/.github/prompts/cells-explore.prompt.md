@@ -10,9 +10,11 @@ tools: ["search/codebase", "search/usages", "read/problems", "web/fetch"]
 
 ## Goal
 
+Read `skills/_shared/cells-work-sizing-contract.md` first and choose `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
+
 Use the `cells-explore` skill first. Investigate the requested topic with Cells-first evidence and VS Code custom-agent routing.
 
-Use `cells-analysis` when subagent delegation is useful. Record source decisions when fallback is used.
+Use targeted reads for narrow questions. Use `cells-analysis` only when subagent delegation is useful for isolated evidence. Record source decisions when fallback is used.
 
 ## Output envelope
 

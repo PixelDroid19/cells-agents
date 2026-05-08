@@ -10,6 +10,8 @@ tools: ["search/codebase", "search/usages", "read/problems", "web/fetch"]
 
 ## Goal
 
+Read `skills/_shared/cells-work-sizing-contract.md` first. Use this prompt for `full-workflow` proposal work or explicit user requests, not for ordinary direct edits.
+
 Use the `cells-propose` skill first. Create a proposal that preserves Cells governance, source decisions, and approval gates.
 
 Use VS Code planning or `cells-analysis` for missing context before proposing implementation.

@@ -10,6 +10,8 @@ tools: ["search/codebase", "search/usages", "read/problems", "web/fetch"]
 
 ## Goal
 
+Read `skills/_shared/cells-work-sizing-contract.md` first. Use this prompt for architecture, data-flow, complex UI/test strategy, or explicit design requests.
+
 Use the `cells-design` skill first. Describe the technical approach while preserving canonical Cells lineage and VS Code planning handoffs.
 
 Use `cells-analysis` for additional read-only evidence before choosing architecture.

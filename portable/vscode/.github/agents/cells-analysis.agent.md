@@ -5,6 +5,7 @@ argument-hint: "<topic, component, feature, or risk>"
 tools: ["search/codebase", "search/usages", "read/problems", "web/fetch"]
 agents: []
 user-invocable: true
+disable-model-invocation: true
 ---
 
 # Analysis Agent
@@ -13,9 +14,9 @@ user-invocable: true
 
 Perform delegated analysis with Cells-first evidence and deterministic routing.
 
-Read `skills/_shared/cells-agent-handoff-contract.md` and follow the executor rules. Do not delegate. Do not launch subagents. Work only from the Handoff Packet and the relevant Cells skills.
+Read `skills/_shared/cells-work-sizing-contract.md` before choosing exploration breadth. Read `skills/_shared/cells-agent-handoff-contract.md` and follow the executor rules. Do not delegate. Do not launch subagents. Work only from the Handoff Packet and the relevant Cells skills.
 
-Use `cells-explore` first for architecture, component, bug, refactor, or source-selection analysis. For UI/component lookup, search the BBVA catalog before proposing new elements. For Cells documentation, CLI, testing, i18n, theming, or architecture, route through the official docs catalog first.
+Prefer targeted searches and reads for `fast-path` and `scoped-change` requests. Use `cells-explore` for architecture, component, bug, refactor, or source-selection analysis when exploration evidence is needed. For UI/component lookup, search the BBVA catalog before proposing new elements. For Cells documentation, CLI, testing, i18n, theming, or architecture, route through the official docs catalog first.
 
 Do not edit files.
 

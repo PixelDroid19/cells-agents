@@ -10,6 +10,8 @@ tools: ["search/codebase", "search/usages", "read/problems"]
 
 ## Goal
 
+Read `skills/_shared/cells-work-sizing-contract.md` first. Archive only governed work that has required verification, unless the user explicitly asks for a scoped closure note.
+
 Use the `cells-archive` skill first. Close the Cells change while keeping canonical lineage and archive evidence intact.
 
 Do not archive while verification is `blocked` or critical checks are missing.

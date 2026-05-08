@@ -12,6 +12,8 @@ INSTALL_SCRIPT="$SCRIPT_DIR/install.sh"
 PORTABLE_BUILDER="$SCRIPT_DIR/build_portable_assets.sh"
 VSCODE_VALIDATOR="$SCRIPT_DIR/validate_vscode_copilot_assets.py"
 CODEX_VALIDATOR="$SCRIPT_DIR/validate_codex_assets.py"
+OPENCODE_VALIDATOR="$SCRIPT_DIR/validate_opencode_assets.py"
+FTS_VALIDATOR="$SCRIPT_DIR/validate_official_docs_catalog.py"
 
 TESTS_RUN=0
 TESTS_PASSED=0
@@ -90,6 +92,7 @@ assert_opencode_portable_bundle() {
     local count
     count=$(find "$opencode_root/commands" -name "cells-*.md" | wc -l | tr -d ' ')
     assert_eq "$EXPECTED_COMMAND_COUNT" "$count"
+    python3 "$OPENCODE_VALIDATOR" --installed-root "$base_dir" > /dev/null
 }
 
 assert_vscode_assets_installed() {
@@ -290,6 +293,8 @@ test_output_shows_detected_os() {
 # Portable/manual distributions
 
 test_repo_portable_assets_valid() {
+    python3 "$OPENCODE_VALIDATOR" > /dev/null
+    python3 "$FTS_VALIDATOR" > /dev/null
     assert_opencode_portable_bundle "$REPO_DIR/portable/opencode-home" || return 1
     assert_vscode_assets_installed "$REPO_DIR/portable/vscode" || return 1
     assert_vscode_workspace_valid "$REPO_DIR/portable/vscode" || return 1
@@ -324,6 +329,7 @@ test_manual_copy_codex_project() {
 test_build_portable_assets() {
     local out_dir="$TEST_TMPDIR/portable-build"
     bash "$PORTABLE_BUILDER" "$out_dir" > /dev/null 2>&1
+    python3 "$OPENCODE_VALIDATOR" --installed-root "$out_dir/opencode-home" > /dev/null
     assert_opencode_portable_bundle "$out_dir/opencode-home" || return 1
     assert_vscode_assets_installed "$out_dir/vscode" || return 1
     assert_vscode_workspace_valid "$out_dir/vscode" || return 1

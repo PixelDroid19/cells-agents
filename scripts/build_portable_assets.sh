@@ -15,6 +15,8 @@ VSCODE_PLUGIN_BUILDER="$SCRIPT_DIR/build_vscode_plugin.sh"
 CODEX_PLUGIN_BUILDER="$SCRIPT_DIR/build_codex_plugin.sh"
 VSCODE_VALIDATOR="$SCRIPT_DIR/validate_vscode_copilot_assets.py"
 CODEX_VALIDATOR="$SCRIPT_DIR/validate_codex_assets.py"
+OPENCODE_VALIDATOR="$SCRIPT_DIR/validate_opencode_assets.py"
+FTS_VALIDATOR="$SCRIPT_DIR/validate_official_docs_catalog.py"
 
 CORE_WORKFLOW_COMMANDS=(
     "cells-init.md"
@@ -144,6 +146,9 @@ build_codex_project() {
 }
 
 validate_portable_assets() {
+    python3 "$OPENCODE_VALIDATOR" > /dev/null
+    python3 "$OPENCODE_VALIDATOR" --installed-root "$OUT_DIR/opencode-home" > /dev/null
+    python3 "$FTS_VALIDATOR" > /dev/null
     python3 "$VSCODE_VALIDATOR" --installed-root "$OUT_DIR/vscode/.github" > /dev/null
     python3 "$VSCODE_VALIDATOR" --plugin-root "$OUT_DIR/vscode-plugin" > /dev/null
     python3 "$CODEX_VALIDATOR" --installed-root "$OUT_DIR/codex-project" > /dev/null

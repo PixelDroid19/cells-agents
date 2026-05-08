@@ -13,12 +13,15 @@ CONTEXT:
 - Working directory: current OpenCode project root
 - Current project: infer from current workspace
 - Topic to explore: $ARGUMENTS
-- Artifact store mode: engram
+- Work sizing: read `skills/_shared/cells-work-sizing-contract.md` before choosing breadth
+- Artifact store mode: `none` for direct `fast-path` or narrow `scoped-change` exploration; `engram` for active governed workflows
 
 TASK:
 Explore the topic "$ARGUMENTS" in this codebase. Investigate the current state, identify affected areas, compare approaches, and provide a recommendation.
 
 This is an exploration only — do NOT create any files or modify code. Just research and return your analysis.
+
+For a narrow question or small local change, prefer targeted searches/reads over broad repository exploration. Do not create proposal/spec/design/tasks artifacts unless the user requested a governed `full-workflow`.
 
 If the topic involves Cells components, use real evidence from `custom-elements.json`, `skills/cells-components-catalog/`, `skills/cells-official-docs-catalog/`, feature repos, and tests before making any recommendation.
 

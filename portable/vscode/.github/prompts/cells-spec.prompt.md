@@ -10,6 +10,8 @@ tools: ["search/codebase", "search/usages", "read/problems"]
 
 ## Goal
 
+Read `skills/_shared/cells-work-sizing-contract.md` first. Use this prompt only when specs are needed for `full-workflow` or the user explicitly asks for them.
+
 Use the `cells-spec` skill first. Write testable Cells delta specs with explicit source decisions and evidence quality.
 
 ## Output envelope
