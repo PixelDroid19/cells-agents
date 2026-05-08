@@ -7,6 +7,7 @@ developer_instructions = """
 You are a CELLS implementation worker.
 
 Read AGENTS.md plus the relevant skills under plugins/cells-agent-bundle-codex/.cache/cells-skills/ before editing.
+Apply plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md before choosing implementation depth.
 Follow the executor rules from plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md.
 
 Do not delegate.
@@ -14,8 +15,10 @@ Do not launch subagents.
 Implement only the assigned scope.
 
 Rules:
-- Use cells-apply before editing.
+- Use cells-apply for full-workflow implementation or when its rules govern the touched surface.
+- For direct scoped-change tasks, do not require proposal/spec/design/tasks artifacts unless the user requested governed persistence.
 - Enforce strict scope control: touch only directly required files.
+- Prefer the smallest safe edit and the smallest targeted validation that proves it.
 - If tests are involved, consult cells-cli-usage, then cells-coverage, then cells-test-creator before choosing commands or changing tests.
 - Do not default to generic npm test/start commands in Cells contexts.
 

@@ -46,6 +46,7 @@ INSTALLED_REQUIRED_FILES = [
     ".agents/plugins/marketplace.json",
     "plugins/cells-agent-bundle-codex/.codex-plugin/plugin.json",
     "plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md",
+    "plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md",
     "plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md",
     "plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-rules-contract.md",
     "plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md",
@@ -104,6 +105,10 @@ def validate_agents_md(path: Path) -> list[str]:
         "cells-cli-usage",
         "cells-coverage",
         "cells-test-creator",
+        "cells-work-sizing-contract.md",
+        "fast-path",
+        "scoped-change",
+        "full-workflow",
         "cells-agent-handoff-contract.md",
     ]
     for token in required_tokens:
@@ -225,6 +230,19 @@ def validate_agent_files(base: Path) -> list[str]:
             invalid.append(f"{display(path)} points at gateway skills/ instead of .cache/cells-skills/")
         if "plugins/cells-agent-bundle-codex/.cache/cells-skills/" not in instructions:
             invalid.append(f"{display(path)} must route to the bundled .cache/cells-skills payload")
+        if "cells-work-sizing-contract.md" not in instructions:
+            invalid.append(f"{display(path)} must apply the proportional work-sizing contract")
+        lowered_instructions = instructions.lower()
+        forbidden_phrases = (
+            "delegate-first",
+            "always delegate",
+            "always use subagents",
+            "full workflow for every",
+            "full-workflow for every",
+        )
+        for phrase in forbidden_phrases:
+            if phrase in lowered_instructions:
+                invalid.append(f"{display(path)} contains non-proportional agent instruction: {phrase}")
         if "Do not delegate." not in instructions and agent_name != "cells-orchestrator":
             invalid.append(f"{display(path)} must explicitly forbid nested delegation")
     return invalid
@@ -275,6 +293,7 @@ def validate_plugin(plugin_root: Path) -> list[str]:
 
     required_skill_paths = [
         plugin_root / "skills" / "cells-agent-bundle" / "SKILL.md",
+        plugin_root / ".cache" / "cells-skills" / "_shared" / "cells-work-sizing-contract.md",
         plugin_root / ".cache" / "cells-skills" / "_shared" / "cells-agent-handoff-contract.md",
         plugin_root / ".cache" / "cells-skills" / "_shared" / "cells-rules-contract.md",
         plugin_root / ".cache" / "cells-skills" / "cells-apply" / "SKILL.md",
@@ -291,6 +310,10 @@ def validate_plugin(plugin_root: Path) -> list[str]:
             "plugins/cells-agent-bundle-codex/.cache/cells-skills/",
             "../../.cache/cells-skills/",
             "cells-cli-usage",
+            "cells-work-sizing-contract.md",
+            "fast-path",
+            "scoped-change",
+            "full-workflow",
             "cells-agent-handoff-contract.md",
         ):
             if token not in gateway_text:

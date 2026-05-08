@@ -69,6 +69,8 @@ This creates or refreshes:
 - `.agents/plugins/marketplace.json`
 - `plugins/cells-agent-bundle-codex/`
 
+The Codex layout uses `cells-work-sizing-contract.md` from the bundled plugin payload so simple tasks stay `fast-path`, small edits stay `scoped-change`, and the full Cells workflow is reserved for broad or explicitly requested work.
+
 Finder alternative:
 
 1. Open `portable/codex-project/`

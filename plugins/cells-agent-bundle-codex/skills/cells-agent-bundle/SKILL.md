@@ -17,8 +17,9 @@ When Codex loads this skill from an installed plugin cache instead of the reposi
 
 Before making code or architecture decisions:
 
-1. Read the matching `SKILL.md` from that payload.
-2. Always follow `_shared/cells-rules-contract.md`.
-3. For tests, resolve commands through `cells-cli-usage`, then `cells-coverage`, then `cells-test-creator`.
-4. For delegation, follow `_shared/cells-agent-handoff-contract.md`.
-5. Return evidence from real files, commands, or docs; do not rely on generic Cells assumptions.
+1. Read `_shared/cells-work-sizing-contract.md` and choose `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
+2. Read only the matching `SKILL.md` files needed for that mode.
+3. Always follow `_shared/cells-rules-contract.md` for UI/component/i18n/command-policy work.
+4. For tests, resolve commands through `cells-cli-usage`, then `cells-coverage`, then `cells-test-creator`.
+5. For delegation, follow `_shared/cells-agent-handoff-contract.md`; do not delegate `fast-path` work.
+6. Return evidence from real files, commands, or docs; do not rely on generic Cells assumptions.

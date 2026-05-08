@@ -13,6 +13,7 @@ ROOT = Path(__file__).resolve().parent.parent
 INSTRUCTIONS = ROOT / "examples/vscode/instructions/cells-orchestrator.instructions.md"
 GOVERNANCE = ROOT / "skills/_shared/cells-governance-contract.md"
 PERSISTENCE = ROOT / "skills/_shared/persistence-contract.md"
+WORK_SIZING = ROOT / "skills/_shared/cells-work-sizing-contract.md"
 VERIFY_SKILL = ROOT / "skills/cells-verify/SKILL.md"
 RULES = ROOT / "skills/_shared/cells-rules-contract.md"
 APPLY_SKILL = ROOT / "skills/cells-apply/SKILL.md"
@@ -131,14 +132,50 @@ def scenario_workflow_contract_parity() -> tuple[bool, str]:
     persistence = _read(PERSISTENCE)
     policy = _read(ROOT / "skills/_shared/cells-policy-matrix.yaml")
     required = (
-        "delegate-first",
+        "proportional",
+        "cells-work-sizing-contract.md",
         "Compatibility reads",
         "SKILL: Load",
-        "REQ-DELEGATE-FIRST",
+        "REQ-PROPORTIONAL-WORKFLOW",
     )
     if all(token in f"{workflow}\n{persistence}\n{policy}" for token in required):
         return True, "Workflow contract parity tokens are aligned across shared assets."
     return False, "Workflow contract parity tokens are missing across shared assets."
+
+
+def scenario_proportional_work_sizing() -> tuple[bool, str]:
+    work_sizing = _read(WORK_SIZING)
+    root_agents = _read(ROOT / "AGENTS.md")
+    codex_agents = _read(ROOT / "examples/codex/AGENTS.md")
+    gateway = _read(ROOT / "plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md")
+    codex_agent_text = "\n".join(
+        _read(path)
+        for path in sorted((ROOT / "examples/codex/.codex/agents").glob("*.toml"))
+    )
+    combined = f"{work_sizing}\n{root_agents}\n{codex_agents}\n{gateway}\n{codex_agent_text}"
+    required = (
+        "`fast-path`",
+        "`scoped-change`",
+        "`full-workflow`",
+        "`blocked`",
+        "No subagents, no artifacts",
+        "targeted validation",
+        "Follow the user's explicit instruction",
+        "cells-work-sizing-contract.md",
+    )
+    forbidden = (
+        "delegate-first",
+        "always delegate",
+        "always use subagents",
+        "full workflow for every",
+        "full-workflow for every",
+    )
+    if not all(token in combined for token in required):
+        return False, "Proportional work sizing tokens are missing from Codex guidance."
+    lowered = combined.lower()
+    if any(token in lowered for token in forbidden):
+        return False, "Codex guidance still contains non-proportional delegation/full-workflow language."
+    return True, "Codex guidance enforces proportional work sizing and avoids delegate-first defaults."
 
 
 def scenario_canonical_write_contract() -> tuple[bool, str]:
@@ -340,6 +377,7 @@ def scenario_no_private_reference_paths() -> tuple[bool, str]:
 SCENARIOS.update(
     {
         "workflow-contract-parity": scenario_workflow_contract_parity,
+        "proportional-work-sizing": scenario_proportional_work_sizing,
         "canonical-write-contract": scenario_canonical_write_contract,
         "canonical-lineage-only": scenario_canonical_lineage_only,
         "source-decision-template": scenario_source_decision_template,

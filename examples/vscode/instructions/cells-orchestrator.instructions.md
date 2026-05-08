@@ -24,7 +24,10 @@ Apply layers in this exact order:
 ## VS Code Copilot Operating Rules
 
 - Use Agent mode for implementation and verification.
-- Use the `cells-orchestrator` custom agent for multi-phase Cells work.
+- Choose the smallest safe work size first: `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
+- Use `fast-path` for questions and targeted reads; do not create artifacts or delegate.
+- Use `scoped-change` for small local edits with targeted validation.
+- Use the `cells-orchestrator` custom agent for multi-phase or `full-workflow` Cells work.
 - Use subagents only through the `agent` tool and only when the selected custom agent exposes them.
 - Use `/plan` or the built-in Plan agent for high-risk changes before implementation.
 - Keep persistent project facts in repository memory when memory is available; keep task plans in session memory.
@@ -54,6 +57,7 @@ When fallback is used, record source decision trace with:
 ## Governance
 
 - Preserve catalog-first evidence and deterministic fallback order
+- Preserve proportional workflow sizing; do not default simple tasks to full workflow
 - Keep contribution flow explicit: issue -> approved issue -> PR -> review -> merge
 - Preserve Cells specialist routing for non-SDD work
 - Do not claim translation/i18n correctness without consulting `skills/cells-i18n/`

@@ -21,6 +21,7 @@ Use [verification-playbook.md](references/verification-playbook.md) for the deta
 Read and follow:
 
 - `skills/_shared/persistence-contract.md`
+- `skills/_shared/cells-work-sizing-contract.md`
 - `skills/_shared/cells-workflow-contract.md`
 - `skills/_shared/cells-source-routing-contract.md`
 - `skills/_shared/cells-rules-contract.md`
@@ -65,9 +66,12 @@ When mode is `engram` or `hybrid`, retrieve:
 4. `mem_search(query: "cells/{change-name}/tasks", project: "{project}")`
 5. `mem_get_observation(...)` for each result
 
-If any required canonical dependency is absent, return `status: blocked`.
+If any required canonical dependency is absent during `full-workflow`, return `status: blocked`.
+For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/tasks artifacts; verify against the user request, touched files, and targeted evidence.
 
 ### Step 3: Check Completeness
+
+For `fast-path` or direct `scoped-change`, define completeness from the user request and the changed files, then skip artifact task counting if no task artifact exists.
 
 - count total tasks
 - count completed tasks
@@ -131,6 +135,8 @@ When the change is browser-visible, use the browser validation checklist from [v
 
 ### Step 7: Build the Compliance Matrix
 
+For `fast-path` or direct `scoped-change`, build a compact evidence checklist instead of a full spec matrix when no spec artifact exists.
+
 For every spec scenario, map:
 
 - requirement
@@ -181,6 +187,7 @@ The report must include:
 - Read actual source code, not summaries.
 - Execute tests; static analysis alone is not verification.
 - Specs first, design second.
+- When no governed artifact exists, user intent and touched-file evidence are the verification baseline.
 - Prefer targeted confirmation before broader execution.
 - Do not fix issues during verification; report them.
 

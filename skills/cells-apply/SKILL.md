@@ -22,6 +22,7 @@ Use [implementation-playbook.md](references/implementation-playbook.md) for the 
 Read and follow:
 
 - `skills/_shared/persistence-contract.md`
+- `skills/_shared/cells-work-sizing-contract.md`
 - `skills/_shared/cells-workflow-contract.md`
 - `skills/_shared/cells-source-routing-contract.md`
 - `skills/_shared/cells-rules-contract.md`
@@ -61,18 +62,19 @@ When mode is `engram` or `hybrid`, retrieve:
 4. `mem_search(query: "cells/{change-name}/tasks", project: "{project}")`
 5. `mem_get_observation(...)` for each result
 
-If any required canonical dependency is absent, return `status: blocked`.
+If any required canonical dependency is absent during `full-workflow`, return `status: blocked`.
+For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/tasks artifacts; use the user request, touched files, and project-local evidence as the working scope.
 
 ### Step 3: Read Context Before Editing
 
-Always read:
+Read the minimum context required by the selected work size. For governed `full-workflow`, always read:
 
 1. spec or acceptance criteria
 2. design decisions
 3. affected code and nearby patterns
 4. project-local conventions
 
-For Cells work, also inspect:
+For Cells work, also inspect the relevant subset of:
 
 5. `custom-elements.json`
 6. relevant tests
@@ -125,9 +127,8 @@ Detect whether the project is running TDD. Use the detailed RED/GREEN/REFACTOR f
 
 Standard mode minimum:
 
-- read task
-- read relevant specs
-- read design decisions
+- read the task or direct user instruction
+- read relevant specs/design decisions when the selected work size is `full-workflow` or the artifact exists
 - match existing code patterns
 - make the smallest working change
 - note deviations or issues
@@ -180,9 +181,10 @@ Include a `Source Decisions` section with these exact fields:
 ### Core implementation rules
 
 - Specs are acceptance criteria.
-- Follow design decisions unless you explicitly record a deviation.
+- Follow design decisions when a design artifact exists unless you explicitly record a deviation.
 - Match existing patterns before introducing new abstractions.
 - Scope isolation is mandatory.
+- Use `fast-path` or `scoped-change` when the user requested a local/trivial change; do not manufacture a full proposal/spec/design/tasks chain.
 
 ### Cells-specific rules
 

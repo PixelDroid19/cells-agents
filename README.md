@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Cells Agent Bundle</h1>
   <p align="center">
-    <strong>Portable multi-host orchestration for BBVA Cells using skill-driven delegated runs</strong>
+    <strong>Portable multi-host orchestration for BBVA Cells using proportional skill-driven workflows</strong>
     <br />
     <em>Portable local assets. Indexed documentation. Engram-first persistence. Markdown-based skills.</em>
   </p>
@@ -40,7 +40,7 @@ The key design goal is simple: keep the orchestrator lean, keep documentation in
 The bundle uses a four-layer architecture:
 
 1. Host integration layer: `examples/*` contains prompts, rules, and OpenCode commands for each supported host.
-2. Orchestrator layer: a single lean orchestrator routes work, resolves persistence mode, prefers background delegation when the host supports it, tracks state, and asks for approvals.
+2. Orchestrator layer: a single lean orchestrator sizes the work, routes to only the required skills, resolves persistence mode, uses background delegation only when it adds value, tracks state, and asks for approvals.
 3. Skill layer: specialist behavior lives in `skills/cells-*/SKILL.md`.
 4. Knowledge layer: shared conventions plus bundled catalogs provide deterministic retrieval and evidence.
 
@@ -51,21 +51,23 @@ The canonical flow is:
 1. The user selects the orchestrator, usually `cells-orchestrator`.
 2. The user runs a workflow command such as `/cells-init` or `/cells-explore component:bbva-button-default`.
 3. The host command or prompt hands control to the orchestrator.
-4. The orchestrator launches a delegated run.
-   - Prefer `delegate` for non-blocking or parallel work when the optional OpenCode background-delegation plugin is installed.
-   - Fall back to synchronous `task` when immediate results are required or the plugin is unavailable.
-5. That delegated run starts by reading the relevant `SKILL.md`.
+4. The orchestrator selects the smallest safe mode: `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
+   - Use `fast-path` for answers, targeted reads, and narrow recommendations.
+   - Use `scoped-change` for small local edits with targeted validation.
+   - Use `full-workflow` for broad features, architecture, i18n/test/coverage, release work, or explicit end-to-end proof.
+5. The selected execution path starts by reading only the relevant `SKILL.md` files.
 6. The skill decides which evidence to inspect: code, tests, package docs, official docs, indexed catalogs, or persistence artifacts.
 7. The skill returns a structured result envelope.
 8. The orchestrator summarizes, asks for approval if needed, and selects the next step.
 
-### Delegate-First Orchestration Policy
+### Proportional Orchestration Policy
 
-The orchestrator stays thin and coordination-only:
+The orchestrator stays thin and coordination-aware:
 
-- delegate-first for SDD and non-SDD work
-- prefer `delegate` when host/plugin support exists
-- fall back to `task` without weakening Cells governance, evidence gates, or specialist routing
+- do not delegate `fast-path` work
+- keep `scoped-change` in the current agent unless independent non-blocking slices or user-requested delegation justify role agents
+- use `delegate` or host subagents for `full-workflow` work when role separation, parallelism, or evidence gathering actually helps
+- fall back to direct execution or synchronous `task` without weakening Cells governance, evidence gates, or specialist routing
 - keep `/cells-*` commands canonical even when migration work inspects historical pre-Cells artifacts as compatibility-only history
 
 ### Conservative Execution Policy
@@ -111,7 +113,7 @@ Intent routing policy:
 User
   -> host prompt or /cells-* command
   -> cells-orchestrator
-  -> generic delegated run
+  -> sized execution path
   -> read target SKILL.md
   -> inspect evidence and conventions
   -> return structured result
@@ -120,7 +122,7 @@ User
 
 ### Result Contract
 
-Every delegated run should return the same decision-friendly structure:
+Every delegated or governed phase run should return the same decision-friendly structure:
 
 ```json
 {
@@ -706,10 +708,11 @@ This creates the native Codex project layout:
 - `.agents/plugins/marketplace.json`
 - `plugins/cells-agent-bundle-codex/`
 
-2. Use `cells-orchestrator` as the coordinating agent and the role agents under `.codex/agents/` for analysis, implementation, and verification.
-3. The plugin exposes a lightweight `cells-agent-bundle` gateway skill for Codex discovery, while the complete canonical payload lives at `plugins/cells-agent-bundle-codex/.cache/cells-skills/`; `AGENTS.md` and the agent TOMLs route through that payload rather than duplicating policy.
-4. Hooks and rules are intentionally narrow guardrails. They do not replace `cells-verify`.
-5. Validate Codex assets before release:
+2. Codex starts from `AGENTS.md`; the installed guidance applies `cells-work-sizing-contract.md` before selecting skills, subagents, artifacts, or validation depth.
+3. Use `cells-orchestrator` as the coordinating agent only for `full-workflow` or explicitly delegated work. `fast-path` and `scoped-change` stay local unless the user requests delegation or the task has independent non-blocking slices.
+4. The plugin exposes a lightweight `cells-agent-bundle` gateway skill for Codex discovery, while the complete canonical payload lives at `plugins/cells-agent-bundle-codex/.cache/cells-skills/`; `AGENTS.md` and the agent TOMLs route through that payload rather than duplicating policy.
+5. Hooks and rules are intentionally narrow guardrails. They do not replace `cells-verify`.
+6. Validate Codex assets before release:
 
 ```bash
 python3 scripts/validate_codex_assets.py
@@ -723,7 +726,7 @@ Portable/manual install path:
 portable/codex-project/
 ```
 
-That copy already includes the repo-local plugin source, the complete hidden skills payload, and the marketplace entry. v1 proves structural/runtime-readiness through validators, install tests, and a local Codex prompt-input smoke.
+That copy already includes the repo-local plugin source, the complete hidden skills payload, and the marketplace entry. v1 proves structural/runtime-readiness through validators and install tests; live Codex plugin loading should be claimed only after a real Codex smoke run is added.
 
 ## Project Structure
 

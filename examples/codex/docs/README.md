@@ -27,6 +27,7 @@ Apply layers in this order:
 Practical interpretation for this bundle:
 
 - `AGENTS.md` explains the Cells operating contract.
+- `cells-work-sizing-contract.md` decides whether the task needs fast-path, scoped-change, full-workflow, or blocked handling.
 - `.codex/config.toml` enables hooks and sets multi-agent defaults.
 - `.codex/hooks.json` adds narrow guardrails and extra context.
 - `.codex/rules/default.rules` controls risky shell approvals outside the sandbox.
@@ -58,6 +59,9 @@ cp -R /path/to/cells-agents/portable/codex-project/. .
 
 - `cells-orchestrator` is the coordinator.
 - `cells-analysis`, `cells-implementation`, and `cells-verification` are executor agents.
+- Fast-path work should stay in the active agent with no subagents or artifacts.
+- Scoped-change work should use only directly relevant skills and targeted validation.
+- Full-workflow work may use the orchestrator and role agents when the user asks for end-to-end proof or the scope is broad enough to justify delegation.
 - Executor agents do not launch nested subagents.
 - The shared handoff contract remains authoritative in `plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md`.
 

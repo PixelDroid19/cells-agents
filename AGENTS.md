@@ -1,13 +1,25 @@
 # Cells Agent Bundle — Skills Index
 
-When working on a BBVA Cells project, load the relevant skill(s) **before** writing any code or making architectural decisions.
+When working on a BBVA Cells project, choose the smallest safe workflow first, then load only the relevant skill(s) before writing code or making architectural decisions.
 
 ## How to Use
 
 1. Check the trigger column to find skills that match your current task
 2. Load the skill by reading the SKILL.md file at the listed path
-3. Follow ALL patterns and rules from the loaded skill
-4. Multiple skills can apply simultaneously
+3. Apply `skills/_shared/cells-work-sizing-contract.md` before deciding whether this is `fast-path`, `scoped-change`, `full-workflow`, or `blocked`
+4. Follow the relevant patterns and rules from the loaded skill; do not force a full workflow for simple tasks
+5. Multiple skills can apply simultaneously when the task requires them
+
+## Work Sizing (Always)
+
+Use `skills/_shared/cells-work-sizing-contract.md` before selecting phase skills, subagents, artifact persistence, or validation depth.
+
+- `fast-path`: questions, targeted reads, narrow explanations, or simple recommendations. No subagents, no artifacts, no full workflow.
+- `scoped-change`: small localized edits or direct user instructions. Load only directly relevant skills and run targeted validation.
+- `full-workflow`: multi-file features, architecture, complex UI/i18n/test/coverage work, release closure, or user-requested end-to-end proof.
+- `blocked`: ambiguous scope, missing environment/credentials, destructive risk, or proof that cannot be obtained.
+
+User intent controls the mode unless it conflicts with Cells safety, command policy, or scope isolation.
 
 ## Cells Rules Contract (Always)
 
@@ -31,11 +43,12 @@ Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
 
 For any orchestrator, subagent, handoff, delegation, implementation loop, or verification loop:
 
-1. Read `skills/_shared/cells-agent-handoff-contract.md`
-2. Treat orchestrators as coordinators, not executors
-3. Treat executor agents as isolated workers: no nested delegation
-4. Use the standard Handoff Packet with `evidence_required`
-5. Return the standard envelope including `skill_resolution` and `evidence_required`
+1. Read `skills/_shared/cells-work-sizing-contract.md`
+2. Read `skills/_shared/cells-agent-handoff-contract.md`
+3. Treat orchestrators as coordinators for `full-workflow` work, not for every small task
+4. Treat executor agents as isolated workers: no nested delegation
+5. Use the standard Handoff Packet with `evidence_required` only when delegation is selected
+6. Return the standard envelope including `skill_resolution` and `evidence_required` for delegated or phase work
 
 ## CELLS Workflow Skills
 

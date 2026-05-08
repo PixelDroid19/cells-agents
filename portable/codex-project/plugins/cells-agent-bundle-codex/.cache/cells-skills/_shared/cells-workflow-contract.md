@@ -2,6 +2,8 @@
 
 This file is the shared workflow scaffold for every CELLS phase skill.
 
+Use `skills/_shared/cells-work-sizing-contract.md` before applying this workflow. The full artifact flow is required for `full-workflow` work, but it is not mandatory for `fast-path` answers or direct `scoped-change` tasks.
+
 ## Canonical Artifact Lineage
 
 - Active workflow artifacts MUST use only `cells-init/{project}` and `cells/{change}/{artifact}` for writes, status reporting, and readiness checks.
@@ -25,13 +27,18 @@ This file is the shared workflow scaffold for every CELLS phase skill.
 | `cells-verify` | `cells/{change}/proposal`, `cells/{change}/spec`, `cells/{change}/design`, `cells/{change}/tasks` |
 | `cells-archive` | `cells/{change}/proposal`, `cells/{change}/spec`, `cells/{change}/design`, `cells/{change}/tasks`, `cells/{change}/verify-report` |
 
-If a required canonical artifact is missing, stop and report the phase as `blocked` until the missing canonical prerequisite is seeded, unless the assigned migration task explicitly authorizes a legacy compatibility read for analysis only.
+If a required canonical artifact is missing during `full-workflow`, stop and report the phase as `blocked` until the missing canonical prerequisite is seeded, unless the assigned migration task explicitly authorizes a legacy compatibility read for analysis only.
+
+For `fast-path` and `scoped-change`, do not require canonical artifacts unless the user requested governed persistence or an active phase depends on them.
 
 ## Orchestrator Delegation Policy
 
-- CELLS orchestration remains delegate-first for both SDD and non-SDD work.
+- CELLS orchestration is proportional, not delegation-first by default.
+- Fast-path work stays in the current agent unless the user explicitly asks for delegation.
+- Scoped-change work stays in the current agent unless there are independent non-blocking slices or the user asks for parallel work.
+- Full-workflow work may use orchestrator/subagent handoff when the host supports it and the task benefits from role separation.
 - Agent role boundaries, handoff packets, Dev-QA loops, skill resolution feedback, and evidence gates are defined in `skills/_shared/cells-agent-handoff-contract.md`.
-- When OpenCode exposes `delegate`, `delegation_read`, and `delegation_list`, the orchestrator SHOULD prefer `delegate` for non-blocking or parallel work.
+- When OpenCode exposes `delegate`, `delegation_read`, and `delegation_list`, the orchestrator SHOULD prefer `delegate` only for non-blocking or parallel full-workflow work.
 - When background delegation is unavailable, the orchestrator MUST fall back to synchronous `task` without weakening governance, evidence gates, specialist routing, or approval flow.
 - `/cells-*` commands remain canonical even when historical pre-Cells artifacts are consulted for migration continuity.
 - Non-SDD delegated work MUST load the relevant Cells specialist skill or pre-resolved skill path instead of generic upstream routing language.

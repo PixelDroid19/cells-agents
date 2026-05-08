@@ -16,6 +16,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding whether a task artifact is necessary.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 Read and follow `skills/_shared/cells-source-routing-contract.md` for deterministic source selection and minimum evidence.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
@@ -27,9 +28,10 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 
 ## What to Do
 
-### Step 1: Dependency Gate (Mandatory)
+### Step 1: Dependency Gate For Governed Task Planning
 
-Before producing any output, verify that all required canonical artifacts exist.
+Before producing governed task planning output, verify that all required canonical artifacts exist.
+For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/task artifacts; use a short inline task list only if it helps execute the requested change.
 
 When mode is `engram` or `hybrid`, retrieve all three required artifacts:
 1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
@@ -39,7 +41,7 @@ When mode is `engram` or `hybrid`, retrieve all three required artifacts:
 5. `mem_get_observation(id: {spec_id})` (REQUIRED)
 6. `mem_get_observation(id: {design_id})` (REQUIRED)
 
-If any required canonical dependency is absent, return `status: blocked` with:
+If any required canonical dependency is absent during `full-workflow`, return `status: blocked` with:
 ```
 missing_artifact: cells/{change-name}/<missing-phase>
 reason: "cells-tasks requires proposal, spec, and design artifacts before tasks can be generated"
@@ -154,7 +156,7 @@ Phase 5: Cleanup (if needed)
    Documentation, remove dead code, polish
 ```
 
-### Step 5: Artifact Persistence (Mandatory)
+### Step 5: Artifact Persistence When Requested By Mode
 
 If mode is `engram`, persist the tasks artifact in Engram:
 
@@ -174,7 +176,8 @@ If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
 
 If mode is `none`, return inline only.
 
-Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the tasks artifact.
+Do not skip this step in `engram` or `hybrid` during governed `full-workflow`, or downstream phases will not find the tasks artifact.
+For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.
 
 ### Step 6: Return Summary
 

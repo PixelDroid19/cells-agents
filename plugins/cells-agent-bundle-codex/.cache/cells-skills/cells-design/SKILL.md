@@ -16,6 +16,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding design depth or artifact persistence.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
@@ -28,9 +29,9 @@ If the change is Cells-oriented, use `skills/_shared/cells-official-reference.md
 
 ## What to Do
 
-### Step 1: Load Skill Registry (Mandatory)
+### Step 1: Load Skill Registry When Relevant
 
-Do this FIRST, before any other work.
+Do this before broad or governed design. For `fast-path` or direct `scoped-change`, load only the directly relevant skills/contracts.
 
 1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
 2. If found, call `mem_get_observation(id: {id})` for the full registry
@@ -48,7 +49,8 @@ When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
 3. `mem_search(query: "cells/{change-name}/spec", project: "{project}")` (optional when running in parallel)
 4. If found: `mem_get_observation(id: {spec_id})`
 
-If the canonical proposal artifact is absent, return `status: blocked` and require it to be seeded before continuing.
+If the canonical proposal artifact is absent during `full-workflow`, return `status: blocked` and require it to be seeded before continuing.
+For `fast-path` or direct `scoped-change`, derive the design note from user intent and project-local evidence instead of forcing a proposal artifact.
 
 Do not use `mem_search` preview text as complete artifact content.
 
@@ -162,7 +164,7 @@ If not applicable, state "No migration required."}
 - [ ] {Any decision that needs team input}
 ```
 
-### Step 5: Artifact Persistence (Mandatory)
+### Step 5: Artifact Persistence When Requested By Mode
 
 If mode is `engram`, persist the design artifact in Engram:
 
@@ -182,7 +184,8 @@ If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
 
 If mode is `none`, return inline only.
 
-Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the design artifact.
+Do not skip this step in `engram` or `hybrid` during governed `full-workflow`, or downstream phases will not find the design artifact.
+For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.
 
 ### Step 6: Return Summary
 

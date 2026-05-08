@@ -1,16 +1,26 @@
 # Cells Agent Bundle — Codex Project Instructions
 
-When working on a BBVA Cells project with Codex, load the relevant skill(s) from `plugins/cells-agent-bundle-codex/.cache/cells-skills/` before writing code or making architectural decisions.
+When working on a BBVA Cells project with Codex, choose the smallest safe workflow first, then load the relevant skill(s) from `plugins/cells-agent-bundle-codex/.cache/cells-skills/` before writing code or making architectural decisions.
 
 ## How to Use
 
 1. Read this file first. Codex loads `AGENTS.md` before starting work.
-2. Use `.codex/agents/cells-orchestrator.toml` as the main coordinator for multi-phase Cells work.
-3. Treat `plugins/cells-agent-bundle-codex/.cache/cells-skills/` as the canonical skill payload in installed projects.
-4. Use the role agents under `.codex/agents/` only for delegated execution:
+2. Apply `plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md` to classify the task as `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
+3. Use `.codex/agents/cells-orchestrator.toml` as the main coordinator only for multi-phase Cells work.
+4. Treat `plugins/cells-agent-bundle-codex/.cache/cells-skills/` as the canonical skill payload in installed projects.
+5. Use the role agents under `.codex/agents/` only for delegated execution:
    - `cells-analysis`
    - `cells-implementation`
    - `cells-verification`
+
+## Work Sizing
+
+- `fast-path`: questions, targeted reads, narrow explanations, or simple recommendations. No subagents, no artifacts, no full workflow.
+- `scoped-change`: small localized edits or direct user instructions. Load only directly relevant skills and run targeted validation.
+- `full-workflow`: multi-file features, architecture, complex UI/i18n/test/coverage work, release closure, or user-requested end-to-end proof.
+- `blocked`: ambiguous scope, missing environment/credentials, destructive risk, or proof that cannot be obtained.
+
+User intent controls the mode unless it conflicts with Cells safety, command policy, or scope isolation.
 
 ## Cells Rules Contract (Always)
 
@@ -34,11 +44,12 @@ Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
 
 For any orchestrator, subagent, handoff, delegation, implementation loop, or verification loop:
 
-1. Read `plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md`
-2. Treat orchestrators as coordinators, not executors
-3. Treat executor agents as isolated workers: no nested delegation
-4. Use the standard Handoff Packet with `evidence_required`
-5. Return the standard envelope including `skill_resolution` and `evidence_required`
+1. Read `plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md`
+2. Read `plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md`
+3. Treat orchestrators as coordinators for `full-workflow` work, not for every small task
+4. Treat executor agents as isolated workers: no nested delegation
+5. Use the standard Handoff Packet with `evidence_required` only when delegation is selected
+6. Return the standard envelope including `skill_resolution` and `evidence_required` for delegated or phase work
 
 ## Workflow Skills
 

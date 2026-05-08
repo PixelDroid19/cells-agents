@@ -17,6 +17,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding whether a proposal artifact is needed.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
@@ -28,15 +29,16 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 
 ## What to Do
 
-### Step 1: Dependency Gate (Mandatory)
+### Step 1: Dependency Gate For Governed Proposals
 
-Before producing any output, verify that either an exploration artifact exists OR the user provided a direct change description.
+Before producing governed proposal output, verify that either an exploration artifact exists OR the user provided a direct change description.
+For `fast-path` or direct `scoped-change`, do not force a proposal artifact; answer inline unless the user asked for a persisted proposal.
 
 When mode is `engram` or `hybrid`, retrieve the explore artifact:
 1. `mem_search(query: "cells/{change-name}/explore", project: "{project}")`
 2. If found: `mem_get_observation(id: {id})`
 
-When no explore artifact exists and no user description was provided, return `status: blocked` with:
+When no explore artifact exists and no user description was provided during `full-workflow`, return `status: blocked` with:
 ```
 missing_artifact: cells/{change-name}/explore
 reason: "cells-propose requires cells-explore output or direct user description"
@@ -137,7 +139,7 @@ Reference the recommended approach from exploration if available.}
 - [ ] {Measurable outcome}
 ```
 
-### Step 6: Artifact Persistence (Mandatory)
+### Step 6: Artifact Persistence When Requested By Mode
 
 If mode is `engram`, persist the proposal in Engram:
 
@@ -157,7 +159,8 @@ If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
 
 If mode is `none`, return inline only.
 
-Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the artifact.
+Do not skip this step in `engram` or `hybrid` during governed `full-workflow`, or downstream phases will not find the artifact.
+For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.
 
 ### Step 7: Return Summary
 
@@ -181,7 +184,7 @@ Ready for specs (cells-spec) or design (cells-design).
 
 ## Rules
 
-- In `openspec` and `hybrid`, ALWAYS create or update `proposal.md`
+- In `openspec` and `hybrid`, create or update `proposal.md` when the selected work size requires a governed proposal or the user requested persisted artifacts
 - In `engram` and `none`, return the same proposal content inline and do not create project files
 - If the change directory already exists with a proposal, READ it first and UPDATE it
 - Keep the proposal CONCISE - it's a thinking tool, not a novel

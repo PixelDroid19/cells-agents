@@ -132,6 +132,7 @@ assert_codex_assets_installed() {
     assert_file_exists "$project/.agents/plugins/marketplace.json" || return 1
     assert_file_exists "$project/plugins/cells-agent-bundle-codex/.codex-plugin/plugin.json" || return 1
     assert_file_exists "$project/plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md" || return 1
+    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md" || return 1
     assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md" || return 1
     assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-verify/SKILL.md" || return 1
 }

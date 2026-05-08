@@ -16,6 +16,7 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding whether a spec artifact is necessary.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
@@ -26,15 +27,16 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 
 ## What to Do
 
-### Step 1: Dependency Gate (Mandatory)
+### Step 1: Dependency Gate For Governed Specs
 
-Before producing any output, verify that a proposal artifact exists.
+Before producing governed specification output, verify that a proposal artifact exists.
+For `fast-path` or direct `scoped-change`, do not force a spec artifact; answer inline or implement from the direct user request unless the user asked for governed specs.
 
 When mode is `engram` or `hybrid`, retrieve the proposal artifact:
 1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
 2. If found: `mem_get_observation(id: {id})` (REQUIRED)
 
-If the canonical proposal artifact is absent, return `status: blocked` with:
+If the canonical proposal artifact is absent during `full-workflow`, return `status: blocked` with:
 ```
 missing_artifact: cells/{change-name}/proposal
 reason: "cells-spec requires cells-propose output before specs can be written"
@@ -151,7 +153,7 @@ The system {MUST/SHALL/SHOULD} {behavior}.
   status: ok
 ```
 
-### Step 6: Artifact Persistence (Mandatory)
+### Step 6: Artifact Persistence When Requested By Mode
 
 If mode is `engram`, persist the complete spec artifact in Engram (concatenate domains when needed):
 
@@ -171,7 +173,8 @@ If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
 
 If mode is `none`, return inline only.
 
-Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the spec artifact.
+Do not skip this step in `engram` or `hybrid` during governed `full-workflow`, or downstream phases will not find the spec artifact.
+For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.
 
 ### Step 7: Return Summary
 

@@ -16,6 +16,7 @@ The orchestrator will give you:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding exploration depth, artifacts, or delegation.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 Read and follow `skills/_shared/cells-source-routing-contract.md` for deterministic source selection and minimum evidence.
 Read and follow `skills/_shared/cells-rules-contract.md` for BBVA-first UI, i18n, and testing-stack rules.
@@ -35,13 +36,14 @@ Before starting, load any existing project context and specs per the active conv
 - **openspec**: Read `openspec/config.yaml` and `openspec/specs/`.
 - **none**: Use whatever context the orchestrator passed in the prompt.
 
-If canonical project context is missing, stop and report the phase as `blocked` until `cells-init/{project}` exists.
+If canonical project context is missing during a `full-workflow`, stop and report the phase as `blocked` until `cells-init/{project}` exists.
+For `fast-path` or direct `scoped-change` exploration, use the context provided by the user and project-local evidence; do not force `cells-init` or artifact recovery unless that evidence is required for the answer.
 
 ## What to Do
 
-### Step 1: Load Skill Registry (Mandatory)
+### Step 1: Load Skill Registry When Relevant
 
-Do this FIRST, before any other work.
+Do this before broad or governed exploration. For `fast-path`, load only the directly relevant shared contract or skill, then answer from targeted evidence.
 
 1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
 2. If found, call `mem_get_observation(id: {id})` to load the full registry
@@ -58,7 +60,8 @@ When mode is `engram` or `hybrid`, load context with two-step recovery (search p
 2. If found, `mem_get_observation(id: {id})` to get full context
 3. Optional: `mem_search(query: "cells/", project: "{project}")` to discover related prior artifacts
 
-If the canonical project context is absent, return `status: blocked` with remediation to run `cells-init` first.
+If the canonical project context is absent during a `full-workflow`, return `status: blocked` with remediation to run `cells-init` first.
+For `fast-path` or direct `scoped-change`, continue from supplied/project-local context and report any evidence limits.
 
 Never use `mem_search` previews as full artifact content.
 
@@ -93,7 +96,8 @@ Enforce intent routing exactly as defined in `skills/_shared/cells-source-routin
 For Cells testing-related exploration topics, apply the mandatory testing stack from `skills/_shared/cells-rules-contract.md` and `skills/_shared/cells-source-routing-contract.md`.
 
 Minimum evidence gate:
-- If exploration does not include at least one routed catalog source plus project-local runtime evidence, return `status: partial` (never `ok`).
+- For `full-workflow`, if exploration does not include at least one routed catalog source plus project-local runtime evidence, return `status: partial` (never `ok`).
+- For `fast-path` and `scoped-change`, use the smallest evidence set that proves the answer or change boundary; report missing routed sources as a limitation only when they are relevant to the user intent.
 - If required primary source is unavailable and deterministic fallback is also unavailable, return `status: blocked`.
 
 ```
@@ -119,7 +123,7 @@ When the topic touches Cells components, compare approaches such as:
 - compose multiple existing components in a feature/widget
 - extend or wrap a component only if reuse/composition is insufficient
 
-### Step 6: Artifact Persistence (Mandatory)
+### Step 6: Artifact Persistence When Requested By Mode
 
 If the orchestrator provided a change name and mode is `openspec` or `hybrid`, save your analysis to:
 
@@ -155,7 +159,8 @@ mem_save(
 If mode is `hybrid`, do BOTH filesystem persistence and `mem_save`.
 If mode is `none`, or no change name was provided (standalone `/cells-explore`), skip file creation and return the analysis inline.
 
-Do not skip this step when running in `engram` or `hybrid`, or downstream phases lose context.
+Do not skip this step when running governed `full-workflow` in `engram` or `hybrid`, or downstream phases lose context.
+For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.
 
 ### Step 7: Return Structured Analysis
 
