@@ -21,8 +21,8 @@ The installer already prefers these portable assets when they are present, so sc
   Ready-to-copy project-local OpenCode skills tree.
 - `vscode/.github/`
   Ready-to-copy VS Code Copilot workspace layout with the plugin already built inside `.github/plugin/`.
-- `codex-project/`
-  Ready-to-copy Codex repository layout with `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and the bundled plugin source.
+- `codex-home/`
+  Ready-to-copy Codex home layout with `.codex/AGENTS.md`, `.codex/config.toml`, `.codex/agents/`, `.codex/plugins/`, and `.agents/plugins/marketplace.json`.
 
 ## Quick Choice
 
@@ -83,29 +83,37 @@ Finder alternative:
 1. Open `portable/vscode/`
 2. Drag `.github` into the target repository root
 
-## Manual Install: Codex Project
+## Manual Install: Codex Global Home
 
-From the target repository root:
+Copy into your home directory:
 
 ```bash
-cp -R /path/to/cells-agents/portable/codex-project/. .
+cp -R /path/to/cells-agents/portable/codex-home/.codex "$HOME/"
+cp -R /path/to/cells-agents/portable/codex-home/.agents "$HOME/"
 ```
 
 This creates or refreshes:
 
-- `AGENTS.md`
-- `.codex/`
-- `.agents/plugins/marketplace.json`
-- `plugins/cells-agent-bundle-codex/`
+- `~/.codex/AGENTS.md`
+- `~/.codex/config.toml`
+- `~/.codex/hooks.json`
+- `~/.codex/rules/default.rules`
+- `~/.codex/agents/*.toml`
+- `~/.codex/plugins/cells-agent-bundle-codex/`
+- `~/.agents/plugins/marketplace.json`
 
-The Codex layout uses `cells-work-sizing-contract.md` from the bundled plugin payload so simple tasks stay `fast-path`, small edits stay `scoped-change`, and the full Cells workflow is reserved for broad or explicitly requested work.
+The global Codex layout uses `cells-work-sizing-contract.md` from the bundled plugin payload so simple tasks stay `fast-path`, small edits stay `scoped-change`, and the full Cells workflow is reserved for broad or explicitly requested work.
 
-Run this command from the target repository root.
+Important:
+
+- this is a global install, not a repo-root install
+- the bundled `~/.codex/AGENTS.md` is self-scoped and should only activate for BBVA Cells projects or when the user explicitly asks for Cells workflow help
+- if `~/.codex/AGENTS.md` or `~/.codex/config.toml` already exists, keep your current files and merge the Cells templates from `portable/codex-home/.codex/`
 
 Finder alternative:
 
-1. Open `portable/codex-project/`
-2. Copy its contents into the target repository root
+1. Open `portable/codex-home/`
+2. Copy `.codex` and `.agents` into your home folder
 
 ## Manual Install: Project-Local OpenCode
 
@@ -136,6 +144,6 @@ bash scripts/build_portable_assets.sh
 python3 scripts/validate_opencode_assets.py --installed-root portable/opencode-home
 python3 scripts/validate_vscode_copilot_assets.py --installed-root portable/vscode/.github
 python3 scripts/validate_vscode_copilot_assets.py --plugin-root portable/vscode-plugin
-python3 scripts/validate_codex_assets.py --installed-root portable/codex-project
+python3 scripts/validate_codex_assets.py --installed-root portable/codex-home
 python3 scripts/validate_official_docs_catalog.py
 ```

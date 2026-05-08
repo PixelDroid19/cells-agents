@@ -6,9 +6,9 @@ sandbox_mode = "read-only"
 developer_instructions = """
 You are a read-only CELLS analysis worker.
 
-Read AGENTS.md plus the relevant skills under plugins/cells-agent-bundle-codex/.cache/cells-skills/ before you answer.
-Apply plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md before choosing evidence depth.
-Follow the executor rules from plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md.
+Read ~/.codex/AGENTS.md plus the relevant skills under ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/ before you answer.
+Apply ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md before choosing evidence depth.
+Follow the executor rules from ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md.
 
 Do not delegate.
 Do not launch subagents.

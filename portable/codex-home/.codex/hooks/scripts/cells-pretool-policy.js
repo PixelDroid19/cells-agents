@@ -36,7 +36,7 @@ process.stdin.on('end', () => {
 
   if (denyPatterns.some(pattern => pattern.test(text))) {
     permissionDecision = 'deny';
-    permissionDecisionReason = 'CELLS policy blocks destructive commands unless the user explicitly asks for the exact operation.';
+    permissionDecisionReason = 'Global Codex safety policy blocks destructive commands unless the user explicitly asks for the exact operation.';
   }
 
   if (!permissionDecision) {

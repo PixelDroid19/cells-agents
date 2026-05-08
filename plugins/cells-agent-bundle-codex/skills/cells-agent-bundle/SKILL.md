@@ -1,15 +1,15 @@
 ---
 name: cells-agent-bundle
-description: Use when working in a BBVA Cells repository and you need the repo-local Cells workflow, specialist skills, handoff rules, or validation routing.
+description: Use when working in a BBVA Cells repository and you need the Codex Cells workflow, specialist skills, handoff rules, or validation routing.
 ---
 
 # Cells Agent Bundle
 
-Use the installed project `AGENTS.md` first. It is the Codex-facing router for Cells work.
+Use `~/.codex/AGENTS.md` first. It is the Codex-facing global router for Cells work.
 
-In a repo-local install, the complete behavior payload is bundled at:
+In a personal Codex install, the complete behavior payload is bundled at:
 
-`plugins/cells-agent-bundle-codex/.cache/cells-skills/`
+`~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/`
 
 When Codex loads this skill from an installed plugin cache instead of the repository copy, use the plugin-local payload at:
 

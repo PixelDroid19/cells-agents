@@ -32,7 +32,7 @@ SOURCE_REQUIRED_FILES = [
 ]
 
 INSTALLED_REQUIRED_FILES = [
-    "AGENTS.md",
+    ".codex/AGENTS.md",
     ".codex/config.toml",
     ".codex/hooks.json",
     ".codex/rules/default.rules",
@@ -44,16 +44,16 @@ INSTALLED_REQUIRED_FILES = [
     ".codex/hooks/scripts/cells-pretool-policy.js",
     ".codex/hooks/scripts/cells-stop-reminder.js",
     ".agents/plugins/marketplace.json",
-    "plugins/cells-agent-bundle-codex/.codex-plugin/plugin.json",
-    "plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-rules-contract.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-cli-usage/SKILL.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-coverage/SKILL.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-test-creator/SKILL.md",
-    "plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-verify/SKILL.md",
+    ".codex/plugins/cells-agent-bundle-codex/.codex-plugin/plugin.json",
+    ".codex/plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-rules-contract.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-cli-usage/SKILL.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-coverage/SKILL.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-test-creator/SKILL.md",
+    ".codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-verify/SKILL.md",
 ]
 
 
@@ -91,7 +91,7 @@ def validate_source_assets() -> list[str]:
     invalid.extend(validate_rules(SOURCE_ROOT / ".codex" / "rules" / "default.rules"))
     invalid.extend(validate_agent_files(SOURCE_ROOT / ".codex" / "agents"))
     invalid.extend(validate_plugin(REPO_PLUGIN_ROOT))
-    invalid.extend(validate_marketplace(REPO_MARKETPLACE, ROOT))
+    invalid.extend(validate_marketplace(REPO_MARKETPLACE))
     return invalid
 
 
@@ -101,7 +101,7 @@ def validate_agents_md(path: Path) -> list[str]:
         return [f"Missing AGENTS file: {display(path)}"]
     text = path.read_text(encoding="utf-8")
     required_tokens = [
-        "plugins/cells-agent-bundle-codex/.cache/cells-skills/",
+        "~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/",
         "cells-cli-usage",
         "cells-coverage",
         "cells-test-creator",
@@ -110,6 +110,7 @@ def validate_agents_md(path: Path) -> list[str]:
         "scoped-change",
         "full-workflow",
         "cells-agent-handoff-contract.md",
+        "current workspace is a BBVA Cells project",
     ]
     for token in required_tokens:
         if token not in text:
@@ -228,8 +229,8 @@ def validate_agent_files(base: Path) -> list[str]:
             invalid.append(f"{display(path)} points at gateway skills/_shared instead of .cache/cells-skills/_shared")
         if "plugins/cells-agent-bundle-codex/skills/" in instructions:
             invalid.append(f"{display(path)} points at gateway skills/ instead of .cache/cells-skills/")
-        if "plugins/cells-agent-bundle-codex/.cache/cells-skills/" not in instructions:
-            invalid.append(f"{display(path)} must route to the bundled .cache/cells-skills payload")
+        if "~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/" not in instructions:
+            invalid.append(f"{display(path)} must route to the bundled global .cache/cells-skills payload")
         if "cells-work-sizing-contract.md" not in instructions:
             invalid.append(f"{display(path)} must apply the proportional work-sizing contract")
         lowered_instructions = instructions.lower()
@@ -307,7 +308,7 @@ def validate_plugin(plugin_root: Path) -> list[str]:
     if gateway_path.is_file():
         gateway_text = gateway_path.read_text(encoding="utf-8")
         for token in (
-            "plugins/cells-agent-bundle-codex/.cache/cells-skills/",
+            "~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/",
             "../../.cache/cells-skills/",
             "cells-cli-usage",
             "cells-work-sizing-contract.md",
@@ -321,7 +322,7 @@ def validate_plugin(plugin_root: Path) -> list[str]:
     return invalid
 
 
-def validate_marketplace(path: Path, repo_root: Path) -> list[str]:
+def validate_marketplace(path: Path, installed_root: Path | None = None) -> list[str]:
     invalid: list[str] = []
     if not path.is_file():
         return [f"Missing marketplace file: {display(path)}"]
@@ -343,10 +344,10 @@ def validate_marketplace(path: Path, repo_root: Path) -> list[str]:
     else:
         if source.get("source") != "local":
             invalid.append(f"{display(path)} marketplace source must be local")
-        if source.get("path") != f"./plugins/{PLUGIN_NAME}":
-            invalid.append(f"{display(path)} marketplace path must be ./plugins/{PLUGIN_NAME}")
-        else:
-            plugin_root = repo_root / "plugins" / PLUGIN_NAME
+        if source.get("path") != f"./.codex/plugins/{PLUGIN_NAME}":
+            invalid.append(f"{display(path)} marketplace path must be ./.codex/plugins/{PLUGIN_NAME}")
+        elif installed_root is not None:
+            plugin_root = installed_root / ".codex" / "plugins" / PLUGIN_NAME
             if not (plugin_root / ".codex-plugin" / "plugin.json").is_file():
                 invalid.append(f"{display(path)} marketplace path does not resolve to a valid plugin root")
 
@@ -364,27 +365,27 @@ def validate_marketplace(path: Path, repo_root: Path) -> list[str]:
     return invalid
 
 
-def validate_installed_project(root: Path) -> list[str]:
+def validate_installed_home(root: Path) -> list[str]:
     invalid = validate_required_files(root, INSTALLED_REQUIRED_FILES)
-    invalid.extend(validate_agents_md(root / "AGENTS.md"))
+    invalid.extend(validate_agents_md(root / ".codex" / "AGENTS.md"))
     invalid.extend(validate_config(root / ".codex" / "config.toml"))
     invalid.extend(validate_hooks(root / ".codex" / "hooks.json", root / ".codex"))
     invalid.extend(validate_rules(root / ".codex" / "rules" / "default.rules"))
     invalid.extend(validate_agent_files(root / ".codex" / "agents"))
-    invalid.extend(validate_plugin(root / "plugins" / PLUGIN_NAME))
+    invalid.extend(validate_plugin(root / ".codex" / "plugins" / PLUGIN_NAME))
     invalid.extend(validate_marketplace(root / ".agents" / "plugins" / "marketplace.json", root))
     return invalid
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate CELLS Codex assets.")
-    parser.add_argument("--installed-root", type=Path, help="Project root containing AGENTS.md, .codex/, .agents/, and plugins/")
+    parser.add_argument("--installed-root", type=Path, help="Home root containing .codex/ and .agents/ for a global Codex install")
     parser.add_argument("--plugin-root", type=Path, help="Standalone plugin root to validate")
     args = parser.parse_args()
 
     errors: list[str] = []
     if args.installed_root:
-        errors.extend(validate_installed_project(args.installed_root.resolve()))
+        errors.extend(validate_installed_home(args.installed_root.resolve()))
     elif args.plugin_root:
         errors.extend(validate_plugin(args.plugin_root.resolve()))
     else:

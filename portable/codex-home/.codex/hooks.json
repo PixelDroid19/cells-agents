@@ -6,7 +6,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/scripts/cells-session-context.js\"",
+            "command": "node \"$HOME/.codex/hooks/scripts/cells-session-context.js\"",
             "timeout": 10,
             "statusMessage": "Loading CELLS Codex context"
           }
@@ -19,7 +19,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/scripts/cells-pretool-policy.js\"",
+            "command": "node \"$HOME/.codex/hooks/scripts/cells-pretool-policy.js\"",
             "timeout": 10,
             "statusMessage": "Checking CELLS command policy"
           }
@@ -31,7 +31,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node \"$(git rev-parse --show-toplevel)/.codex/hooks/scripts/cells-stop-reminder.js\"",
+            "command": "node \"$HOME/.codex/hooks/scripts/cells-stop-reminder.js\"",
             "timeout": 10
           }
         ]

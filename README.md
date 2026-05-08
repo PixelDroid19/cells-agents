@@ -478,7 +478,7 @@ Use `scripts/setup.sh` only when you specifically want the legacy interactive fl
 | OpenCode global | this bundle repo | `./scripts/install.sh --agent opencode` | installs `~/.config/opencode/skills`, `commands`, `plugins`, and default config assets |
 | OpenCode project-local | target repo root | `/path/to/cells-agents/scripts/install.sh --agent project-local` | installs `./.opencode/skills` |
 | VS Code Copilot | target repo root | `/path/to/cells-agents/scripts/install.sh --agent vscode` | installs `.github/` workspace assets plus `.github/plugin/` |
-| Codex | target repo root | `/path/to/cells-agents/scripts/install.sh --agent codex` | installs `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and `plugins/cells-agent-bundle-codex/` |
+| Codex global | this bundle repo or any shell with the script path | `/path/to/cells-agents/scripts/install.sh --agent codex` | installs `~/.codex/AGENTS.md`, `~/.codex/config.toml`, `~/.codex/agents/`, `~/.codex/plugins/cells-agent-bundle-codex/`, and `~/.agents/plugins/marketplace.json` |
 
 Windows PowerShell installer support is currently limited to `opencode`, `vscode`, `project-local`, `all-global`, and `custom`. Codex install is documented and validated through `scripts/install.sh` and the portable copy path.
 
@@ -563,20 +563,31 @@ PowerShell:
 
 #### Codex
 
-From the target repository root:
+From any shell where the script path is reachable:
 
 ```bash
 /path/to/cells-agents/scripts/install.sh --agent codex
 ```
 
-This creates:
+This creates or refreshes:
 
-- `AGENTS.md`
-- `.codex/`
-- `.agents/plugins/marketplace.json`
-- `plugins/cells-agent-bundle-codex/`
+- `~/.codex/AGENTS.md`
+- `~/.codex/config.toml`
+- `~/.codex/hooks.json`
+- `~/.codex/rules/default.rules`
+- `~/.codex/agents/*.toml`
+- `~/.codex/plugins/cells-agent-bundle-codex/`
+- `~/.agents/plugins/marketplace.json`
 
-Codex runtime behavior is repo-local: `AGENTS.md` plus the installed `.codex/` layer select `fast-path`, `scoped-change`, `full-workflow`, or `blocked`, and the bundled plugin supplies the canonical Cells skill payload.
+Codex runtime behavior is global-first: `~/.codex/AGENTS.md` gates Cells mode to BBVA Cells repositories, the installed `~/.codex/` layer supplies the shared defaults, and any repository that also ships its own `AGENTS.md` or project `.codex/` files can refine behavior locally.
+
+Important behavior:
+
+- if `~/.codex/AGENTS.md` does not exist, the installer writes the Cells global router for you
+- if `~/.codex/AGENTS.md` already exists, the installer preserves it and asks you to merge the Cells block manually
+- if `~/.codex/config.toml` does not exist, the installer writes the Cells Codex defaults for you
+- if `~/.codex/config.toml` already exists, the installer preserves it and asks you to merge the Cells sections manually
+- the installer always refreshes the managed Cells agents, hooks, rules, plugin payload, and marketplace entry under `~/.codex/` and `~/.agents/`
 
 ### Manual / Portable Install
 
@@ -585,7 +596,8 @@ Use the portable path when the target environment is restrictive or you prefer F
 - `portable/opencode-home/.config/opencode/`
 - `portable/project-local/.opencode/`
 - `portable/vscode/.github/`
-- `portable/codex-project/`
+- `portable/codex-home/.codex/`
+- `portable/codex-home/.agents/`
 
 #### OpenCode manual copy
 
@@ -611,13 +623,24 @@ That single copy already includes `.github/plugin/`. No extra build step is requ
 
 #### Codex manual copy
 
-From the target repository root:
+Copy into your home directory:
 
 ```bash
-cp -R /path/to/cells-agents/portable/codex-project/. .
+cp -R /path/to/cells-agents/portable/codex-home/.codex "$HOME/"
+cp -R /path/to/cells-agents/portable/codex-home/.agents "$HOME/"
 ```
 
-That single copy already includes `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and `plugins/cells-agent-bundle-codex/`.
+This installs the global Codex layout:
+
+- `~/.codex/AGENTS.md`
+- `~/.codex/config.toml`
+- `~/.codex/hooks.json`
+- `~/.codex/rules/default.rules`
+- `~/.codex/agents/*.toml`
+- `~/.codex/plugins/cells-agent-bundle-codex/`
+- `~/.agents/plugins/marketplace.json`
+
+If `~/.codex/AGENTS.md` or `~/.codex/config.toml` already exists, keep your current files and merge the Cells templates from `portable/codex-home/.codex/` instead of overwriting them blindly.
 
 #### Project-local manual copy
 
@@ -660,7 +683,7 @@ Portable validation:
 python3 scripts/validate_opencode_assets.py --installed-root portable/opencode-home
 python3 scripts/validate_vscode_copilot_assets.py --installed-root portable/vscode/.github
 python3 scripts/validate_vscode_copilot_assets.py --plugin-root portable/vscode-plugin
-python3 scripts/validate_codex_assets.py --installed-root portable/codex-project
+python3 scripts/validate_codex_assets.py --installed-root portable/codex-home
 ```
 
 For exact manual-copy steps, see [portable/README.md](/home/monasterios/Documents/cells/cells-agents/portable/README.md).
@@ -717,7 +740,7 @@ For exact manual-copy steps, see [portable/README.md](/home/monasterios/Document
 |       |-- plugin/
 |       `-- prompts/
 |-- portable/
-|   |-- codex-project/
+|   |-- codex-home/
 |   |-- opencode-home/
 |   |-- project-local/
 |   |-- vscode/

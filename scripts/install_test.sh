@@ -120,30 +120,30 @@ assert_vscode_workspace_valid() {
 }
 
 assert_codex_assets_installed() {
-    local project="$1"
-    assert_file_exists "$project/AGENTS.md" || return 1
-    assert_file_exists "$project/.codex/config.toml" || return 1
-    assert_file_exists "$project/.codex/hooks.json" || return 1
-    assert_file_exists "$project/.codex/rules/default.rules" || return 1
-    assert_file_exists "$project/.codex/agents/cells-orchestrator.toml" || return 1
-    assert_file_exists "$project/.codex/agents/cells-analysis.toml" || return 1
-    assert_file_exists "$project/.codex/agents/cells-implementation.toml" || return 1
-    assert_file_exists "$project/.codex/agents/cells-verification.toml" || return 1
-    assert_file_exists "$project/.codex/hooks/scripts/cells-session-context.js" || return 1
-    assert_file_exists "$project/.codex/hooks/scripts/cells-pretool-policy.js" || return 1
-    assert_file_exists "$project/.codex/hooks/scripts/cells-stop-reminder.js" || return 1
-    assert_file_exists "$project/.agents/plugins/marketplace.json" || return 1
-    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.codex-plugin/plugin.json" || return 1
-    assert_file_exists "$project/plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md" || return 1
-    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md" || return 1
-    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md" || return 1
-    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-verify/SKILL.md" || return 1
+    local home_root="$1"
+    assert_file_exists "$home_root/.codex/AGENTS.md" || return 1
+    assert_file_exists "$home_root/.codex/config.toml" || return 1
+    assert_file_exists "$home_root/.codex/hooks.json" || return 1
+    assert_file_exists "$home_root/.codex/rules/default.rules" || return 1
+    assert_file_exists "$home_root/.codex/agents/cells-orchestrator.toml" || return 1
+    assert_file_exists "$home_root/.codex/agents/cells-analysis.toml" || return 1
+    assert_file_exists "$home_root/.codex/agents/cells-implementation.toml" || return 1
+    assert_file_exists "$home_root/.codex/agents/cells-verification.toml" || return 1
+    assert_file_exists "$home_root/.codex/hooks/scripts/cells-session-context.js" || return 1
+    assert_file_exists "$home_root/.codex/hooks/scripts/cells-pretool-policy.js" || return 1
+    assert_file_exists "$home_root/.codex/hooks/scripts/cells-stop-reminder.js" || return 1
+    assert_file_exists "$home_root/.agents/plugins/marketplace.json" || return 1
+    assert_file_exists "$home_root/.codex/plugins/cells-agent-bundle-codex/.codex-plugin/plugin.json" || return 1
+    assert_file_exists "$home_root/.codex/plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md" || return 1
+    assert_file_exists "$home_root/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md" || return 1
+    assert_file_exists "$home_root/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md" || return 1
+    assert_file_exists "$home_root/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-verify/SKILL.md" || return 1
 }
 
-assert_codex_project_valid() {
-    local project="$1"
-    python3 "$CODEX_VALIDATOR" --installed-root "$project" > /dev/null
-    python3 "$CODEX_VALIDATOR" --plugin-root "$project/plugins/cells-agent-bundle-codex" > /dev/null
+assert_codex_home_valid() {
+    local home_root="$1"
+    python3 "$CODEX_VALIDATOR" --installed-root "$home_root" > /dev/null
+    python3 "$CODEX_VALIDATOR" --plugin-root "$home_root/.codex/plugins/cells-agent-bundle-codex" > /dev/null
 }
 
 run_test() {
@@ -215,11 +215,9 @@ test_install_vscode() {
 # Codex
 
 test_install_codex() {
-    local project="$TEST_TMPDIR/codex-project"
-    mkdir -p "$project"
-    (cd "$project" && bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1)
-    assert_codex_assets_installed "$project" || return 1
-    assert_codex_project_valid "$project"
+    bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1
+    assert_codex_assets_installed "$HOME" || return 1
+    assert_codex_home_valid "$HOME"
 }
 
 # Project-local
@@ -247,6 +245,8 @@ test_all_global() {
     local cmd_count
     cmd_count=$(find "$HOME/.config/opencode/commands" -name "cells-*.md" | wc -l | tr -d ' ')
     assert_eq "$EXPECTED_COMMAND_COUNT" "$cmd_count"
+    assert_codex_assets_installed "$HOME" || return 1
+    assert_codex_home_valid "$HOME"
 }
 
 # Idempotency
@@ -268,12 +268,10 @@ test_idempotent_vscode() {
 }
 
 test_idempotent_codex() {
-    local project="$TEST_TMPDIR/codex-project"
-    mkdir -p "$project"
-    (cd "$project" && bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1)
-    (cd "$project" && bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1)
-    assert_codex_assets_installed "$project" || return 1
-    assert_codex_project_valid "$project"
+    bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1
+    bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1
+    assert_codex_assets_installed "$HOME" || return 1
+    assert_codex_home_valid "$HOME"
 }
 
 # Output checks
@@ -298,8 +296,8 @@ test_repo_portable_assets_valid() {
     assert_opencode_portable_bundle "$REPO_DIR/portable/opencode-home" || return 1
     assert_vscode_assets_installed "$REPO_DIR/portable/vscode" || return 1
     assert_vscode_workspace_valid "$REPO_DIR/portable/vscode" || return 1
-    assert_codex_assets_installed "$REPO_DIR/portable/codex-project" || return 1
-    assert_codex_project_valid "$REPO_DIR/portable/codex-project" || return 1
+    assert_codex_assets_installed "$REPO_DIR/portable/codex-home" || return 1
+    assert_codex_home_valid "$REPO_DIR/portable/codex-home" || return 1
     python3 "$VSCODE_VALIDATOR" --plugin-root "$REPO_DIR/portable/vscode-plugin" > /dev/null
     python3 "$CODEX_VALIDATOR" --plugin-root "$REPO_DIR/plugins/cells-agent-bundle-codex" > /dev/null
     python3 "$CODEX_VALIDATOR" > /dev/null
@@ -319,11 +317,10 @@ test_manual_copy_vscode_workspace() {
 }
 
 test_manual_copy_codex_project() {
-    local project="$TEST_TMPDIR/manual-codex-project"
-    mkdir -p "$project"
-    (cd "$project" && cp -R "$REPO_DIR/portable/codex-project"/. .)
-    assert_codex_assets_installed "$project" || return 1
-    assert_codex_project_valid "$project"
+    cp -R "$REPO_DIR/portable/codex-home/.codex" "$HOME/"
+    cp -R "$REPO_DIR/portable/codex-home/.agents" "$HOME/"
+    assert_codex_assets_installed "$HOME" || return 1
+    assert_codex_home_valid "$HOME"
 }
 
 test_build_portable_assets() {
@@ -333,10 +330,10 @@ test_build_portable_assets() {
     assert_opencode_portable_bundle "$out_dir/opencode-home" || return 1
     assert_vscode_assets_installed "$out_dir/vscode" || return 1
     assert_vscode_workspace_valid "$out_dir/vscode" || return 1
-    assert_codex_assets_installed "$out_dir/codex-project" || return 1
-    assert_codex_project_valid "$out_dir/codex-project" || return 1
+    assert_codex_assets_installed "$out_dir/codex-home" || return 1
+    assert_codex_home_valid "$out_dir/codex-home" || return 1
     python3 "$VSCODE_VALIDATOR" --plugin-root "$out_dir/vscode-plugin" > /dev/null
-    python3 "$CODEX_VALIDATOR" --plugin-root "$out_dir/codex-project/plugins/cells-agent-bundle-codex" > /dev/null
+    python3 "$CODEX_VALIDATOR" --plugin-root "$out_dir/codex-home/.codex/plugins/cells-agent-bundle-codex" > /dev/null
 }
 
 echo ""

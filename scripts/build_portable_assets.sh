@@ -122,8 +122,8 @@ build_vscode_workspace() {
     copy_skill_bundle "$plugin_target/skills"
 }
 
-build_codex_project() {
-    local target_root="$OUT_DIR/codex-project"
+build_codex_home() {
+    local target_root="$OUT_DIR/codex-home"
     local codex_target="$target_root/.codex"
 
     rm -rf "$target_root"
@@ -131,10 +131,10 @@ build_codex_project() {
         "$codex_target/agents" \
         "$codex_target/hooks/scripts" \
         "$codex_target/rules" \
-        "$target_root/.agents/plugins" \
-        "$target_root/plugins"
+        "$codex_target/plugins" \
+        "$target_root/.agents/plugins"
 
-    cp "$CODEX_SRC/AGENTS.md" "$target_root/AGENTS.md"
+    cp "$CODEX_SRC/AGENTS.md" "$codex_target/AGENTS.md"
     cp "$CODEX_SRC/.codex/config.toml" "$codex_target/config.toml"
     cp "$CODEX_SRC/.codex/hooks.json" "$codex_target/hooks.json"
     cp "$CODEX_SRC/.codex/agents"/*.toml "$codex_target/agents/"
@@ -142,7 +142,7 @@ build_codex_project() {
     cp "$CODEX_SRC/.codex/rules"/*.rules "$codex_target/rules/"
     cp "$REPO_DIR/.agents/plugins/marketplace.json" "$target_root/.agents/plugins/marketplace.json"
 
-    bash "$CODEX_PLUGIN_BUILDER" "$target_root/plugins/cells-agent-bundle-codex" > /dev/null
+    bash "$CODEX_PLUGIN_BUILDER" "$codex_target/plugins/cells-agent-bundle-codex" > /dev/null
 }
 
 validate_portable_assets() {
@@ -151,7 +151,7 @@ validate_portable_assets() {
     python3 "$FTS_VALIDATOR" > /dev/null
     python3 "$VSCODE_VALIDATOR" --installed-root "$OUT_DIR/vscode/.github" > /dev/null
     python3 "$VSCODE_VALIDATOR" --plugin-root "$OUT_DIR/vscode-plugin" > /dev/null
-    python3 "$CODEX_VALIDATOR" --installed-root "$OUT_DIR/codex-project" > /dev/null
+    python3 "$CODEX_VALIDATOR" --installed-root "$OUT_DIR/codex-home" > /dev/null
 }
 
 main() {
@@ -160,7 +160,7 @@ main() {
     build_opencode_home
     build_project_local
     build_vscode_workspace
-    build_codex_project
+    build_codex_home
     bash "$VSCODE_PLUGIN_BUILDER" "$OUT_DIR/vscode-plugin" > /dev/null
     validate_portable_assets
 

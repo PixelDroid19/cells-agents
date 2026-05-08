@@ -95,7 +95,14 @@ get_tool_path() {
             ;;
         vscode)      echo "./.github/skills" ;;
         project-local) echo "./.opencode/skills" ;;
-        codex)       echo "./.codex" ;;
+        codex)       echo "$(get_home_root)/.codex" ;;
+    esac
+}
+
+get_home_root() {
+    case "$OS" in
+        windows) echo "$USERPROFILE" ;;
+        *)       echo "$HOME" ;;
     esac
 }
 
@@ -193,9 +200,17 @@ portable_bundle_exists() {
         opencode) [ -d "$PORTABLE_SRC/opencode-home/.config/opencode/skills" ] ;;
         vscode) [ -d "$PORTABLE_SRC/vscode/.github/skills" ] ;;
         project-local) [ -d "$PORTABLE_SRC/project-local/.opencode/skills" ] ;;
-        codex) [ -d "$PORTABLE_SRC/codex-project/.codex" ] ;;
+        codex) [ -d "$PORTABLE_SRC/codex-home/.codex" ] || [ -d "$PORTABLE_SRC/codex-project/.codex" ] ;;
         *) return 1 ;;
     esac
+}
+
+portable_codex_source_root() {
+    if [ -d "$PORTABLE_SRC/codex-home/.codex" ]; then
+        echo "$PORTABLE_SRC/codex-home"
+    else
+        echo "$PORTABLE_SRC/codex-project"
+    fi
 }
 
 copy_tree_into_parent() {
@@ -288,6 +303,16 @@ clear_managed_skill_targets() {
     done
 }
 
+clear_managed_codex_targets() {
+    local codex_root="$1"
+
+    rm -f "$codex_root/hooks.json"
+    rm -f "$codex_root/rules/default.rules"
+    rm -f "$codex_root/agents"/cells-*.toml
+    rm -f "$codex_root/hooks/scripts"/cells-*.js
+    rm -rf "$codex_root/plugins/cells-agent-bundle-codex"
+}
+
 install_opencode_from_portable() {
     local tool_name="$1"
     local home_root
@@ -369,26 +394,66 @@ install_vscode_from_portable() {
 }
 
 install_codex_from_portable() {
-    local target_root="$PWD"
-    local source_root="$PORTABLE_SRC/codex-project"
+    local home_root
+    home_root="$(get_home_root)"
+    local source_root
+    source_root="$(portable_codex_source_root)"
+    local source_codex_root="$source_root/.codex"
+    local source_plugin_root="$source_codex_root/plugins/cells-agent-bundle-codex"
+    local source_agents_file="$source_codex_root/AGENTS.md"
+    local source_config_file="$source_codex_root/config.toml"
+    if [ ! -d "$source_plugin_root" ]; then
+        source_plugin_root="$source_root/plugins/cells-agent-bundle-codex"
+    fi
+    if [ ! -f "$source_agents_file" ]; then
+        source_agents_file="$source_root/AGENTS.md"
+    fi
+    if [ ! -f "$source_config_file" ]; then
+        source_config_file="$source_root/.codex/config.toml"
+    fi
+    local codex_root="$home_root/.codex"
+    local plugin_target="$codex_root/plugins/cells-agent-bundle-codex"
+    local marketplace_target="$home_root/.agents/plugins/marketplace.json"
 
-    echo -e "\n${BLUE}Installing portable ${BOLD}Codex${NC}${BLUE} project assets...${NC}"
+    echo -e "\n${BLUE}Installing portable ${BOLD}Codex${NC}${BLUE} global assets...${NC}"
 
-    rm -rf "$target_root/.codex"
-    rm -rf "$target_root/plugins/cells-agent-bundle-codex"
-    rm -f "$target_root/AGENTS.md"
-    mkdir -p "$target_root/plugins" "$target_root/.agents/plugins"
+    mkdir -p \
+        "$codex_root/agents" \
+        "$codex_root/hooks/scripts" \
+        "$codex_root/rules" \
+        "$codex_root/plugins" \
+        "$home_root/.agents/plugins"
 
-    copy_tree_contents_into_dir "$source_root" "$target_root"
-    merge_marketplace_entry "$source_root/.agents/plugins/marketplace.json" "$target_root/.agents/plugins/marketplace.json"
+    clear_managed_codex_targets "$codex_root"
+    cp "$source_codex_root/hooks.json" "$codex_root/hooks.json"
+    cp "$source_codex_root/rules"/*.rules "$codex_root/rules/"
+    cp "$source_codex_root/agents"/*.toml "$codex_root/agents/"
+    cp "$source_codex_root/hooks/scripts"/*.js "$codex_root/hooks/scripts/"
+    cp -R "$source_plugin_root" "$plugin_target"
 
-    print_skill "AGENTS.md"
-    print_skill ".codex/config.toml"
-    print_skill ".codex/hooks.json"
-    print_skill ".codex/rules/default.rules"
-    print_skill ".codex/agents/*.toml"
-    print_skill ".agents/plugins/marketplace.json"
-    print_skill "plugins/cells-agent-bundle-codex/"
+    if [ -f "$codex_root/AGENTS.md" ]; then
+        print_warn "Codex AGENTS already exists at $codex_root/AGENTS.md"
+        print_warn "Merge the Cells global guidance from examples/codex/AGENTS.md"
+    else
+        cp "$source_agents_file" "$codex_root/AGENTS.md"
+        print_skill "~/.codex/AGENTS.md"
+    fi
+
+    if [ -f "$codex_root/config.toml" ]; then
+        print_warn "Codex config already exists at $codex_root/config.toml"
+        print_warn "Merge the Cells sections from examples/codex/.codex/config.toml"
+    else
+        cp "$source_config_file" "$codex_root/config.toml"
+        print_skill "~/.codex/config.toml"
+    fi
+
+    merge_marketplace_entry "$source_root/.agents/plugins/marketplace.json" "$marketplace_target"
+
+    print_skill "~/.codex/hooks.json"
+    print_skill "~/.codex/rules/default.rules"
+    print_skill "~/.codex/agents/*.toml"
+    print_skill "~/.agents/plugins/marketplace.json"
+    print_skill "~/.codex/plugins/cells-agent-bundle-codex/"
 }
 
 install_skills() {
@@ -598,42 +663,57 @@ install_vscode_assets() {
 
 install_codex_assets() {
     local codex_src="$REPO_DIR/examples/codex"
-    local codex_target="./.codex"
-    local plugin_target="./plugins/cells-agent-bundle-codex"
+    local home_root
+    home_root="$(get_home_root)"
+    local codex_root="$home_root/.codex"
+    local plugin_target="$codex_root/plugins/cells-agent-bundle-codex"
     local marketplace_src="$REPO_DIR/.agents/plugins/marketplace.json"
-    local marketplace_target="./.agents/plugins/marketplace.json"
+    local marketplace_target="$home_root/.agents/plugins/marketplace.json"
 
     if [ ! -d "$codex_src" ]; then
         print_warn "Skipping Codex assets (source not found: $codex_src)"
         return
     fi
 
-    echo -e "\n${BLUE}Installing Codex project assets...${NC}"
+    echo -e "\n${BLUE}Installing Codex global assets...${NC}"
 
     mkdir -p \
-        "$codex_target/agents" \
-        "$codex_target/hooks/scripts" \
-        "$codex_target/rules" \
-        "./plugins" \
-        "./.agents/plugins"
+        "$codex_root/agents" \
+        "$codex_root/hooks/scripts" \
+        "$codex_root/rules" \
+        "$codex_root/plugins" \
+        "$home_root/.agents/plugins"
 
-    cp "$codex_src/AGENTS.md" "./AGENTS.md"
-    cp "$codex_src/.codex/config.toml" "$codex_target/config.toml"
-    cp "$codex_src/.codex/hooks.json" "$codex_target/hooks.json"
-    cp "$codex_src/.codex/agents"/*.toml "$codex_target/agents/"
-    cp "$codex_src/.codex/hooks/scripts"/*.js "$codex_target/hooks/scripts/"
-    cp "$codex_src/.codex/rules"/*.rules "$codex_target/rules/"
+    clear_managed_codex_targets "$codex_root"
+    cp "$codex_src/.codex/hooks.json" "$codex_root/hooks.json"
+    cp "$codex_src/.codex/agents"/*.toml "$codex_root/agents/"
+    cp "$codex_src/.codex/hooks/scripts"/*.js "$codex_root/hooks/scripts/"
+    cp "$codex_src/.codex/rules"/*.rules "$codex_root/rules/"
 
     bash "$CODEX_PLUGIN_BUILDER" "$plugin_target" > /dev/null
     merge_marketplace_entry "$marketplace_src" "$marketplace_target"
 
-    print_skill "AGENTS.md"
-    print_skill ".codex/config.toml"
-    print_skill ".codex/hooks.json"
-    print_skill ".codex/rules/default.rules"
-    print_skill ".codex/agents/*.toml"
-    print_skill ".agents/plugins/marketplace.json"
-    print_skill "plugins/cells-agent-bundle-codex/"
+    if [ -f "$codex_root/AGENTS.md" ]; then
+        print_warn "Codex AGENTS already exists at $codex_root/AGENTS.md"
+        print_warn "Merge the Cells global guidance from examples/codex/AGENTS.md"
+    else
+        cp "$codex_src/AGENTS.md" "$codex_root/AGENTS.md"
+        print_skill "~/.codex/AGENTS.md"
+    fi
+
+    if [ -f "$codex_root/config.toml" ]; then
+        print_warn "Codex config already exists at $codex_root/config.toml"
+        print_warn "Merge the Cells sections from examples/codex/.codex/config.toml"
+    else
+        cp "$codex_src/.codex/config.toml" "$codex_root/config.toml"
+        print_skill "~/.codex/config.toml"
+    fi
+
+    print_skill "~/.codex/hooks.json"
+    print_skill "~/.codex/rules/default.rules"
+    print_skill "~/.codex/agents/*.toml"
+    print_skill "~/.agents/plugins/marketplace.json"
+    print_skill "~/.codex/plugins/cells-agent-bundle-codex/"
 }
 
 # ============================================================================
@@ -683,7 +763,7 @@ install_for_agent() {
                 print_warn "Portable Codex bundle not found; falling back to file-by-file installer"
                 install_codex_assets
             fi
-            echo -e "  ${YELLOW}Note:${NC} Codex assets installed in current project (AGENTS.md, .codex/, .agents/, plugins/)"
+            echo -e "  ${YELLOW}Note:${NC} Codex assets installed globally in ${BOLD}~/.codex${NC} and ${BOLD}~/.agents/plugins${NC}"
             ;;
         project-local)
             if portable_bundle_exists project-local; then
@@ -705,9 +785,17 @@ install_for_agent() {
                 install_opencode_config
                 install_opencode_plugins
             fi
+            if portable_bundle_exists codex; then
+                install_codex_from_portable
+            else
+                print_warn "Portable Codex bundle not found; falling back to file-by-file installer"
+                install_codex_assets
+            fi
             echo -e "\n${YELLOW}Next steps:${NC}"
             echo -e "  1. ${YELLOW}${BOLD}[REQUIRED]${NC} Add orchestrator agent to ${BOLD}~/.config/opencode/opencode.json${NC}"
             echo -e "     ${YELLOW}See: examples/opencode/opencode.json — without this, /cells-* commands won't work${NC}"
+            echo -e "  2. ${YELLOW}${BOLD}[CHECK]${NC} If ${BOLD}~/.codex/AGENTS.md${NC} or ${BOLD}~/.codex/config.toml${NC} already existed,"
+            echo -e "     merge the Cells Codex templates from ${BOLD}examples/codex/${NC} instead of overwriting them blindly"
             ;;
         custom)
             if [[ -z "${CUSTOM_PATH:-}" ]]; then
@@ -732,9 +820,9 @@ interactive_menu() {
     echo -e "${BOLD}Select your AI coding assistant:${NC}\n"
     echo "  1) OpenCode       ($(get_tool_path opencode))"
     echo "  2) VS Code        ($(get_tool_path vscode))"
-    echo "  3) Codex          (AGENTS.md + $(get_tool_path codex) + ./plugins)"
+    echo "  3) Codex          ($(get_tool_path codex) + ~/.agents/plugins)"
     echo "  4) Project-local  ($(get_tool_path project-local))"
-    echo "  5) All global     (OpenCode)"
+    echo "  5) All global     (OpenCode + Codex)"
     echo "  6) Custom path"
     echo ""
     read -rp "Choice [1-6]: " choice

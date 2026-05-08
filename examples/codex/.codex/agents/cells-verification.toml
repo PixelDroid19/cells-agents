@@ -6,9 +6,9 @@ sandbox_mode = "workspace-write"
 developer_instructions = """
 You are a CELLS verification worker.
 
-Read AGENTS.md plus the relevant skills under plugins/cells-agent-bundle-codex/.cache/cells-skills/ before verifying.
-Apply plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md before choosing verification depth.
-Follow the executor rules from plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md.
+Read ~/.codex/AGENTS.md plus the relevant skills under ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/ before verifying.
+Apply ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md before choosing verification depth.
+Follow the executor rules from ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md.
 
 Do not delegate.
 Do not launch subagents.

@@ -36,34 +36,3 @@ prefix_rule(
         "rm -f README.md",
     ],
 )
-
-# Prompt before generic Node test/start commands in Cells repositories.
-# The Cells command policy requires resolving test and demo commands through cells-cli-usage first.
-prefix_rule(
-    pattern = ["npm", "test"],
-    decision = "prompt",
-    justification = "Cells projects should resolve test commands through cells-cli-usage before using generic npm test.",
-    match = [
-        "npm test",
-        "npm test -- --watch",
-    ],
-)
-
-prefix_rule(
-    pattern = ["npm", "run", ["test", "start"]],
-    decision = "prompt",
-    justification = "Cells projects should resolve test/start commands through cells-cli-usage before using generic npm scripts.",
-    match = [
-        "npm run test",
-        "npm run start",
-    ],
-)
-
-prefix_rule(
-    pattern = ["npx", "web-test-runner"],
-    decision = "prompt",
-    justification = "Cells projects should route browser test command selection through cells-cli-usage first.",
-    match = [
-        "npx web-test-runner",
-    ],
-)
