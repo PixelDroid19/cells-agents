@@ -1,0 +1,39 @@
+{
+  "name": "cells-agent-bundle-codex",
+  "version": "2.2.0",
+  "description": "BBVA Cells workflow skills for Codex project installs and local plugin discovery.",
+  "author": {
+    "name": "D. J",
+    "url": "https://github.com/PixelDroid19"
+  },
+  "homepage": "https://github.com/PixelDroid19/cells-agents",
+  "repository": "https://github.com/PixelDroid19/cells-agents",
+  "license": "MIT",
+  "keywords": [
+    "cells",
+    "bbva",
+    "codex",
+    "workflow",
+    "skills"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Cells Agent Bundle",
+    "shortDescription": "BBVA Cells workflow skills for Codex",
+    "longDescription": "Reusable BBVA Cells workflow skills, contracts, and specialist guidance packaged for Codex local plugin discovery.",
+    "developerName": "D. J",
+    "category": "Productivity",
+    "capabilities": [
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/PixelDroid19/cells-agents",
+    "privacyPolicyURL": "https://github.com/PixelDroid19/cells-agents",
+    "termsOfServiceURL": "https://github.com/PixelDroid19/cells-agents",
+    "defaultPrompt": [
+      "Run /cells-init for this Cells project.",
+      "Explore this Cells change with catalog evidence.",
+      "Verify this Cells implementation with real proof."
+    ]
+  }
+}

@@ -12,6 +12,8 @@ Typical case: corporate macOS where `sudo`, `su`, or `mkdir` are not allowed fro
   Ready-to-copy project-local OpenCode skills tree.
 - `vscode/.github/`
   Ready-to-copy VS Code Copilot workspace layout with the plugin already built inside `.github/plugin/`.
+- `codex-project/`
+  Ready-to-copy Codex repository layout with `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and the bundled plugin source.
 
 ## Manual Install: OpenCode
 
@@ -52,6 +54,26 @@ Finder alternative:
 1. Open `portable/vscode/`
 2. Drag `.github` into the target repository root
 
+## Manual Install: Codex Project
+
+From the target repository root:
+
+```bash
+cp -R /path/to/cells-agents/portable/codex-project/. .
+```
+
+This creates or refreshes:
+
+- `AGENTS.md`
+- `.codex/`
+- `.agents/plugins/marketplace.json`
+- `plugins/cells-agent-bundle-codex/`
+
+Finder alternative:
+
+1. Open `portable/codex-project/`
+2. Copy its contents into the target repository root
+
 ## Manual Install: Project-Local OpenCode
 
 From the target repository root:
@@ -76,4 +98,5 @@ These assets are generated from canonical repo sources and validated with:
 bash scripts/build_portable_assets.sh
 python3 scripts/validate_vscode_copilot_assets.py --installed-root portable/vscode/.github
 python3 scripts/validate_vscode_copilot_assets.py --plugin-root portable/vscode-plugin
+python3 scripts/validate_codex_assets.py --installed-root portable/codex-project
 ```

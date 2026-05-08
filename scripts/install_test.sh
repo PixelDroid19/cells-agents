@@ -11,6 +11,7 @@ REPO_DIR="$(dirname "$SCRIPT_DIR")"
 INSTALL_SCRIPT="$SCRIPT_DIR/install.sh"
 PORTABLE_BUILDER="$SCRIPT_DIR/build_portable_assets.sh"
 VSCODE_VALIDATOR="$SCRIPT_DIR/validate_vscode_copilot_assets.py"
+CODEX_VALIDATOR="$SCRIPT_DIR/validate_codex_assets.py"
 
 TESTS_RUN=0
 TESTS_PASSED=0
@@ -115,6 +116,32 @@ assert_vscode_workspace_valid() {
     python3 "$VSCODE_VALIDATOR" --plugin-root "$project/.github/plugin" > /dev/null
 }
 
+assert_codex_assets_installed() {
+    local project="$1"
+    assert_file_exists "$project/AGENTS.md" || return 1
+    assert_file_exists "$project/.codex/config.toml" || return 1
+    assert_file_exists "$project/.codex/hooks.json" || return 1
+    assert_file_exists "$project/.codex/rules/default.rules" || return 1
+    assert_file_exists "$project/.codex/agents/cells-orchestrator.toml" || return 1
+    assert_file_exists "$project/.codex/agents/cells-analysis.toml" || return 1
+    assert_file_exists "$project/.codex/agents/cells-implementation.toml" || return 1
+    assert_file_exists "$project/.codex/agents/cells-verification.toml" || return 1
+    assert_file_exists "$project/.codex/hooks/scripts/cells-session-context.js" || return 1
+    assert_file_exists "$project/.codex/hooks/scripts/cells-pretool-policy.js" || return 1
+    assert_file_exists "$project/.codex/hooks/scripts/cells-stop-reminder.js" || return 1
+    assert_file_exists "$project/.agents/plugins/marketplace.json" || return 1
+    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.codex-plugin/plugin.json" || return 1
+    assert_file_exists "$project/plugins/cells-agent-bundle-codex/skills/cells-agent-bundle/SKILL.md" || return 1
+    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md" || return 1
+    assert_file_exists "$project/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-verify/SKILL.md" || return 1
+}
+
+assert_codex_project_valid() {
+    local project="$1"
+    python3 "$CODEX_VALIDATOR" --installed-root "$project" > /dev/null
+    python3 "$CODEX_VALIDATOR" --plugin-root "$project/plugins/cells-agent-bundle-codex" > /dev/null
+}
+
 run_test() {
     local name="$1"
     local func="$2"
@@ -142,6 +169,7 @@ test_help_flag() {
     echo "$output" | grep -q "Usage:" || return 1
     echo "$output" | grep -q "opencode" || return 1
     echo "$output" | grep -q "vscode" || return 1
+    echo "$output" | grep -q "codex" || return 1
     echo "$output" | grep -q "project-local" || return 1
     echo "$output" | grep -q "all-global" || return 1
 }
@@ -178,6 +206,16 @@ test_install_vscode() {
     assert_all_skills_installed "$project/.github/skills"
     assert_vscode_assets_installed "$project"
     assert_vscode_workspace_valid "$project"
+}
+
+# Codex
+
+test_install_codex() {
+    local project="$TEST_TMPDIR/codex-project"
+    mkdir -p "$project"
+    (cd "$project" && bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1)
+    assert_codex_assets_installed "$project" || return 1
+    assert_codex_project_valid "$project"
 }
 
 # Project-local
@@ -225,6 +263,15 @@ test_idempotent_vscode() {
     assert_vscode_workspace_valid "$project"
 }
 
+test_idempotent_codex() {
+    local project="$TEST_TMPDIR/codex-project"
+    mkdir -p "$project"
+    (cd "$project" && bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1)
+    (cd "$project" && bash "$INSTALL_SCRIPT" --agent codex > /dev/null 2>&1)
+    assert_codex_assets_installed "$project" || return 1
+    assert_codex_project_valid "$project"
+}
+
 # Output checks
 
 test_output_shows_done_message() {
@@ -245,7 +292,11 @@ test_repo_portable_assets_valid() {
     assert_opencode_portable_bundle "$REPO_DIR/portable/opencode-home" || return 1
     assert_vscode_assets_installed "$REPO_DIR/portable/vscode" || return 1
     assert_vscode_workspace_valid "$REPO_DIR/portable/vscode" || return 1
+    assert_codex_assets_installed "$REPO_DIR/portable/codex-project" || return 1
+    assert_codex_project_valid "$REPO_DIR/portable/codex-project" || return 1
     python3 "$VSCODE_VALIDATOR" --plugin-root "$REPO_DIR/portable/vscode-plugin" > /dev/null
+    python3 "$CODEX_VALIDATOR" --plugin-root "$REPO_DIR/plugins/cells-agent-bundle-codex" > /dev/null
+    python3 "$CODEX_VALIDATOR" > /dev/null
 }
 
 test_manual_copy_opencode_bundle() {
@@ -261,13 +312,24 @@ test_manual_copy_vscode_workspace() {
     assert_vscode_workspace_valid "$project"
 }
 
+test_manual_copy_codex_project() {
+    local project="$TEST_TMPDIR/manual-codex-project"
+    mkdir -p "$project"
+    (cd "$project" && cp -R "$REPO_DIR/portable/codex-project"/. .)
+    assert_codex_assets_installed "$project" || return 1
+    assert_codex_project_valid "$project"
+}
+
 test_build_portable_assets() {
     local out_dir="$TEST_TMPDIR/portable-build"
     bash "$PORTABLE_BUILDER" "$out_dir" > /dev/null 2>&1
     assert_opencode_portable_bundle "$out_dir/opencode-home" || return 1
     assert_vscode_assets_installed "$out_dir/vscode" || return 1
     assert_vscode_workspace_valid "$out_dir/vscode" || return 1
+    assert_codex_assets_installed "$out_dir/codex-project" || return 1
+    assert_codex_project_valid "$out_dir/codex-project" || return 1
     python3 "$VSCODE_VALIDATOR" --plugin-root "$out_dir/vscode-plugin" > /dev/null
+    python3 "$CODEX_VALIDATOR" --plugin-root "$out_dir/codex-project/plugins/cells-agent-bundle-codex" > /dev/null
 }
 
 echo ""
@@ -281,16 +343,19 @@ run_test "Agente no soportado falla" test_invalid_agent
 run_test "Instala OpenCode" test_install_opencode
 run_test "Instala comandos de OpenCode" test_opencode_commands
 run_test "Instala VS Code" test_install_vscode
+run_test "Instala Codex" test_install_codex
 run_test "Instala project-local" test_install_project_local
 run_test "Instala custom path" test_custom_path
 run_test "Instala all-global" test_all_global
 run_test "OpenCode idempotente" test_idempotent_opencode
 run_test "VS Code idempotente" test_idempotent_vscode
+run_test "Codex idempotente" test_idempotent_codex
 run_test "Salida incluye Done" test_output_shows_done_message
 run_test "Salida incluye OS detectado" test_output_shows_detected_os
 run_test "Portable del repo es valido" test_repo_portable_assets_valid
 run_test "Copia manual OpenCode funciona" test_manual_copy_opencode_bundle
 run_test "Copia manual VS Code funciona" test_manual_copy_vscode_workspace
+run_test "Copia manual Codex funciona" test_manual_copy_codex_project
 run_test "Builder portable regenera assets validos" test_build_portable_assets
 
 echo -e "${BOLD}════════════════════════════════════════════${NC}"

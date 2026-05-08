@@ -1,0 +1,15 @@
+approval_policy = "on-request"
+personality = "pragmatic"
+sandbox_mode = "workspace-write"
+project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
+project_doc_max_bytes = 65536
+project_root_markers = [".git", "package.json", "pyproject.toml", "Cargo.toml", "project.godot"]
+
+[features]
+codex_hooks = true
+multi_agent = true
+unified_exec = true
+
+[agents]
+max_threads = 6
+max_depth = 1

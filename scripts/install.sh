@@ -11,6 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_DIR="$(dirname "$SCRIPT_DIR")"
 SKILLS_SRC="$REPO_DIR/skills"
 PORTABLE_SRC="$REPO_DIR/portable"
+CODEX_PLUGIN_BUILDER="$SCRIPT_DIR/build_codex_plugin.sh"
 
 CORE_WORKFLOW_COMMANDS=(
     "cells-init.md"
@@ -94,6 +95,7 @@ get_tool_path() {
             ;;
         vscode)      echo "./.github/skills" ;;
         project-local) echo "./.opencode/skills" ;;
+        codex)       echo "./.codex" ;;
     esac
 }
 
@@ -152,7 +154,7 @@ show_help() {
     echo "  --path DIR      Custom install path (use with --agent custom)"
     echo "  -h, --help      Show this help"
     echo ""
-    echo "Agents: opencode, vscode, project-local, all-global"
+    echo "Agents: opencode, vscode, codex, project-local, all-global"
     echo ""
     echo "Manual/corporate install assets: portable/README.md"
 }
@@ -191,6 +193,7 @@ portable_bundle_exists() {
         opencode) [ -d "$PORTABLE_SRC/opencode-home/.config/opencode/skills" ] ;;
         vscode) [ -d "$PORTABLE_SRC/vscode/.github/skills" ] ;;
         project-local) [ -d "$PORTABLE_SRC/project-local/.opencode/skills" ] ;;
+        codex) [ -d "$PORTABLE_SRC/codex-project/.codex" ] ;;
         *) return 1 ;;
     esac
 }
@@ -211,6 +214,62 @@ copy_tree_into_parent() {
     fi
 
     cp -R "$source_tree" "$target_parent/"
+}
+
+copy_tree_contents_into_dir() {
+    local source_tree="$1"
+    local target_dir="$2"
+
+    if [ ! -d "$source_tree" ]; then
+        print_error "Portable source not found: $source_tree"
+        return 1
+    fi
+
+    if [ ! -d "$target_dir" ]; then
+        print_error "Target directory does not exist: $target_dir"
+        return 1
+    fi
+
+    cp -R "$source_tree"/. "$target_dir"/
+}
+
+merge_marketplace_entry() {
+    local source_marketplace="$1"
+    local target_marketplace="$2"
+
+    mkdir -p "$(dirname "$target_marketplace")"
+
+    python3 - "$source_marketplace" "$target_marketplace" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+source_path = Path(sys.argv[1])
+target_path = Path(sys.argv[2])
+
+source = json.loads(source_path.read_text(encoding="utf-8"))
+plugin_name = "cells-agent-bundle-codex"
+source_entry = next((entry for entry in source.get("plugins", []) if entry.get("name") == plugin_name), None)
+if source_entry is None:
+    raise SystemExit(f"Marketplace source missing {plugin_name}: {source_path}")
+
+if target_path.exists():
+    target = json.loads(target_path.read_text(encoding="utf-8"))
+else:
+    target = {
+        "name": source.get("name", "cells-local"),
+        "interface": source.get("interface", {"displayName": "Cells Local Plugins"}),
+        "plugins": [],
+    }
+
+target.setdefault("name", source.get("name", "cells-local"))
+target.setdefault("interface", source.get("interface", {"displayName": "Cells Local Plugins"}))
+plugins = [entry for entry in target.get("plugins", []) if entry.get("name") != plugin_name]
+plugins.append(source_entry)
+target["plugins"] = plugins
+
+target_path.write_text(json.dumps(target, indent=2) + "\n", encoding="utf-8")
+PY
 }
 
 clear_managed_skill_targets() {
@@ -307,6 +366,29 @@ install_vscode_from_portable() {
     print_skill ".github/agents/*.agent.md"
     print_skill ".github/hooks/*.json"
     print_skill ".github/plugin/ (optional Copilot plugin package)"
+}
+
+install_codex_from_portable() {
+    local target_root="$PWD"
+    local source_root="$PORTABLE_SRC/codex-project"
+
+    echo -e "\n${BLUE}Installing portable ${BOLD}Codex${NC}${BLUE} project assets...${NC}"
+
+    rm -rf "$target_root/.codex"
+    rm -rf "$target_root/plugins/cells-agent-bundle-codex"
+    rm -f "$target_root/AGENTS.md"
+    mkdir -p "$target_root/plugins" "$target_root/.agents/plugins"
+
+    copy_tree_contents_into_dir "$source_root" "$target_root"
+    merge_marketplace_entry "$source_root/.agents/plugins/marketplace.json" "$target_root/.agents/plugins/marketplace.json"
+
+    print_skill "AGENTS.md"
+    print_skill ".codex/config.toml"
+    print_skill ".codex/hooks.json"
+    print_skill ".codex/rules/default.rules"
+    print_skill ".codex/agents/*.toml"
+    print_skill ".agents/plugins/marketplace.json"
+    print_skill "plugins/cells-agent-bundle-codex/"
 }
 
 install_skills() {
@@ -514,6 +596,46 @@ install_vscode_assets() {
     print_skill ".github/plugin/ (optional Copilot plugin package)"
 }
 
+install_codex_assets() {
+    local codex_src="$REPO_DIR/examples/codex"
+    local codex_target="./.codex"
+    local plugin_target="./plugins/cells-agent-bundle-codex"
+    local marketplace_src="$REPO_DIR/.agents/plugins/marketplace.json"
+    local marketplace_target="./.agents/plugins/marketplace.json"
+
+    if [ ! -d "$codex_src" ]; then
+        print_warn "Skipping Codex assets (source not found: $codex_src)"
+        return
+    fi
+
+    echo -e "\n${BLUE}Installing Codex project assets...${NC}"
+
+    mkdir -p \
+        "$codex_target/agents" \
+        "$codex_target/hooks/scripts" \
+        "$codex_target/rules" \
+        "./plugins" \
+        "./.agents/plugins"
+
+    cp "$codex_src/AGENTS.md" "./AGENTS.md"
+    cp "$codex_src/.codex/config.toml" "$codex_target/config.toml"
+    cp "$codex_src/.codex/hooks.json" "$codex_target/hooks.json"
+    cp "$codex_src/.codex/agents"/*.toml "$codex_target/agents/"
+    cp "$codex_src/.codex/hooks/scripts"/*.js "$codex_target/hooks/scripts/"
+    cp "$codex_src/.codex/rules"/*.rules "$codex_target/rules/"
+
+    bash "$CODEX_PLUGIN_BUILDER" "$plugin_target" > /dev/null
+    merge_marketplace_entry "$marketplace_src" "$marketplace_target"
+
+    print_skill "AGENTS.md"
+    print_skill ".codex/config.toml"
+    print_skill ".codex/hooks.json"
+    print_skill ".codex/rules/default.rules"
+    print_skill ".codex/agents/*.toml"
+    print_skill ".agents/plugins/marketplace.json"
+    print_skill "plugins/cells-agent-bundle-codex/"
+}
+
 # ============================================================================
 # Agent install dispatcher
 # ============================================================================
@@ -553,6 +675,15 @@ install_for_agent() {
                 install_vscode_assets
             fi
             echo -e "  ${YELLOW}Note:${NC} VS Code workspace assets installed in current project (.github/)"
+            ;;
+        codex)
+            if portable_bundle_exists codex; then
+                install_codex_from_portable
+            else
+                print_warn "Portable Codex bundle not found; falling back to file-by-file installer"
+                install_codex_assets
+            fi
+            echo -e "  ${YELLOW}Note:${NC} Codex assets installed in current project (AGENTS.md, .codex/, .agents/, plugins/)"
             ;;
         project-local)
             if portable_bundle_exists project-local; then
@@ -601,18 +732,20 @@ interactive_menu() {
     echo -e "${BOLD}Select your AI coding assistant:${NC}\n"
     echo "  1) OpenCode       ($(get_tool_path opencode))"
     echo "  2) VS Code        ($(get_tool_path vscode))"
-    echo "  3) Project-local  ($(get_tool_path project-local))"
-    echo "  4) All global     (OpenCode)"
-    echo "  5) Custom path"
+    echo "  3) Codex          (AGENTS.md + $(get_tool_path codex) + ./plugins)"
+    echo "  4) Project-local  ($(get_tool_path project-local))"
+    echo "  5) All global     (OpenCode)"
+    echo "  6) Custom path"
     echo ""
-    read -rp "Choice [1-5]: " choice
+    read -rp "Choice [1-6]: " choice
 
     case $choice in
         1)  install_for_agent "opencode" ;;
         2)  install_for_agent "vscode" ;;
-        3)  install_for_agent "project-local" ;;
-        4)  install_for_agent "all-global" ;;
-        5)  install_for_agent "custom" ;;
+        3)  install_for_agent "codex" ;;
+        4)  install_for_agent "project-local" ;;
+        5)  install_for_agent "all-global" ;;
+        6)  install_for_agent "custom" ;;
         *)
             print_error "Invalid choice"
             exit 1

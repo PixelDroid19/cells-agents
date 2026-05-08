@@ -10,8 +10,11 @@ OUT_DIR="${1:-$REPO_DIR/portable}"
 SKILLS_SRC="$REPO_DIR/skills"
 OPENCODE_SRC="$REPO_DIR/examples/opencode"
 VSCODE_SRC="$REPO_DIR/examples/vscode"
+CODEX_SRC="$REPO_DIR/examples/codex"
 VSCODE_PLUGIN_BUILDER="$SCRIPT_DIR/build_vscode_plugin.sh"
+CODEX_PLUGIN_BUILDER="$SCRIPT_DIR/build_codex_plugin.sh"
 VSCODE_VALIDATOR="$SCRIPT_DIR/validate_vscode_copilot_assets.py"
+CODEX_VALIDATOR="$SCRIPT_DIR/validate_codex_assets.py"
 
 CORE_WORKFLOW_COMMANDS=(
     "cells-init.md"
@@ -117,9 +120,33 @@ build_vscode_workspace() {
     copy_skill_bundle "$plugin_target/skills"
 }
 
+build_codex_project() {
+    local target_root="$OUT_DIR/codex-project"
+    local codex_target="$target_root/.codex"
+
+    rm -rf "$target_root"
+    mkdir -p \
+        "$codex_target/agents" \
+        "$codex_target/hooks/scripts" \
+        "$codex_target/rules" \
+        "$target_root/.agents/plugins" \
+        "$target_root/plugins"
+
+    cp "$CODEX_SRC/AGENTS.md" "$target_root/AGENTS.md"
+    cp "$CODEX_SRC/.codex/config.toml" "$codex_target/config.toml"
+    cp "$CODEX_SRC/.codex/hooks.json" "$codex_target/hooks.json"
+    cp "$CODEX_SRC/.codex/agents"/*.toml "$codex_target/agents/"
+    cp "$CODEX_SRC/.codex/hooks/scripts"/*.js "$codex_target/hooks/scripts/"
+    cp "$CODEX_SRC/.codex/rules"/*.rules "$codex_target/rules/"
+    cp "$REPO_DIR/.agents/plugins/marketplace.json" "$target_root/.agents/plugins/marketplace.json"
+
+    bash "$CODEX_PLUGIN_BUILDER" "$target_root/plugins/cells-agent-bundle-codex" > /dev/null
+}
+
 validate_portable_assets() {
     python3 "$VSCODE_VALIDATOR" --installed-root "$OUT_DIR/vscode/.github" > /dev/null
     python3 "$VSCODE_VALIDATOR" --plugin-root "$OUT_DIR/vscode-plugin" > /dev/null
+    python3 "$CODEX_VALIDATOR" --installed-root "$OUT_DIR/codex-project" > /dev/null
 }
 
 main() {
@@ -128,6 +155,7 @@ main() {
     build_opencode_home
     build_project_local
     build_vscode_workspace
+    build_codex_project
     bash "$VSCODE_PLUGIN_BUILDER" "$OUT_DIR/vscode-plugin" > /dev/null
     validate_portable_assets
 

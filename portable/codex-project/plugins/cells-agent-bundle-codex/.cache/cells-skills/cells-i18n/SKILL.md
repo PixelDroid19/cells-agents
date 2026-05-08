@@ -1,0 +1,62 @@
+---
+name: cells-i18n
+description: "Use when changing user-visible text, translation keys, demo/locales files, this.t usage, IntlMsg runtime setup, locale parity, or i18n behavior in tests."
+---
+
+# Cells i18n
+
+## Purpose
+
+Use this skill when a task changes user-visible text, translation keys, locale files, or i18n runtime setup.
+
+## Read and follow
+
+- `skills/_shared/cells-official-reference.md`
+- `skills/_shared/real-cells-patterns.md`
+- `skills/cells-official-docs-catalog/` topics `demo-docs-i18n-assets` and `testing`
+- `references/i18n-runtime-and-locales.md`
+
+## When to use
+
+- The user changes user-facing text or translation keys
+- Locale parity and runtime loading need verification
+- Demo or test i18n setup is part of the requested change
+- A verifier must check that i18n wiring is correct
+
+## Workflow
+
+1. Identify all user-visible string surfaces
+2. Route component-owned strings through `this.t(...)` with stable key naming
+3. Resolve whether the touched surface is component/demo, feature, or app/runtime
+4. Ensure locale parity in the correct locale source for that surface
+5. Ensure demo/test/runtime `IntlMsg` setup is deterministic
+5. Return changed keys, files, and any fallback or race-condition risk
+
+## Rules
+
+- Do not leave component-owned user-facing literals hardcoded when they should be localized
+- Keep keys stable, component-prefixed, and aligned exactly across code and locale files
+- Use `skills/_shared/real-cells-patterns.md` for observed key naming, placeholder preservation, and repo-local locale conventions before changing an existing repo
+- Prefer region-free keys like `en` and `es` unless regional override is necessary
+- For component/demo work, validate `demo/locales/locales.json` when that is the active repo convention
+- For app/runtime/test locale behavior, follow official Cells docs and active repo configuration instead of assuming `demo/locales`
+- If both `locales/locales.json` and `demo/locales/locales.json` exist, decide by touched surface and runtime evidence
+- If tests or demos depend on locales, mention `IntlMsg.lang`, `IntlMsg.localesHost`, `forTesting` when relevant, generated test locales when relevant, and any required wait for locale loading
+
+## Finish checklist
+
+- No unintended hardcoded user-facing literals remain
+- New keys exist in the required locale files
+- Demo/test i18n config matches runtime expectations
+- Risks are explicit when locale parity or runtime setup is incomplete
+
+## Browser Integration
+
+For runtime i18n work, also read:
+- `skills/_shared/browser-testing-convention.md`
+- `skills/agent-browser/SKILL.md` when available
+
+Use browser validation to confirm:
+- translated literals actually render
+- locale switches or loads behave correctly
+- visible fallback text or broken async locale loading is detected in real UI.

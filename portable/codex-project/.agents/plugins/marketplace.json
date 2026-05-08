@@ -1,0 +1,20 @@
+{
+  "name": "cells-local",
+  "interface": {
+    "displayName": "Cells Local Plugins"
+  },
+  "plugins": [
+    {
+      "name": "cells-agent-bundle-codex",
+      "source": {
+        "source": "local",
+        "path": "./plugins/cells-agent-bundle-codex"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}

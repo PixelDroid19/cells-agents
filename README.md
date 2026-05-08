@@ -1,7 +1,7 @@
 <p align="center">
   <h1 align="center">Cells Agent Bundle</h1>
   <p align="center">
-    <strong>OpenCode-first orchestration for BBVA Cells using skill-driven delegated runs</strong>
+    <strong>Portable multi-host orchestration for BBVA Cells using skill-driven delegated runs</strong>
     <br />
     <em>Portable local assets. Indexed documentation. Engram-first persistence. Markdown-based skills.</em>
   </p>
@@ -506,6 +506,7 @@ For restrictive bank-managed Macs where terminal setup is limited or `mkdir`, `s
 - `portable/opencode-home/.config/opencode/`
 - `portable/project-local/.opencode/`
 - `portable/vscode/.github/`
+- `portable/codex-project/`
 
 These are ready to copy with Finder or with `cp -R` from an existing parent directory. No `mkdir` is required on the destination machine.
 
@@ -514,10 +515,12 @@ Examples:
 ```bash
 cp -R portable/opencode-home/.config "$HOME/"
 cp -R /path/to/cells-agents/portable/vscode/.github .
+cp -R /path/to/cells-agents/portable/codex-project/. .
 cp -R /path/to/cells-agents/portable/project-local/.opencode .
 ```
 
 For VS Code manual install, that single `.github` copy already includes the plugin built under `.github/plugin/`. No extra build step is required.
+For Codex manual install, that single project-root copy already includes `AGENTS.md`, `.codex/`, `.agents/plugins/marketplace.json`, and the bundled plugin under `plugins/cells-agent-bundle-codex/`.
 
 See `portable/README.md` for the exact manual steps.
 
@@ -525,6 +528,7 @@ See `portable/README.md` for the exact manual steps.
 
 - OpenCode
 - VS Code Copilot
+- Codex
 - project-local installs
 
 ### OpenCode
@@ -684,12 +688,53 @@ portable/vscode/.github/
 
 That copy already includes the built plugin under `.github/plugin/`. The separate standalone plugin package remains available for advanced distribution use at `portable/vscode-plugin/`. See `examples/vscode/docs/opencode-vscode-equivalence.md` for the OpenCode phase-agent to VS Code role-agent mapping.
 
+### Codex
+
+1. Install Codex project assets from the target repository root:
+
+```bash
+./scripts/install.sh --agent codex
+```
+
+This creates the native Codex project layout:
+
+- `AGENTS.md`
+- `.codex/config.toml`
+- `.codex/hooks.json`
+- `.codex/rules/default.rules`
+- `.codex/agents/*.toml`
+- `.agents/plugins/marketplace.json`
+- `plugins/cells-agent-bundle-codex/`
+
+2. Use `cells-orchestrator` as the coordinating agent and the role agents under `.codex/agents/` for analysis, implementation, and verification.
+3. The plugin exposes a lightweight `cells-agent-bundle` gateway skill for Codex discovery, while the complete canonical payload lives at `plugins/cells-agent-bundle-codex/.cache/cells-skills/`; `AGENTS.md` and the agent TOMLs route through that payload rather than duplicating policy.
+4. Hooks and rules are intentionally narrow guardrails. They do not replace `cells-verify`.
+5. Validate Codex assets before release:
+
+```bash
+python3 scripts/validate_codex_assets.py
+python3 scripts/validate_codex_assets.py --installed-root portable/codex-project
+python3 scripts/validate_codex_assets.py --plugin-root plugins/cells-agent-bundle-codex
+```
+
+Portable/manual install path:
+
+```text
+portable/codex-project/
+```
+
+That copy already includes the repo-local plugin source, the complete hidden skills payload, and the marketplace entry. v1 proves structural/runtime-readiness through validators, install tests, and a local Codex prompt-input smoke.
+
 ## Project Structure
 
 ```text
 <repo-root>/
 |-- README.md
 |-- LICENSE
+|-- .agents/
+|   `-- plugins/marketplace.json
+|-- plugins/
+|   `-- cells-agent-bundle-codex/
 |-- skills/
 |   |-- _shared/
 |   |   |-- cells-conventions.md
@@ -718,22 +763,34 @@ That copy already includes the built plugin under `.github/plugin/`. The separat
 |   |-- cells-test-creator/
 |   `-- cells-verify/
 |-- examples/
+|   |-- codex/
 |   |-- opencode/
 |   |   |-- opencode.json
 |   |   |-- opencode.single.json
 |   |   |-- opencode.multi.json
 |   |   `-- commands/
-|-- .github/
-|   |-- instructions/
-|   |-- prompts/
-|   |-- agents/
-|   |-- docs/
-|   `-- skills/
+|   `-- vscode/
+|       |-- agents/
+|       |-- docs/
+|       |-- hooks/
+|       |-- instructions/
+|       |-- plugin/
+|       `-- prompts/
+|-- portable/
+|   |-- codex-project/
+|   |-- opencode-home/
+|   |-- project-local/
+|   |-- vscode/
+|   `-- vscode-plugin/
 `-- scripts/
-  |-- setup.ps1
-  |-- setup.sh
+    |-- build_codex_plugin.sh
+    |-- build_portable_assets.sh
+    |-- build_vscode_plugin.sh
     |-- install.ps1
-    `-- install.sh
+    |-- install.sh
+    |-- install_test.sh
+    |-- validate_codex_assets.py
+    `-- validate_vscode_copilot_assets.py
 ```
 
 ## Design Principles
