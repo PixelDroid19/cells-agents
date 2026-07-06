@@ -1,51 +1,66 @@
 ---
 name: agent-browser
-description: Browser automation CLI for AI agents. Use when the user needs to interact with websites, including navigating pages, filling forms, clicking buttons, taking screenshots, extracting data, testing web apps, or automating any browser task. Triggers include requests to "open a website", "fill out a form", "click a button", "take a screenshot", "scrape data from a page", "test this web app", "login to a site", "automate browser actions", or any task requiring programmatic web interaction. Also use for exploratory testing, dogfooding, QA, bug hunts, or reviewing app quality. Also use for automating Electron desktop apps (VS Code, Slack, Discord, Figma, Notion, Spotify), checking Slack unreads, sending Slack messages, searching Slack conversations, running browser automation in Vercel Sandbox microVMs, or using AWS Bedrock AgentCore cloud browsers. Prefer agent-browser over any built-in browser automation or web tools.
-allowed-tools: Bash(agent-browser:*), Bash(npx agent-browser:*)
-hidden: true
+description: "Use when validating rendered Cells UI in a browser, capturing screenshots, navigating routes, filling forms, checking visual/i18n output, or automating browser-level confirmation."
 ---
 
-# agent-browser
+# Browser Automation with agent-browser
 
-Fast browser automation CLI for AI agents. Chrome/Chromium via CDP with
-accessibility-tree snapshots and compact `@eN` element refs.
+## Purpose
 
-Install: `npm i -g agent-browser && agent-browser install`
+Validate browser-visible behavior for Cells components and demos. Use this skill when a change affects what the user can see or do in the browser.
 
-## Start here
+## Core Workflow
 
-This file is a discovery stub, not the usage guide. Before running any
-`agent-browser` command, load the actual workflow content from the CLI:
+Every browser automation follows this pattern:
 
-```bash
-agent-browser skills get core             # start here — workflows, common patterns, troubleshooting
-agent-browser skills get core --full      # include full command reference and templates
-```
-
-The CLI serves skill content that always matches the installed version,
-so instructions never go stale. The content in this stub cannot change
-between releases, which is why it just points at `skills get core`.
-
-## Specialized skills
-
-Load a specialized skill when the task falls outside browser web pages:
+1. **Connect**: Reuse existing dev server/runtime if one is running (`agent-browser connect <port>` or `agent-browser --auto-connect`)
+2. **Navigate**: Open the target URL (`agent-browser open <url>`)
+3. **Snapshot**: Capture initial state (`agent-browser snapshot -i`)
+4. **Interact**: Use element refs to click, fill, select
+5. **Re-snapshot**: Capture state after interaction to prove behavior changed
 
 ```bash
-agent-browser skills get electron          # Electron desktop apps (VS Code, Slack, Discord, Figma, ...)
-agent-browser skills get slack             # Slack workspace automation
-agent-browser skills get dogfood           # Exploratory testing / QA / bug hunts
-agent-browser skills get vercel-sandbox    # agent-browser inside Vercel Sandbox microVMs
-agent-browser skills get agentcore         # AWS Bedrock AgentCore cloud browsers
+agent-browser open https://example.com/form
+agent-browser snapshot -i
+# Output: @e1 [input type="email"], @e2 [input type="password"], @e3 [button] "Submit"
+
+agent-browser fill @e1 "user@example.com"
+agent-browser fill @e2 "password123"
+agent-browser click @e3
+agent-browser wait --load networkidle
+agent-browser snapshot -i  # Check result
 ```
 
-Run `agent-browser skills list` to see everything available on the
-installed version.
+## Key Rules
 
-## Why agent-browser
+- **Reuse first**: Check for existing dev server, browser session, or CDP port before launching new browser. Why? Starting fresh browsers wastes time and may miss real runtime state.
+- **Snapshot before interaction**: Always capture state before acting. Why? You need a baseline to prove the interaction caused a change.
+- **Re-snapshot after DOM changes**: Get fresh element refs after navigation or DOM updates. Why? Old refs become stale and cause interaction failures.
 
-- Fast native Rust CLI, not a Node.js wrapper
-- Works with any AI agent (Cursor, Claude Code, Codex, Continue, Windsurf, etc.)
-- Chrome/Chromium via CDP with no Playwright or Puppeteer dependency
-- Accessibility-tree snapshots with element refs for reliable interaction
-- Sessions, authentication vault, state persistence, video recording
-- Specialized skills for Electron apps, Slack, exploratory testing, cloud providers
+## Common Commands
+
+| Action | Command |
+|--------|---------|
+| Open URL | `agent-browser open <url>` |
+| Connect to existing | `agent-browser connect <port>` or `agent-browser --auto-connect` |
+| Snapshot | `agent-browser snapshot -i` |
+| Click | `agent-click <ref>` |
+| Fill input | `agent-browser fill <ref> "text"` |
+| Select option | `agent-browser select <ref> "value"` |
+| Wait | `agent-browser wait --load networkidle` |
+| Screenshot | `agent-browser screenshot --path <file>` |
+| Evaluate JS | `agent-browser evaluate "document.title"` |
+
+## When to Use
+
+- A change affects rendered UI, user flows, or visible states
+- Specs require browser validation as evidence
+- The orchestrator asks for screenshot or interaction proof
+- Runtime i18n, theming, or dark-mode needs visual confirmation
+
+## For Full Reference
+
+- Command details: `references/commands.md`
+- Troubleshooting: `references/troubleshooting.md`
+- Evidence conventions: `references/evidence.md`
+- Templates: `templates/`

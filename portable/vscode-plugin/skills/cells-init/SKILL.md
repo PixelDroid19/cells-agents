@@ -14,10 +14,7 @@ Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workfl
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, use `skills/_shared/cells-official-reference.md` to decide which official docs and specialist skills are relevant before loading them.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Write `cells-init/{project-name}` canonically, treat historical legacy bootstrap context as inactive history only, and do not create `openspec/`.
-- If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Run full bootstrap.
-- If mode is `hybrid`: Read and follow BOTH convention files. Run openspec bootstrap AND persist context to Engram.
-- If mode is `none`: Return detected context without writing project files.
+This phase writes `cells-init/{project-name}`. Handle persistence mode (engram/openspec/hybrid/none) per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section. In `engram`, write `cells-init/{project-name}` canonically and do not create `openspec/`; in `openspec`/`hybrid`, run full filesystem bootstrap.
 
 ## What to Do
 
@@ -45,7 +42,7 @@ For Cells projects, explicitly inspect:
 - `src/` and `test/`
 - `@bbva-spherica-components/*`, `@bbva-web-components/*`, `lit`, and `@open-wc/scoped-elements`
 - whether the project is a base component, a feature composition, or a data manager package
-- `skills/cells-cli-usage/`, `skills/cells-coverage/`, `skills/cells-test-creator/`, and `skills/cells-app-architecture/` when present, so the team knows the local Cells workflow, mandatory testing stack, coverage policy, testing rules, and architecture model
+- `skills/cells-cli-usage/`, `skills/cells-coverage/`, `skills/cells-test-creator/`, and `skills/cells-app-architecture/` when present — load only the testing skill(s) the intent needs (cells-cli-usage for commands, cells-coverage only for coverage work, cells-test-creator only for authoring tests; never generic npm/web-test-runner fallbacks in Cells contexts) — plus the architecture model
 - whether the workspace exposes a local serve, demo, or route path suitable for browser validation via `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md`
 - whether there is evidence of an already running dev server, existing preview URL, or known browser/CDP reuse path that should be preferred later
 
@@ -123,23 +120,7 @@ mem_save(
 
 ### Step 6: Artifact Persistence (Mandatory)
 
-If mode is `engram`, persist initialization context explicitly:
-
-```
-mem_save(
-  title: "cells-init/{project-name}",
-  topic_key: "cells-init/{project-name}",
-  type: "architecture",
-  project: "{project-name}",
-  content: "{detected project context markdown}"
-)
-```
-
-If mode is `openspec` or `hybrid`, `openspec/config.yaml` was already written in Step 4.
-
-If mode is `hybrid`, do BOTH filesystem bootstrap and the `mem_save` above.
-
-If mode is `none`, return inline only.
+Persist initialization context as `cells-init/{project-name}` per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section (`openspec/config.yaml` was already written in Step 4 for `openspec`/`hybrid`).
 
 Do not skip this step in `engram` or `hybrid`, or later phases cannot recover initialization context.
 

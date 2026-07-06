@@ -35,15 +35,19 @@ For UI, typography, forms, buttons, navigation, feedback, i18n, command policy, 
 2. Follow `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-source-routing-contract.md` for source order
 3. Do not duplicate or weaken those rules in phase-specific work
 
-## Mandatory Testing Stack
+## Testing Skills
 
-For any Cells test intent, consult skills in this exact order before any other testing source:
+For any Cells test intent, load only the testing skill(s) the intent needs:
 
-1. `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-cli-usage/`
-2. `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-coverage/`
-3. `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-test-creator/`
+- `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-cli-usage/` for resolving and running commands
+- `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-coverage/` only for coverage work
+- `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-test-creator/` only for authoring or updating tests
 
-Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
+Never use generic fallback runners (`npm test`, `npx web-test-runner`) in Cells contexts unless the user explicitly requests them.
+
+## Memories
+
+Codex memories (`~/.codex/memories/`, `memories = true` in `config.toml`) are a supplemental local recall layer only. All mandatory Cells rules live in this checked-in `AGENTS.md` and the bundled `_shared/` contracts; never rely on memories as the source for rules that must always apply.
 
 ## Agent Handoff Contract (Always)
 

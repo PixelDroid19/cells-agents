@@ -36,14 +36,9 @@ Also use:
 - `skills/cells-i18n/` when translated literals, locale files, or `BbvaCoreIntlMixin` are in scope
 - `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` for browser-visible changes
 
-For Cells testing and test-execution decisions, apply the mandatory testing stack from `skills/_shared/cells-rules-contract.md` and `skills/_shared/cells-source-routing-contract.md`.
+For Cells testing and test-execution decisions, load only the testing skill(s) the intent needs: `cells-cli-usage` for commands, `cells-coverage` only for coverage work, `cells-test-creator` only for authoring tests  never generic npm/web-test-runner fallbacks in Cells contexts.
 
-Mode handling:
-
-- `engram`: use `skills/_shared/engram-convention.md` and persist `verify-report`
-- `openspec`: write `openspec/changes/{change-name}/verify-report.md`
-- `hybrid`: do both
-- `none`: return the full report inline
+This phase requires `proposal`, `spec`, `design`, and `tasks`. Recover them and handle persistence mode (persisting `verify-report`, in engram, or writing `openspec/changes/{change-name}/verify-report.md` in openspec/hybrid) per `skills/_shared/artifact-recovery.md`.
 
 ## Workflow
 
@@ -58,13 +53,7 @@ Before any other work:
 
 ### Step 2: Load Canonical Dependencies
 
-When mode is `engram` or `hybrid`, retrieve:
-
-1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
-2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
-3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
-4. `mem_search(query: "cells/{change-name}/tasks", project: "{project}")`
-5. `mem_get_observation(...)` for each result
+When mode is `engram` or `hybrid`, retrieve proposal, spec, design, and tasks per `skills/_shared/artifact-recovery.md`.
 
 If any required canonical dependency is absent during `full-workflow`, return `status: blocked`.
 For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/tasks artifacts; verify against the user request, touched files, and targeted evidence.
@@ -147,21 +136,7 @@ For every spec scenario, map:
 
 ### Step 8: Persist the Report
 
-Persist according to mode.
-
-For Engram:
-
-```text
-mem_save(
-   title: "cells/{change-name}/verify-report",
-   topic_key: "cells/{change-name}/verify-report",
-   type: "architecture",
-   project: "{project}",
-   content: "{your full verification report markdown}"
-)
-```
-
-If mode is `hybrid`, do both filesystem and Engram persistence.
+Persist as `cells/{change-name}/verify-report` per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section.
 
 ### Step 9: Return Summary
 

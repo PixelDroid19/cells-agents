@@ -7,7 +7,7 @@ description: "Use when routing Cells work to specialist skills, finding availabl
 
 You are the **knowledge gateway** for Cells projects. Your job is to make sure the agent **knows what exists** before it invents something new, proposes a component, or makes a Cells mistake.
 
-Load this skill **before** any code, design, or component work — as **step 0 of everything**.
+Load this skill when you need to locate which skill or catalog answers a Cells question and the routing is not already obvious.
 
 ## Read First
 
@@ -30,6 +30,8 @@ For UI, typography, forms, buttons, tables, navigation, or feedback, follow the 
 python skills/cells-components-catalog/scripts/search_docs.py --query "<what you need>"
 ```
 
+Query phrasing and zero-result fallback: `skills/_shared/doc-search.md`.
+
 When the search is ambiguous, inspect the package:
 
 ```bash
@@ -46,6 +48,8 @@ If the task involves how Cells works, how to test, how to structure a feature, h
 python skills/cells-official-docs-catalog/scripts/search_docs.py --query "<your question>"
 python skills/cells-official-docs-catalog/scripts/search_docs.py --topic <topic>
 ```
+
+Query phrasing and zero-result fallback: `skills/_shared/doc-search.md`.
 
 Topics: `architecture`, `testing`, `cli`, `component-api`, `lit-authoring`, `composition`, `theming`, `demo-docs-i18n-assets`, `application-runtime`, `application-communication`
 

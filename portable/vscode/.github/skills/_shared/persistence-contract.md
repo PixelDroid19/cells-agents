@@ -5,7 +5,7 @@ This project uses an Engram-first storage architecture:
 - `openspec` is filesystem mode for local file artifacts.
 - `hybrid` keeps Engram as primary for recovery and writes an OpenSpec mirror alongside it.
 
-Read `skills/_shared/cells-workflow-contract.md` alongside this file for canonical CELLS artifact naming, compatibility-read order, dependency lookup expectations, delegate-first fallback rules, and result-envelope fields.
+Read `skills/_shared/cells-work-sizing-contract.md` before selecting persistence depth, then read `skills/_shared/cells-workflow-contract.md` for canonical CELLS artifact naming, compatibility-read order, dependency lookup expectations, proportional delegation rules, and result-envelope fields.
 
 ## Mode Resolution
 
@@ -42,7 +42,7 @@ When falling back to `none`, recommend the user enable `engram` or `openspec` fo
 
 ## State Persistence (Orchestrator)
 
-The orchestrator persists DAG state after each phase transition. This enables CELLS recovery after context compaction and keeps the main thread aligned with the delegate-only architecture.
+The orchestrator persists DAG state after each phase transition. This enables CELLS recovery after context compaction and keeps the main thread aligned with proportional orchestration.
 
 | Mode | Persist State | Recover State |
 |------|--------------|---------------|

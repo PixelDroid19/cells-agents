@@ -21,6 +21,7 @@ Apply `_shared` guidance in this strict order when rules overlap:
 5. `skills/_shared/cells-conventions.md` (Cells routing, command policy, testing stack, language)
 6. `skills/_shared/cells-official-reference.md` (topic map and source-routing details)
 7. `skills/_shared/browser-testing-convention.md` (browser evidence workflow for UI-visible claims)
+8. `skills/_shared/doc-search.md` (catalog query phrasing and zero-result fallback), `skills/_shared/code-quality-rules.md` (code style), `skills/_shared/artifact-recovery.md` (phase context recovery)
 
 Tie-breakers:
 - If persistence mode/file-write rules conflict with any Cells/browser rule, `persistence-contract.md` wins.
@@ -67,6 +68,10 @@ Read sources in this order when they exist:
    - use `scripts/search_docs.py` to retrieve architecture, CLI, testing, theming, packaging, and authoring rules
 
 If two sources conflict, trust project code first, then the internal component catalog, then the internal official-docs catalog.
+
+Clarification (no contradiction with catalog-first rules): the catalog is first for **discovering which component to use**; project code is first for **verifying how an already-used component actually behaves**.
+
+For how to phrase catalog queries and what to do on zero results, follow `skills/_shared/doc-search.md`.
 
 ## Intent Routing Rules (Mandatory)
 
@@ -163,17 +168,16 @@ Typical examples:
 - Component/demo runtime: `demo/locales/locales.json`
 - Feature/app/test locale source: repo-local convention such as `locales/locales.json` or app runtime config
 
-## Mandatory Testing Stack (Strict Order)
+## Testing Stack (Proportional)
 
-When the user asks about tests, test execution, coverage, or test creation in a Cells context, consult and apply this stack FIRST, in this exact order, before any other testing source:
+For Cells testing intents, load only the skill(s) the intent actually needs — in this precedence when more than one applies:
 
-1. `skills/cells-cli-usage/`  canonical Cells-native test command resolution and invocation path
-2. `skills/cells-coverage/`  coverage thresholds, report triage, and branch-miss prioritization
-3. `skills/cells-test-creator/`  test design, creation, update, and convention/compliance checks
+1. `skills/cells-cli-usage/` — resolving which command runs tests. Enough by itself for "how do I run tests".
+2. `skills/cells-coverage/` — add only when the intent involves coverage thresholds or report triage.
+3. `skills/cells-test-creator/` — add only when creating or updating tests.
 
 Rules:
-- Do not skip or reorder this stack for Cells testing requests.
-- Do not reintroduce generic fallback guidance (`npm test`, `npm run test`, `npx web-test-runner`) for Cells contexts.
+- Never suggest generic fallbacks (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
 - If command ownership is unclear, resolve with `cells-cli-usage` first, then ask before any non-Cells command.
 
 ## Pre-Action Checklist (Short)
@@ -183,7 +187,7 @@ Before acting, run this checklist in order:
 1. Confirm Cells context (`custom-elements.json`, `cells` scripts, or Cells/Lit package signals).
 2. Resolve intent route using the matrix above (components vs official docs vs testing stack vs browser evidence).
 3. Enforce command policy (Cells-native first; no generic fallback defaults).
-4. For testing requests, apply `cells-cli-usage` -> `cells-coverage` -> `cells-test-creator` in that exact order.
+4. For testing requests, load only the testing skill(s) the intent needs (see Testing Stack above).
 5. Keep technical artifacts in English (JSDoc, event names, API names, payload keys).
 6. Validate claims with strongest available evidence (code first, then routed catalogs/skills, then browser evidence when UI-visible).
 
@@ -205,49 +209,13 @@ By default, use only:
 
 If a requested command is outside this set and not explicitly requested by the user, stop and report `blocked` with an approved Cells-native alternative.
 
-## Real Cells Component Rules (Mandatory)
+## Real Cells Component Rules
 
-When building, modifying, or reviewing a real Cells component or feature UI, apply these rules unless the user explicitly asks for a different pattern and the project evidence supports it:
+The single source of truth for component implementation rules (BBVA-first reuse, `scopedElements`, `WidgetMixin`/`emitEvent`, `this.t(...)` i18n, SCSS as visual source, browser validation) is `skills/_shared/cells-rules-contract.md`. Read it; do not restate its rules here or in phase skills.
 
-1. Use existing BBVA components first
-   - Reuse existing BBVA components before creating new UI primitives or wrappers.
-   - Use `skills/cells-components-catalog/` SQL lookup as the required first discovery step.
+## Code Hygiene Rules
 
-2. Register everything in `scopedElements`
-   - Every local/custom element dependency used in templates must be imported and registered in `static get scopedElements()`.
-   - Do not rely on implicit global registration for feature-local composition.
-
-3. Use `WidgetMixin` and `this.emitEvent(...)` for business/component events when the feature architecture requires it
-   - For Cells feature/data-manager patterns, prefer `WidgetMixin(ScopedElementsMixin(LitElement))` when consistent with surrounding architecture.
-   - Use `this.emitEvent(...)` for business events and bridge-facing communication instead of ad hoc event dispatch patterns when the feature convention already uses `WidgetMixin`.
-
-4. i18n through `this.t(...)` with locale parity
-   - Route component-owned literals through `this.t(...)`.
-   - Keep key parity in the correct locale source for the touched surface.
-   - Do not assume `demo/locales` is universal when the repo proves another convention.
-
-5. SCSS is the visual source; runtime styles stay aligned
-   - Treat SCSS as the visual source of truth when the component scaffold uses it.
-   - Keep generated/aligned runtime styling (`.css.js`) consistent with SCSS-backed styling rules and Cells toolchain expectations.
-   - Do not introduce manual style flows that bypass Cells component tooling.
-
-6. Browser validation before closure for visible changes
-   - If a change is browser-visible, perform browser validation with `agent-browser` before claiming closure.
-   - Reuse existing runtime/session when possible.
-
-## Code Hygiene Rules (Mandatory)
-
-- Use JSDoc for public API, emitted events, or non-obvious contracts that need durable documentation.
-- Do not leave placeholder comments, TODO comments, commented-out code, or narrative inline comments when clear naming and extracted methods are enough.
-- do not leave TODO comments, commented-out code, or placeholder implementation notes in delivered work.
-- Do not leave unnecessary blank lines, trailing whitespace, or formatting noise unrelated to the change.
-- Avoid unnecessary whitespace-only edits.
-- Prefer separation of responsibilities:
-  - data/business orchestration in data managers
-  - page/view composition in pages
-  - reusable feature UI in shared components
-  - pure helpers in utils
-  - visual styling in styles/SCSS and runtime style artifacts
+Follow `skills/_shared/code-quality-rules.md` (single source; do not restate).
 
 ## What To Extract
 

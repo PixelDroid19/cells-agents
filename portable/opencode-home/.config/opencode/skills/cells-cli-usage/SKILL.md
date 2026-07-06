@@ -28,11 +28,7 @@ Read and follow:
   - Component docs path: `cells component:create`, `cells component:dev`, `cells component:test`, `cells component:lint`, `cells component:locales`, `cells component:documentation`
   - Component repo wrapper path: `cells lit-component:*` when the active workspace already exposes that naming
 - Distinguish between app commands, documented component commands, and repo-local wrapper commands.
-- Do not suggest global install or update steps unless the user explicitly asks for installation help.
-- For Cells app/theme orchestration, do NOT default to generic external commands (`npm run *`, `npm test`, `npm run test`, `npx web-test-runner`).
-- Use non-Cells commands only when the user explicitly asks and the context is clearly non-Cells.
-- If uncertain whether a command is Cells-native, ask the user before running any non-Cells command.
-- Never reintroduce generic fallback testing commands (`npm test`, `npm run test`, `npx web-test-runner`) for Cells contexts.
+- Follow the BBVA-first command policy in `skills/_shared/cells-rules-contract.md` (no generic npm/web-test-runner fallbacks, no unsolicited global install, ask before running a non-Cells command). Skill-specific nuance: always try to resolve a repo-local wrapper before falling back to the documented Cells command.
 - When a command affects docs, demos, tests, or locales, cross-check the official docs map from `skills/_shared/cells-official-reference.md`.
 - For locale workflows, do not assume one universal path; map the active repo to component/demo or app/runtime guidance first.
 - Do not start the project or tests for every small change; resolve the lightest confirmation path that matches the task.

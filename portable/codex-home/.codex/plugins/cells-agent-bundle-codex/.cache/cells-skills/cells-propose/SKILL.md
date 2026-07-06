@@ -21,11 +21,8 @@ Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding w
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `proposal`. Retrieve `explore` and `cells-init/{project}` canonically.
-- If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
-- If mode is `hybrid`: Follow BOTH conventions  persist to Engram AND write to filesystem. Retrieve dependencies from Engram (primary) with filesystem fallback.
-- If mode is `none`: Return result only. Never create or modify project files.
-- Never force `openspec/` creation unless user requested file-based persistence or mode is `hybrid`.
+This phase requires `explore` and `cells-init/{project}` (artifact type `proposal`). Recover them per `skills/_shared/artifact-recovery.md`, which also covers persistence mode handling (engram/openspec/hybrid/none).
+Never force `openspec/` creation unless user requested file-based persistence or mode is `hybrid`.
 
 ## What to Do
 
@@ -34,9 +31,7 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 Before producing governed proposal output, verify that either an exploration artifact exists OR the user provided a direct change description.
 For `fast-path` or direct `scoped-change`, do not force a proposal artifact; answer inline unless the user asked for a persisted proposal.
 
-When mode is `engram` or `hybrid`, retrieve the explore artifact:
-1. `mem_search(query: "cells/{change-name}/explore", project: "{project}")`
-2. If found: `mem_get_observation(id: {id})`
+When mode is `engram` or `hybrid`, retrieve the explore artifact per `skills/_shared/artifact-recovery.md`.
 
 When no explore artifact exists and no user description was provided during `full-workflow`, return `status: blocked` with:
 ```
@@ -51,14 +46,7 @@ When mode is `openspec`, check for `openspec/changes/{change-name}/proposal.md`.
 
 Load the skill registry from the orchestrator's pre-resolved context. If the orchestrator did not pass a resolved skill registry path, read `skills/skill-registry/SKILL.md` to understand available skills and routing.
 
-When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
-
-1. `mem_search(query: "cells/{change-name}/explore", project: "{project}")` (optional)
-2. If found: `mem_get_observation(id: {explore_id})`
-3. `mem_search(query: "cells-init/{project}", project: "{project}")` (optional)
-4. If found: `mem_get_observation(id: {init_id})`
-
-Never use `mem_search` previews as full content.
+This phase optionally uses `explore` and `cells-init/{project}` context. Recover them per `skills/_shared/artifact-recovery.md`.
 
 ### Step 3: Prepare Persistence Target
 
@@ -141,23 +129,7 @@ Reference the recommended approach from exploration if available.}
 
 ### Step 6: Artifact Persistence When Requested By Mode
 
-If mode is `engram`, persist the proposal in Engram:
-
-```
-mem_save(
-  title: "cells/{change-name}/proposal",
-  topic_key: "cells/{change-name}/proposal",
-  type: "architecture",
-  project: "{project}",
-  content: "{your full proposal markdown from Step 5}"
-)
-```
-
-If mode is `openspec` or `hybrid`, the proposal file is already written in Step 5.
-
-If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
-
-If mode is `none`, return inline only.
+Persist the proposal as `cells/{change-name}/proposal` per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section (the file is already written in Step 5 for `openspec`/`hybrid`).
 
 Do not skip this step in `engram` or `hybrid` during governed `full-workflow`, or downstream phases will not find the artifact.
 For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.

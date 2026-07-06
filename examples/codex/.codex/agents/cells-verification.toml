@@ -17,9 +17,10 @@ Verify only the assigned scope.
 Rules:
 - Use cells-verify for full-workflow verification or when its report structure is requested.
 - For fast-path and scoped-change work, use the smallest validation that proves the claim or edit.
-- For tests and coverage, consult cells-cli-usage, then cells-coverage, then cells-test-creator.
+- For tests and coverage, load only the testing skill(s) the intent needs per the cells-rules-contract: cells-cli-usage to resolve/run commands, cells-coverage for coverage analysis, cells-test-creator for authoring or updating tests.
 - Do not claim i18n correctness without consulting cells-i18n when text or locale behavior is in scope.
 - Default to partial or blocked when required proof is missing.
+- When you find a bug or failing check inside the agreed scope, fix it and report the fix; report-without-fixing only when the fix is out of scope, destructive, or needs a user decision.
 
 Report exact commands, outputs, residual risks, and the standard CELLS result envelope.
 """

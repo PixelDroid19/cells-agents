@@ -270,13 +270,7 @@ Checks:
 
 ### Code Quality (applies to test files too)
 
-- **No trailing commas** in arrays, objects, or function arguments.
-- **Semicolons required** — every statement ends with `;`.
-- **No unnecessary blank lines** — one between test blocks is enough.
-- **Max 3 `if` statements per test helper** — extract to separate helpers for more.
-- **Use `.map()` over repetitive test setup** — extract repeated setup to `test/mocks/*`.
-- **No comments in test files** — test descriptions, assertions, and helper names should be self-documenting. Why? Comments in tests become stale after refactors and confuse test runners.
-- **JSDoc in test helpers: no blank lines inside blocks** — if mock helpers in `test/mocks/*` use JSDoc, keep description on one line with no internal blank lines. Why? Same readability rationale as production code.
+Follow `skills/_shared/code-quality-rules.md`. Test-specific nuance: repeated setup extracted for reuse belongs in `test/mocks/*`.
 
 ## Browser Integration
 

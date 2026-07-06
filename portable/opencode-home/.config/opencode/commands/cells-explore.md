@@ -30,18 +30,17 @@ Routing contract (mandatory):
 - Enforce `skills/_shared/cells-source-routing-contract.md` as the deterministic source policy.
 - If required primary source is skipped, do not return `status: ok`.
 
-Mandatory testing stack for Cells testing-related explorations:
+Testing stack for Cells testing-related explorations (per `skills/_shared/cells-rules-contract.md`, load only what the intent needs):
 
-- Consult in strict order before any other testing source: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.
-- Use `cells-cli-usage` to resolve canonical test command/invocation first.
-- Use `cells-coverage` to frame thresholds/reporting and branch priorities.
-- Use `cells-test-creator` for test design/creation/update guidance.
-- Do not skip or reorder this stack.
+- Need to resolve/run a canonical test command or invocation -> use `skills/cells-cli-usage/`.
+- Need coverage thresholds, reporting, or branch priorities -> use `skills/cells-coverage/`.
+- Need test design, creation, or update guidance -> use `skills/cells-test-creator/`.
+- If the exploration genuinely spans all three concerns, consult them in that order; otherwise load only the ones the intent needs.
 - Do not reintroduce generic fallback commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells contexts.
 
 Intent routing for this command:
 
-- UI/component discovery, element selection, or screen composition topics -> run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "$ARGUMENTS"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory).
+- UI/component discovery, element selection, or screen composition topics -> run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "$ARGUMENTS"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory; query phrasing and zero-result fallback: `skills/_shared/doc-search.md`).
 - Cells documentation/knowledge topics (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> consult `skills/cells-official-docs-catalog/` first.
 - Use the other catalog only as fallback when the first one is insufficient.
 

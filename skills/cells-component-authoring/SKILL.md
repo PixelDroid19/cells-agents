@@ -36,7 +36,7 @@ Use this skill for prompts like:
 ### 1. Decide Reuse vs New Component
 
 Before authoring anything:
-- run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to find an existing package that already fits (do not guess from memory)
+- run SQL/database-backed lookup first with `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to find an existing package that already fits (do not guess from memory; query phrasing and zero-result fallback: `skills/_shared/doc-search.md`)
 - check the current repo for similar local components
 - use official `component-api`, `lit-authoring`, `testing`, and `demo-docs-i18n-assets` guidance through `skills/_shared/cells-official-reference.md`
 
@@ -141,35 +141,25 @@ Use the following markdown as the `detailed_report` body and wrap the overall re
 
 ### Code Quality
 
-5. **No trailing commas** — remove commas after the last element in arrays, objects, or function arguments. Why? Trailing commas cause parse errors in older environments and noisy diffs.
+5. Follow `skills/_shared/code-quality-rules.md`.
 
 6. **Use `static get properties()`** — do not use `@property` or `@state` decorators. Why? The bundle standardizes on plain JavaScript and avoids decorator/TypeScript transforms.
 
-7. **Semicolons required** — end every statement with `;`. Why? Prevents automatic semicolon insertion edge cases.
-
-8. **No unnecessary blank lines** — one blank line between methods is enough. Why? Excessive whitespace inflates file size.
-
-9. **JSDoc: no blank lines inside blocks** — description on one continuous line, no empty lines between description and `@param`/`@returns`, no blank lines between tags. Why? Compact JSDoc is faster to read and avoids noisy diffs.
-
-10. **Max 3 `if` statements per function** — extract helpers or use early returns for more complexity. Why? Each `if` doubles execution paths, making testing harder.
-
-11. **Use `.map()` over repetitive code** — put data in arrays/objects and transform. Why? Declarative transforms are shorter and less error-prone than copy-paste blocks.
-
 ### Cells Conventions
 
-12. **`WidgetMixin` + `this.emitEvent(...)`** for business events in feature/data-manager architecture. Why? Consistent event wiring across the app.
+7. **`WidgetMixin` + `this.emitEvent(...)`** for business events in feature/data-manager architecture. Why? Consistent event wiring across the app.
 
-13. **`this.t(...)` for literals** — route component-owned strings through i18n with parity in the correct locale source for the touched surface. Why? Translation gaps break localization.
+8. **`this.t(...)` for literals** — route component-owned strings through i18n with parity in the correct locale source for the touched surface. Why? Translation gaps break localization.
 
-14. **Locale path is contextual** — validate the locale source that matches the touched surface and repo runtime. Why? Real Cells repos can use different locale sources for component demos, features, apps, and tests.
+9. **Locale path is contextual** — validate the locale source that matches the touched surface and repo runtime. Why? Real Cells repos can use different locale sources for component demos, features, apps, and tests.
 
-15. **SCSS as visual source** — keep runtime style artifacts aligned with SCSS. Why? SCSS is the Cells toolchain standard.
+10. **SCSS as visual source** — keep runtime style artifacts aligned with SCSS. Why? SCSS is the Cells toolchain standard.
 
-16. **Docs are deliverables** — `custom-elements.json` and `README.md` are part of the deliverable, not extras. Why? Undocumented components can't be reused.
+11. **Docs are deliverables** — `custom-elements.json` and `README.md` are part of the deliverable, not extras. Why? Undocumented components can't be reused.
 
-17. **English for technical naming** — JSDoc, event names, payload keys, public API. Why? Team convention across international contributors.
+12. **English for technical naming** — JSDoc, event names, payload keys, public API. Why? Team convention across international contributors.
 
-18. **No TODOs or commented-out code** — resolve before delivery. Why? TODOs become permanent technical debt.
+13. **No TODOs or commented-out code** — resolve before delivery. Why? TODOs become permanent technical debt.
 
 ## Browser Integration
 

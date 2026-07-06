@@ -256,7 +256,7 @@ def validate_plugin(plugin_root: Path) -> list[str]:
         return [f"Missing plugin manifest: {display(manifest_path)}"]
 
     plugin = read_json(manifest_path)
-    for key in ("name", "version", "description", "skills", "interface"):
+    for key in ("name", "version", "description", "skills"):
         if key not in plugin:
             invalid.append(f"{display(manifest_path)} missing plugin field: {key}")
 
@@ -269,28 +269,28 @@ def validate_plugin(plugin_root: Path) -> list[str]:
     elif not (plugin_root / skills_path).is_dir():
         invalid.append(f"{display(manifest_path)} skills path does not exist: {skills_path}")
 
-    interface = plugin.get("interface")
-    if not isinstance(interface, dict):
-        invalid.append(f"{display(manifest_path)} interface must be an object")
-    else:
-        required_interface = (
-            "displayName",
-            "shortDescription",
-            "longDescription",
-            "developerName",
-            "category",
-            "capabilities",
-            "websiteURL",
-            "privacyPolicyURL",
-            "termsOfServiceURL",
-            "defaultPrompt",
+    if "interface" in plugin:
+        invalid.append(
+            f"{display(manifest_path)} interface metadata must be top-level manifest fields, not a nested 'interface' object"
         )
-        for key in required_interface:
-            if key not in interface:
-                invalid.append(f"{display(manifest_path)} interface missing field: {key}")
-        default_prompt = interface.get("defaultPrompt")
-        if not isinstance(default_prompt, list) or not default_prompt:
-            invalid.append(f"{display(manifest_path)} interface.defaultPrompt must be a non-empty array")
+    required_interface = (
+        "displayName",
+        "shortDescription",
+        "longDescription",
+        "developerName",
+        "category",
+        "capabilities",
+        "websiteURL",
+        "privacyPolicyURL",
+        "termsOfServiceURL",
+        "defaultPrompt",
+    )
+    for key in required_interface:
+        if key not in plugin:
+            invalid.append(f"{display(manifest_path)} missing interface metadata field: {key}")
+    default_prompt = plugin.get("defaultPrompt")
+    if not isinstance(default_prompt, list) or not default_prompt:
+        invalid.append(f"{display(manifest_path)} defaultPrompt must be a non-empty array")
 
     required_skill_paths = [
         plugin_root / "skills" / "cells-agent-bundle" / "SKILL.md",

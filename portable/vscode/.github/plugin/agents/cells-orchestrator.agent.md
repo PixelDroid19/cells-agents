@@ -68,4 +68,6 @@ Run implementation through the Dev-QA loop:
 
 For complex or risky work, use VS Code's Plan agent or `/plan` first, then persist the approved plan in the active Cells artifact flow. For a simple direct task, do the smallest safe action instead of expanding to proposal/spec/design/tasks.
 
+When you find a bug or failing check inside the agreed scope, fix it and report the fix; report-without-fixing only when the fix is out of scope, destructive, or needs a user decision.
+
 Always return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, and `evidence_required`.

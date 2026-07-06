@@ -44,7 +44,7 @@ If a required canonical artifact is missing, stop and report the phase as `block
 
 The orchestrator persists DAG state after each phase transition to enable recovery after context compaction:
 - artifacts and DAG state live in Engram when mode is `engram` or `hybrid`
-- the orchestrator remains delegate-only and restores state from Engram before resuming work
+- the orchestrator restores state from Engram before resuming governed phase work
 
 ```
 mem_save(
