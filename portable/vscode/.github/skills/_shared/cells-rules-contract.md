@@ -75,17 +75,17 @@ import { WidgetMixin } from '../mixins/WidgetMixin.js';
 | `IntlMsg.lang = 'en'` at instance level | Race condition: component may render before locale loads, showing the key as text. | Set `IntlMsg.lang` at app/shell level. Await `window.IntlMsg.loadUrlResourcesComplete` in tests and demos. |
 | Inventing a new locale path without evidence | Locale layout differs between components, features, and apps. | Use repo evidence plus official docs. Prefer `demo/locales/locales.json` for component/demo work, and follow app/runtime/test locale configuration for apps. |
 
-## Mandatory Testing Stack
+## Testing Stack (Proportional)
 
-For Cells test work, **never reorder** this sequence:
+For Cells test work, load only the skill(s) the intent needs, in this precedence when more than one applies:
 
 ```
 cells-cli-usage → cells-coverage → cells-test-creator
 ```
 
-- `cells-cli-usage`: resolve correct Cells test commands
-- `cells-coverage`: analyze gaps before writing tests
-- `cells-test-creator`: generate tests following Cells conventions
+- `cells-cli-usage`: resolve correct Cells test commands — enough alone for "how do I run tests"
+- `cells-coverage`: add only when coverage thresholds or report triage are involved
+- `cells-test-creator`: add only when creating or updating tests
 
 Never use generic `npm test` in Cells contexts. Resolve through `cells-cli-usage`, which must prefer the repo-local wrapper first and then explain the documented Cells command it maps to.
 
@@ -94,7 +94,7 @@ Never use generic `npm test` in Cells contexts. Resolve through `cells-cli-usage
 | Anti-Pattern | Correct approach |
 |---|---|
 | API logic in component | Use data managers for API interaction. Components own presentation only. |
-| Skipping the mandatory testing stack | Always apply `cells-cli-usage` → `cells-coverage` → `cells-test-creator` in order |
+| Answering testing questions without the testing skills | Load the testing skill(s) the intent needs (`cells-cli-usage` → `cells-coverage` → `cells-test-creator` precedence) |
 | Generic `npm test` in Cells contexts | Use Cells commands resolved via `cells-cli-usage` |
 
 ## Real Cells Component Checklist

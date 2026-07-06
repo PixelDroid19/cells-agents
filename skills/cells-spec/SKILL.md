@@ -20,10 +20,7 @@ Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding w
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `spec`. Retrieve `proposal` canonically and concatenate multi-domain specs into a single artifact.
-- If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
-- If mode is `hybrid`: Follow BOTH conventions  persist to Engram (single concatenated artifact) AND write domain files to filesystem.
-- If mode is `none`: Return result only. Never create or modify project files.
+This phase requires `proposal` (artifact type `spec`; concatenate multi-domain specs into a single artifact in engram/hybrid). Recover the proposal and handle persistence mode per `skills/_shared/artifact-recovery.md`.
 
 ## What to Do
 
@@ -32,9 +29,7 @@ For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.
 Before producing governed specification output, verify that a proposal artifact exists.
 For `fast-path` or direct `scoped-change`, do not force a spec artifact; answer inline or implement from the direct user request unless the user asked for governed specs.
 
-When mode is `engram` or `hybrid`, retrieve the proposal artifact:
-1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
-2. If found: `mem_get_observation(id: {id})` (REQUIRED)
+When mode is `engram` or `hybrid`, retrieve the proposal artifact per `skills/_shared/artifact-recovery.md`.
 
 If the canonical proposal artifact is absent during `full-workflow`, return `status: blocked` with:
 ```
@@ -42,8 +37,6 @@ missing_artifact: cells/{change-name}/proposal
 reason: "cells-spec requires cells-propose output before specs can be written"
 required_action: "Run /cells-propose first or provide a seeded proposal artifact"
 ```
-
-Do not use `mem_search` preview text as complete artifact content.
 
 ### Step 2: Load Skill Registry
 
@@ -155,23 +148,7 @@ The system {MUST/SHALL/SHOULD} {behavior}.
 
 ### Step 6: Artifact Persistence When Requested By Mode
 
-If mode is `engram`, persist the complete spec artifact in Engram (concatenate domains when needed):
-
-```
-mem_save(
-  title: "cells/{change-name}/spec",
-  topic_key: "cells/{change-name}/spec",
-  type: "architecture",
-  project: "{project}",
-  content: "{your full spec markdown from Step 5}"
-)
-```
-
-If mode is `openspec` or `hybrid`, spec files were already written in Step 5.
-
-If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
-
-If mode is `none`, return inline only.
+Persist the complete spec artifact (concatenate domains when needed) as `cells/{change-name}/spec` per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section (spec files were already written in Step 5 for `openspec`/`hybrid`).
 
 Do not skip this step in `engram` or `hybrid` during governed `full-workflow`, or downstream phases will not find the spec artifact.
 For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.

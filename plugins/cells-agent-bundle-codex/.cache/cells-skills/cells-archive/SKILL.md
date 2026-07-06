@@ -19,10 +19,7 @@ Read and follow `skills/_shared/persistence-contract.md` for mode resolution rul
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `archive-report`. Retrieve `verify-report`, `proposal`, `spec`, `design`, and `tasks` canonically, and include all artifact observation IDs in the archive report for full traceability.
-- If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`. Perform merge and archive folder moves.
-- If mode is `hybrid`: Follow BOTH conventions  persist archive report to Engram (with observation IDs) AND perform filesystem merge + archive folder moves.
-- If mode is `none`: Return closure summary only. Do not perform archive file operations.
+This phase requires `verify-report`, `proposal`, `spec`, `design`, and `tasks` (artifact type `archive-report`, including all artifact observation IDs for full traceability). Recover them and handle persistence mode per `skills/_shared/artifact-recovery.md`. In `openspec`/`hybrid`, also perform merge and archive folder moves; in `none`, return a closure summary only with no archive file operations.
 
 ## What to Do
 
@@ -39,22 +36,9 @@ From the registry, load only the skills and convention files relevant to archive
 
 ### Step 2: Load Dependencies (Engram / Hybrid)
 
-When mode is `engram` or `hybrid`, retrieve dependencies with two-step recovery:
-
-1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
-2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
-3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
-4. `mem_search(query: "cells/{change-name}/tasks", project: "{project}")`
-5. `mem_search(query: "cells/{change-name}/verify-report", project: "{project}")`
-6. `mem_get_observation(id: {proposal_id})`
-7. `mem_get_observation(id: {spec_id})`
-8. `mem_get_observation(id: {design_id})`
-9. `mem_get_observation(id: {tasks_id})`
-10. `mem_get_observation(id: {verify_report_id})`
+This phase requires proposal, spec, design, tasks, and verify-report. Recover them per `skills/_shared/artifact-recovery.md`.
 
 If any required canonical dependency is absent, return `status: blocked` and require canonical artifact seeding before archive work.
-
-Do not use `mem_search` preview text as complete artifact content.
 
 ### Step 3: Sync Delta Specs To Main Specs
 
@@ -115,23 +99,7 @@ Confirm:
 
 ### Step 6: Artifact Persistence (Mandatory)
 
-If mode is `engram`, persist archive lineage with explicit Engram call:
-
-```
-mem_save(
-  title: "cells/{change-name}/archive-report",
-  topic_key: "cells/{change-name}/archive-report",
-  type: "architecture",
-  project: "{project}",
-  content: "{your archive report with dependency observation IDs and closure summary}"
-)
-```
-
-If mode is `openspec`, perform filesystem archive operations as documented.
-
-If mode is `hybrid`, do BOTH filesystem archive operations and `mem_save`.
-
-If mode is `none`, return inline only.
+Persist the archive report (with dependency observation IDs and closure summary) as `cells/{change-name}/archive-report`, and perform filesystem archive operations where applicable, per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section.
 
 Do not skip this step in `engram` or `hybrid`, or closure traceability is incomplete.
 

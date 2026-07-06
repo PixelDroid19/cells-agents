@@ -201,14 +201,13 @@ Use for:
 - feature or app integration testing
 - coverage triage and deterministic failure analysis when artifacts exist
 
-Mandatory testing stack for Cells contexts (consult in strict order before any other testing source):
-1. `skills/cells-cli-usage/` (canonical test command and invocation path)
-2. `skills/cells-coverage/` (coverage thresholds, reports, branch-miss prioritization)
-3. `skills/cells-test-creator/` (test design, creation, update, compliance)
+Testing stack for Cells contexts (load only what the intent needs, in this precedence when more than one applies):
+1. `skills/cells-cli-usage/` (canonical test command and invocation path — enough alone for command questions)
+2. `skills/cells-coverage/` (only when coverage thresholds, reports, or branch-miss triage are involved)
+3. `skills/cells-test-creator/` (only when creating or updating tests)
 
 Rules:
-- Apply this stack first whenever the request is about tests, test execution, coverage, or test creation in Cells.
-- Do not skip or reorder these three skills for Cells testing requests.
+- Prefer these skills over any other testing source for Cells testing requests.
 - Do not reintroduce generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
 
 ### Browser-visible UI, demos, and visual validation

@@ -16,37 +16,28 @@ From the orchestrator:
 ## Execution and Persistence Contract
 
 Read and follow `skills/_shared/persistence-contract.md` for mode resolution rules.
+Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding whether a task artifact is necessary.
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 Read and follow `skills/_shared/cells-source-routing-contract.md` for deterministic source selection and minimum evidence.
 For Cells-oriented changes, also read `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `tasks`. Retrieve `proposal`, `spec`, and `design` canonically.
-- If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
-- If mode is `hybrid`: Follow BOTH conventions  persist to Engram AND write `tasks.md` to filesystem. Retrieve dependencies from Engram (primary) with filesystem fallback.
-- If mode is `none`: Return result only. Never create or modify project files.
+This phase requires `proposal`, `spec`, and `design` (artifact type `tasks`). Recover them and handle persistence mode per `skills/_shared/artifact-recovery.md`.
 
 ## What to Do
 
-### Step 1: Dependency Gate (Mandatory)
+### Step 1: Dependency Gate For Governed Task Planning
 
-Before producing any output, verify that all required canonical artifacts exist.
+Before producing governed task planning output, verify that all required canonical artifacts exist.
+For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/task artifacts; use a short inline task list only if it helps execute the requested change.
 
-When mode is `engram` or `hybrid`, retrieve all three required artifacts:
-1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
-2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
-3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
-4. `mem_get_observation(id: {proposal_id})` (REQUIRED)
-5. `mem_get_observation(id: {spec_id})` (REQUIRED)
-6. `mem_get_observation(id: {design_id})` (REQUIRED)
+When mode is `engram` or `hybrid`, retrieve all three required artifacts (proposal, spec, design) per `skills/_shared/artifact-recovery.md`.
 
-If any required canonical dependency is absent, return `status: blocked` with:
+If any required canonical dependency is absent during `full-workflow`, return `status: blocked` with:
 ```
 missing_artifact: cells/{change-name}/<missing-phase>
 reason: "cells-tasks requires proposal, spec, and design artifacts before tasks can be generated"
 required_action: "Run the missing phase(s) first or provide the required canonical artifact"
 ```
-
-Do not use `mem_search` preview text as complete artifact content.
 
 ### Step 2: Load Skill Registry
 
@@ -60,11 +51,9 @@ From the design document, identify:
 - Testing requirements per component
 
 Before writing tasks, validate source coverage by intent:
-- UI/component/package/API task groups -> run `skills/cells-components-catalog/scripts/search_docs.py` SQL lookup first and then confirm against project evidence (`custom-elements.json`, `src/`, `test/`).
-- Cells docs/process/CLI/testing/theming/i18n task groups -> consult `skills/cells-official-docs-catalog/` first.
-- Any testing task group must use this strict stack first: `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/`.
-
-Do not skip or reorder these sources. Do not use generic fallback runners (`npm test`, `npm run test`, `npx web-test-runner`) for Cells contexts unless explicitly requested by the user.
+- UI/component/package/API task groups -> run `skills/cells-components-catalog/scripts/search_docs.py` SQL lookup first and then confirm against project evidence (`custom-elements.json`, `src/`, `test/`) (query phrasing and zero-result fallback: `skills/_shared/doc-search.md`).
+- Cells docs/process/CLI/testing/theming/i18n task groups -> consult `skills/cells-official-docs-catalog/` first (query phrasing and zero-result fallback: `skills/_shared/doc-search.md`).
+- Any testing task group should load only the testing skill(s) the intent needs: `skills/cells-cli-usage/` for commands, `skills/cells-coverage/` only for coverage work, `skills/cells-test-creator/` only for authoring tests  never generic npm/web-test-runner fallbacks in Cells contexts unless explicitly requested by the user.
 
 ### Step 4: Write The Task Content
 
@@ -154,27 +143,12 @@ Phase 5: Cleanup (if needed)
    Documentation, remove dead code, polish
 ```
 
-### Step 5: Artifact Persistence (Mandatory)
+### Step 5: Artifact Persistence When Requested By Mode
 
-If mode is `engram`, persist the tasks artifact in Engram:
+Persist the tasks artifact as `cells/{change-name}/tasks` per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section (`tasks.md` was already written in Step 4 for `openspec`/`hybrid`).
 
-```
-mem_save(
-   title: "cells/{change-name}/tasks",
-   topic_key: "cells/{change-name}/tasks",
-   type: "architecture",
-   project: "{project}",
-   content: "{your full tasks markdown from Step 4}"
-)
-```
-
-If mode is `openspec` or `hybrid`, `tasks.md` was already written in Step 4.
-
-If mode is `hybrid`, also call `mem_save` as above (write to BOTH backends).
-
-If mode is `none`, return inline only.
-
-Do not skip this step in `engram` or `hybrid`, or downstream phases will not find the tasks artifact.
+Do not skip this step in `engram` or `hybrid` during governed `full-workflow`, or downstream phases will not find the tasks artifact.
+For `fast-path` and direct `scoped-change`, use `mode: none` behavior unless the user explicitly requests persistence.
 
 ### Step 6: Return Summary
 

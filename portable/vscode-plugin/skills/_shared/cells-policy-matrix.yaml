@@ -9,14 +9,14 @@ policy_rows:
       - REQ-TRACEABILITY
       - REQ-CROSS-LAYER-PARITY
       - REQ-NON-DESTRUCTIVE-ENFORCEMENT
-      - REQ-DELEGATE-FIRST
+      - REQ-PROPORTIONAL-WORKFLOW
       - REQ-CONTRIBUTION-GATES
     required_tokens:
       - "Apply intent routing before choosing Cells skills"
       - "fallback"
       - "structured result envelope"
       - "non-destructive"
-      - "delegate-first"
+      - "proportional"
       - "issue -> approved issue -> PR -> review -> merge"
 
   - layer: shared-skills
@@ -42,7 +42,8 @@ policy_rows:
       - "Canonical Artifact Lineage"
       - "Result Envelope"
       - "Source Decisions"
-      - "delegate-first"
+      - "proportional"
+      - "cells-work-sizing-contract.md"
 
   - layer: shared-skills
     file: skills/_shared/cells-conventions.md
@@ -151,7 +152,7 @@ policy_rows:
     required_tokens:
       - "Dependencies"
       - "Output envelope"
-      - "delegate"
+      - "scoped-change"
       - "Cells-native"
 
   - layer: phase-skills
@@ -195,12 +196,12 @@ policy_rows:
     file: AGENTS.md
     requirement_ids:
       - REQ-CATALOG-FIRST
-      - REQ-DELEGATE-FIRST
+      - REQ-PROPORTIONAL-WORKFLOW
       - REQ-CONTRIBUTION-GATES
     required_tokens:
-      - "BBVA-First Rule"
-      - "i18n Rule"
-      - "Triggers"
+      - "Work Sizing"
+      - "fast-path"
+      - "full-workflow"
 
   - layer: docs
     file: docs/architecture.md

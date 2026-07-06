@@ -24,17 +24,11 @@ If the project is Cells-oriented, also read and follow `skills/_shared/cells-con
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the topic is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route the exploration to the exact official docs needed.
 
-- If mode is `engram`: Read and follow `skills/_shared/engram-convention.md`. Artifact type: `explore`. If no change name (standalone explore), use slug: `cells/explore/{topic-slug}`.
-- If mode is `openspec`: Read and follow `skills/_shared/openspec-convention.md`.
-- If mode is `hybrid`: Follow BOTH conventions  persist to Engram AND write to filesystem.
-- If mode is `none`: Return result only.
+This phase writes artifact type `explore` (slug `cells/explore/{topic-slug}` when standalone, no change name). Handle persistence mode per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section.
 
 ### Retrieving Context
 
-Before starting, load any existing project context and specs per the active convention:
-- **engram**: Search for `cells-init/{project}` and browse `cells/` artifacts only.
-- **openspec**: Read `openspec/config.yaml` and `openspec/specs/`.
-- **none**: Use whatever context the orchestrator passed in the prompt.
+This phase requires `cells-init/{project}` project context (and, for openspec, `openspec/specs/`). Recover it per `skills/_shared/artifact-recovery.md`.
 
 If canonical project context is missing during a `full-workflow`, stop and report the phase as `blocked` until `cells-init/{project}` exists.
 For `fast-path` or direct `scoped-change` exploration, use the context provided by the user and project-local evidence; do not force `cells-init` or artifact recovery unless that evidence is required for the answer.
@@ -54,16 +48,10 @@ From the registry, load only the skills and convention files relevant to this ex
 
 ### Step 2: Load Context Dependencies (Engram / Hybrid)
 
-When mode is `engram` or `hybrid`, load context with two-step recovery (search preview + full fetch):
-
-1. `mem_search(query: "cells-init/{project}", project: "{project}")` to find project context
-2. If found, `mem_get_observation(id: {id})` to get full context
-3. Optional: `mem_search(query: "cells/", project: "{project}")` to discover related prior artifacts
+This phase requires `cells-init/{project}` project context. Recover it per `skills/_shared/artifact-recovery.md`.
 
 If the canonical project context is absent during a `full-workflow`, return `status: blocked` with remediation to run `cells-init` first.
 For `fast-path` or direct `scoped-change`, continue from supplied/project-local context and report any evidence limits.
-
-Never use `mem_search` previews as full artifact content.
 
 ### Step 3: Understand the Request
 
@@ -82,7 +70,7 @@ Read relevant code to understand:
 For Cells or BBVA component work, always gather evidence from:
 - `package.json`, `custom-elements.json`, `src/`, and `test/`
 - `skills/_shared/cells-official-reference.md` to choose the smallest official doc set for architecture, CLI, testing, theming, or component API questions
-- SQL/database-backed lookup first via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to discover existing packages, tags, attributes, events, and code snippets efficiently (do not guess from memory)
+- SQL/database-backed lookup first via `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` against `skills/cells-components-catalog/assets/bbva_cells_components.db` to discover existing packages, tags, attributes, events, and code snippets efficiently (query phrasing and zero-result fallback: `skills/_shared/doc-search.md`)
 - `skills/cells-app-architecture/`, `skills/cells-cli-usage/`, and `skills/cells-test-creator/` when the topic is about feature architecture, commands, or test strategy
 - `skills/cells-components-catalog/` dossier output when a specific component is involved
 - `skills/cells-official-docs-catalog/` when the topic needs official Cells design, testing, lifecycle, or authoring guidance
@@ -93,7 +81,7 @@ Enforce intent routing exactly as defined in `skills/_shared/cells-source-routin
 - Cells process/docs/CLI/testing/i18n/theming guidance -> official docs catalog first
 - fallback only in deterministic order, with explicit source decision trace
 
-For Cells testing-related exploration topics, apply the mandatory testing stack from `skills/_shared/cells-rules-contract.md` and `skills/_shared/cells-source-routing-contract.md`.
+For Cells testing-related exploration topics, load only the testing skill(s) the intent needs: `cells-cli-usage` for commands, `cells-coverage` only for coverage work, `cells-test-creator` only for authoring tests — never generic npm/web-test-runner fallbacks in Cells contexts.
 
 Minimum evidence gate:
 - For `full-workflow`, if exploration does not include at least one routed catalog source plus project-local runtime evidence, return `status: partial` (never `ok`).
@@ -125,38 +113,8 @@ When the topic touches Cells components, compare approaches such as:
 
 ### Step 6: Artifact Persistence When Requested By Mode
 
-If the orchestrator provided a change name and mode is `openspec` or `hybrid`, save your analysis to:
+If the orchestrator provided a change name and mode is `openspec` or `hybrid`, save your analysis to `openspec/changes/{change-name}/exploration.md` (you create this). Otherwise, persist as `cells/{change-name}/explore`, or `cells/explore/{topic-slug}` for standalone exploration, per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section.
 
-```
-openspec/changes/{change-name}/
- exploration.md           You create this
-```
-
-If mode is `engram`, persist the exploration in Engram and do not create project files:
-
-```
-mem_save(
-  title: "cells/{change-name}/explore",
-  topic_key: "cells/{change-name}/explore",
-  type: "architecture",
-  project: "{project}",
-  content: "{your full exploration markdown}"
-)
-```
-
-If this is standalone exploration (no change name), use:
-
-```
-mem_save(
-  title: "cells/explore/{topic-slug}",
-  topic_key: "cells/explore/{topic-slug}",
-  type: "architecture",
-  project: "{project}",
-  content: "{your full exploration markdown}"
-)
-```
-
-If mode is `hybrid`, do BOTH filesystem persistence and `mem_save`.
 If mode is `none`, or no change name was provided (standalone `/cells-explore`), skip file creation and return the analysis inline.
 
 Do not skip this step when running governed `full-workflow` in `engram` or `hybrid`, or downstream phases lose context.

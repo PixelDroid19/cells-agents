@@ -22,6 +22,7 @@ Use [implementation-playbook.md](references/implementation-playbook.md) for the 
 Read and follow:
 
 - `skills/_shared/persistence-contract.md`
+- `skills/_shared/cells-work-sizing-contract.md`
 - `skills/_shared/cells-workflow-contract.md`
 - `skills/_shared/cells-source-routing-contract.md`
 - `skills/_shared/cells-rules-contract.md`
@@ -31,14 +32,9 @@ Read and follow:
 - `skills/_shared/real-cells-patterns.md`
 - `skills/_shared/cells-official-reference.md`
 
-For Cells testing or test-execution decisions during implementation, apply the mandatory testing stack from `skills/_shared/cells-rules-contract.md` and `skills/_shared/cells-source-routing-contract.md`.
+For Cells testing or test-execution decisions during implementation, load only the testing skill(s) the intent needs: `cells-cli-usage` for commands, `cells-coverage` only for coverage work, `cells-test-creator` only for authoring tests  never generic npm/web-test-runner fallbacks in Cells contexts.
 
-Mode handling:
-
-- `engram`: use `skills/_shared/engram-convention.md` and persist `apply-progress`
-- `openspec`: use `skills/_shared/openspec-convention.md` and update `tasks.md`
-- `hybrid`: do both
-- `none`: return progress only
+This phase requires `proposal`, `spec`, `design`, and `tasks`. Recover them and handle persistence mode (persisting `apply-progress` in engram, updating `tasks.md` in openspec/hybrid) per `skills/_shared/artifact-recovery.md`.
 
 ## Workflow
 
@@ -53,35 +49,30 @@ Before any other work:
 
 ### Step 2: Load Canonical Dependencies
 
-When mode is `engram` or `hybrid`, retrieve:
+When mode is `engram` or `hybrid`, retrieve proposal, spec, design, and tasks per `skills/_shared/artifact-recovery.md`.
 
-1. `mem_search(query: "cells/{change-name}/proposal", project: "{project}")`
-2. `mem_search(query: "cells/{change-name}/spec", project: "{project}")`
-3. `mem_search(query: "cells/{change-name}/design", project: "{project}")`
-4. `mem_search(query: "cells/{change-name}/tasks", project: "{project}")`
-5. `mem_get_observation(...)` for each result
-
-If any required canonical dependency is absent, return `status: blocked`.
+If any required canonical dependency is absent during `full-workflow`, return `status: blocked`.
+For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/tasks artifacts; use the user request, touched files, and project-local evidence as the working scope.
 
 ### Step 3: Read Context Before Editing
 
-Always read:
+Read the minimum context required by the selected work size. For governed `full-workflow`, always read:
 
 1. spec or acceptance criteria
 2. design decisions
 3. affected code and nearby patterns
 4. project-local conventions
 
-For Cells work, also inspect:
+For Cells work, also inspect the relevant subset of:
 
 5. `custom-elements.json`
 6. relevant tests
 7. `package.json`
 8. real feature usage when composition or architecture is involved
-9. `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` when component identity is not already certain
+9. `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` when component identity is not already certain (query phrasing and zero-result fallback: `skills/_shared/doc-search.md`)
 10. `skills/cells-cli-usage/` for command resolution
-11. `skills/cells-coverage/` when coverage or test artifacts are relevant
-12. `skills/cells-test-creator/` when adding or changing tests
+11. `skills/cells-coverage/` only when coverage work is needed
+12. `skills/cells-test-creator/` only when authoring tests
 13. `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` for browser-visible changes
 
 Before coding real Cells UI/component work, enforce these implementation checks:
@@ -125,9 +116,8 @@ Detect whether the project is running TDD. Use the detailed RED/GREEN/REFACTOR f
 
 Standard mode minimum:
 
-- read task
-- read relevant specs
-- read design decisions
+- read the task or direct user instruction
+- read relevant specs/design decisions when the selected work size is `full-workflow` or the artifact exists
 - match existing code patterns
 - make the smallest working change
 - note deviations or issues
@@ -136,22 +126,7 @@ When the change is browser-visible, use the browser validation checklist from [i
 
 ### Step 5: Persist Progress
 
-If mode is `openspec` or `hybrid`, update `tasks.md` from `[ ]` to `[x]`.
-
-If mode is `engram`, update the tasks artifact and save progress:
-
-```text
-mem_update(id: {tasks_observation_id}, content: "{updated tasks markdown with [x] marks}")
-mem_save(
-   title: "cells/{change-name}/apply-progress",
-   topic_key: "cells/{change-name}/apply-progress",
-   type: "architecture",
-   project: "{project}",
-   content: "{implementation progress report}"
-)
-```
-
-If mode is `hybrid`, do both filesystem and Engram persistence.
+Update `tasks.md` from `[ ]` to `[x]` (openspec/hybrid) and/or save an `apply-progress` artifact (engram/hybrid) per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section.
 
 ### Step 6: Return Summary
 
@@ -180,9 +155,10 @@ Include a `Source Decisions` section with these exact fields:
 ### Core implementation rules
 
 - Specs are acceptance criteria.
-- Follow design decisions unless you explicitly record a deviation.
+- Follow design decisions when a design artifact exists unless you explicitly record a deviation.
 - Match existing patterns before introducing new abstractions.
 - Scope isolation is mandatory.
+- Use `fast-path` or `scoped-change` when the user requested a local/trivial change; do not manufacture a full proposal/spec/design/tasks chain.
 
 ### Cells-specific rules
 
@@ -196,11 +172,8 @@ Include a `Source Decisions` section with these exact fields:
 
 ### Code hygiene rules
 
-- Use JSDoc for public API and non-obvious contracts.
-- do not leave TODO comments, commented-out code, or placeholder implementation notes.
-- Avoid unnecessary whitespace-only edits.
-- preserve separation of responsibilities across data-manager, pages, shared-components, utils, and styles.
-- use semicolons and avoid trailing commas.
+Follow `skills/_shared/code-quality-rules.md`.
+
 - keep SCSS/runtime style artifacts aligned when both exist.
 
 ### Verification handoff rules

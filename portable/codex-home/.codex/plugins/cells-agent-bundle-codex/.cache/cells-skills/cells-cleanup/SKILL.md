@@ -22,11 +22,8 @@ You are NOT allowed to:
 
 You ARE allowed to:
 
-- add or improve JSDoc
-- remove trailing commas and add semicolons
-- remove unnecessary blank lines and narrative comments
+- bring the file into line with `skills/_shared/code-quality-rules.md` (formatting, JSDoc, structure, comments)
 - extract conditions to named helpers or apply the Rules Table Pattern
-- convert repetitive code to config arrays plus `.map()` / `.filter()`
 - separate repeated test setup into reusable helpers when tests are explicitly in scope
 - fix `attribute` fields and safe binding mistakes
 - flag broader improvements as suggestions instead of applying them

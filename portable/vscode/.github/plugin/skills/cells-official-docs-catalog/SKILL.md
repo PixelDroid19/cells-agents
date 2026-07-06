@@ -133,7 +133,7 @@ Minimum rule:
 - Use `cells-components-catalog` for BBVA package discovery and this skill for official Cells process and authoring guidance
 - Keep source-order decisions aligned with `skills/_shared/cells-source-routing-contract.md`
 - Distinguish documented framework commands and behaviors from repo-local wrappers or product naming
-- For testing work, follow the Cells mandatory testing stack: `cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`
+- For testing work, load the testing skill(s) the intent needs (precedence: `cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`)
 - Treat `older-versions/` results as historical evidence unless the task explicitly targets older Cells stacks
 - If the bundled docs look insufficient for a specific edge case, report the gap explicitly
 

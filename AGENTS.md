@@ -29,26 +29,32 @@ For UI, typography, forms, buttons, navigation, feedback, i18n, command policy, 
 2. Follow `skills/_shared/cells-source-routing-contract.md` for source order
 3. Do not duplicate or weaken those rules in phase-specific work
 
-## Mandatory Testing Stack
+## Testing Stack (Proportional)
 
-For any Cells test intent, consult skills in this **exact order** before any other testing source:
+For Cells test intents, load only the skill(s) the intent needs, in this precedence when more than one applies:
 
-1. `skills/cells-cli-usage/` — canonical test command resolution
-2. `skills/cells-coverage/` — coverage thresholds, report triage
-3. `skills/cells-test-creator/` — test design, creation, conventions
+1. `skills/cells-cli-usage/` — test command resolution (enough alone for "how do I run tests")
+2. `skills/cells-coverage/` — only when coverage thresholds or report triage are involved
+3. `skills/cells-test-creator/` — only when creating or updating tests
 
-Do not skip or reorder. Do not use generic fallback commands in Cells contexts.
+Never use generic fallback commands (`npm test`, `npx web-test-runner`) in Cells contexts.
 
-## Agent Handoff Contract (Always)
+## Bias to Action
 
-For any orchestrator, subagent, handoff, delegation, implementation loop, or verification loop:
+When a bug or failing check is found inside the agreed scope, fix it and report the fix. Do not return a report that only describes an error you could have fixed. Report-without-fixing only when the fix is out of scope, destructive, or needs a user decision.
 
-1. Read `skills/_shared/cells-work-sizing-contract.md`
-2. Read `skills/_shared/cells-agent-handoff-contract.md`
-3. Treat orchestrators as coordinators for `full-workflow` work, not for every small task
-4. Treat executor agents as isolated workers: no nested delegation
-5. Use the standard Handoff Packet with `evidence_required` only when delegation is selected
-6. Return the standard envelope including `skill_resolution` and `evidence_required` for delegated or phase work
+## Doc & Catalog Search
+
+Follow `skills/_shared/doc-search.md` for query phrasing and the zero-results fallback ladder. Never block on an empty search result.
+
+## Agent Handoff Contract (Delegation Only)
+
+Only when delegation to a subagent is actually selected (never for fast-path or scoped-change work):
+
+1. Read `skills/_shared/cells-agent-handoff-contract.md`
+2. Treat orchestrators as coordinators for `full-workflow` work, not for every small task
+3. Treat executor agents as isolated workers: no nested delegation
+4. Fill only the Handoff Packet / envelope fields you actually have; omit unknowns instead of padding
 
 ## CELLS Workflow Skills
 

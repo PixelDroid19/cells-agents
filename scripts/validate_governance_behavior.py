@@ -268,15 +268,17 @@ def scenario_real_cells_rules_enforced() -> tuple[bool, str]:
 
 
 def scenario_code_hygiene_enforced() -> tuple[bool, str]:
+    quality_rules = _read(ROOT / "skills/_shared/code-quality-rules.md")
     conventions = _read(ROOT / "skills/_shared/cells-conventions.md")
     apply_skill = _read(APPLY_SKILL)
     required = (
-        "Use JSDoc for public API",
-        "do not leave TODO comments",
-        "Avoid unnecessary whitespace-only edits",
-        "separation of responsibilities",
+        "JSDoc only for public API",
+        "No TODO comments",
+        "No whitespace-only edits",
+        "Separate responsibilities",
     )
-    if all(token in f"{conventions}\n{apply_skill}" for token in required):
+    referenced = "code-quality-rules.md" in conventions and "code-quality-rules.md" in apply_skill
+    if referenced and all(token in quality_rules for token in required):
         return True, "Code hygiene and responsibility-separation rules are enforced."
     return False, "Code hygiene and responsibility-separation rules are missing."
 
