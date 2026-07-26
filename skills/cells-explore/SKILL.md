@@ -20,6 +20,7 @@ Read and follow `skills/_shared/cells-work-sizing-contract.md` before deciding e
 Read and follow `skills/_shared/cells-workflow-contract.md` for canonical workflow naming and compatibility-read order.
 Read and follow `skills/_shared/cells-source-routing-contract.md` for deterministic source selection and minimum evidence.
 Read and follow `skills/_shared/cells-rules-contract.md` for BBVA-first UI, i18n, and testing-stack rules.
+Read and follow `skills/_shared/real-cells-patterns.md` when analyzing a feature implementation.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-conventions.md`.
 If the project is Cells-oriented, also read and follow `skills/_shared/cells-governance-contract.md` and `skills/_shared/cells-policy-matrix.yaml`.
 If the topic is Cells-oriented, use `skills/_shared/cells-official-reference.md` to route the exploration to the exact official docs needed.
@@ -35,18 +36,13 @@ For `fast-path` or direct `scoped-change` exploration, use the context provided 
 
 ## What to Do
 
-### Step 1: Load Skill Registry When Relevant
+### Step 1: Resolve Skills And Environment
 
-Do this before broad or governed exploration. For `fast-path`, load only the directly relevant shared contract or skill, then answer from targeted evidence.
+Read `.cells-agent/context.json` when present. Load only the skills whose
+frontmatter matches the request. For `fast-path`, use the directly relevant
+contract or catalog and answer from targeted evidence.
 
-1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
-2. If found, call `mem_get_observation(id: {id})` to load the full registry
-3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
-4. If neither exists, proceed without skills (this is not an error)
-
-From the registry, load only the skills and convention files relevant to this exploration topic.
-
-### Step 2: Load Context Dependencies (Engram / Hybrid)
+### Step 2: Load Context Dependencies
 
 This phase requires `cells-init/{project}` project context. Recover it per `skills/_shared/artifact-recovery.md`.
 
@@ -75,6 +71,12 @@ For Cells or BBVA component work, always gather evidence from:
 - `skills/cells-components-catalog/` dossier output when a specific component is involved
 - `skills/cells-official-docs-catalog/` when the topic needs official Cells design, testing, lifecycle, or authoring guidance
 - real feature repos when the request is about composition, behavior, or best practices
+
+When analyzing a real feature, extract the main component tree, Spherica
+dependencies, `scopedElements` registrations, mixins (`WidgetMixin`,
+`ScopedElementsMixin`, configuration helpers), upward events, state/view
+transitions, loading/error/empty states, and reusable test or mock patterns.
+Separate reusable evidence from repository-specific quirks.
 
 Enforce intent routing exactly as defined in `skills/_shared/cells-source-routing-contract.md`:
 - component/package/API discovery -> components catalog SQL first

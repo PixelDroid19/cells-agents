@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "generated_at": "2026-04-27T20:20:55Z",
+    "generated_at": "2026-07-25T23:21:52Z",
     "normalization_version": "1",
     "generator": "skills/cells-components-catalog/scripts/build_index.py",
-    "source_root": "/home/monasterios/Documents/cells/bbva-spherica-components-master@4c623ac302e/packages",
-    "source_revision": "4c623ac302e"
+    "source_root": "external-spherica-catalog-snapshot",
+    "source_revision": "df5bb7b94cd"
   },
   "package_count": 106,
   "database": "skills/cells-components-catalog/assets/bbva_cells_components.db",

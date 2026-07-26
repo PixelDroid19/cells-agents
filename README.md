@@ -3,7 +3,7 @@
   <p align="center">
     <strong>Portable multi-host orchestration for BBVA Cells using proportional skill-driven workflows</strong>
     <br />
-    <em>Portable local assets. Indexed documentation. Engram-first persistence. Markdown-based skills.</em>
+    <em>Generated host adapters. Indexed documentation. Portable workflow state. Markdown-based skills.</em>
   </p>
 </p>
 
@@ -66,8 +66,10 @@ The orchestrator stays thin and coordination-aware:
 
 - do not delegate `fast-path` work
 - keep `scoped-change` in the current agent unless independent non-blocking slices or user-requested delegation justify role agents
-- use `delegate` or host subagents for `full-workflow` work when role separation, parallelism, or evidence gathering actually helps
-- fall back to direct execution or synchronous `task` without weakening Cells governance, evidence gates, or specialist routing
+- use host-native subagents for `full-workflow` work only when role separation,
+  parallelism, or independent evidence gathering helps
+- fall back to direct execution without weakening Cells governance, evidence
+  gates, or specialist routing
 - keep `/cells-*` commands canonical even when migration work inspects historical pre-Cells artifacts as compatibility-only history
 
 ### Conservative Execution Policy
@@ -132,13 +134,13 @@ Every delegated or governed phase run should return the same decision-friendly s
   "artifacts": [
     {
       "name": "proposal | spec | design | tasks | report",
-      "store": "engram | openspec | hybrid | none",
-      "ref": "observation-id | file-path | null"
+      "store": "host-memory | openspec | hybrid | none",
+      "ref": "host-memory-id | file-path | null"
     }
   ],
   "next_recommended": ["cells-spec", "cells-design"],
   "risks": ["optional risk list"],
-  "skill_resolution": "injected | fallback-registry | fallback-path | none",
+  "skill_resolution": "host-discovery | explicit-path | none",
   "evidence_required": ["evidence gathered, unavailable, or blocked"]
 }
 ```
@@ -147,14 +149,14 @@ Every delegated or governed phase run should return the same decision-friendly s
 
 ### Default Recommendation
 
-Use `engram` as the default persistence and recovery backend.
+Use no workflow artifacts for fast/scoped work and OpenSpec for a durable full workflow.
 
 Recommended policy:
 
-- `engram` is the canonical backend for orchestrator state and artifact recovery.
-- `openspec` is only for explicit file-artifact workflows.
-- `hybrid` is for cases where both Engram recovery and OpenSpec files are required.
-- `none` is for ephemeral or privacy-first sessions.
+- `none` is the default for fast questions and scoped edits.
+- `openspec` is the portable backend for governed proposal/spec/design/task artifacts.
+- host memory is supplemental and only used when explicitly requested.
+- `hybrid` mirrors portable OpenSpec artifacts into an available host memory.
 
 ### What Loads By Default
 
@@ -184,16 +186,15 @@ When browser confirmation is needed:
 For Cells documentation, this is the recommended priority order:
 
 1. normalized topics in `skills/cells-official-docs-catalog/`
-2. `cellsjs-guides-resources-master@d3ad8b11218/docs-next`
-3. `cellsjs-guides-resources-master@d3ad8b11218/docs`
-4. `docs/packages`
-5. project-local code and tests as runtime evidence
+2. the external docs root resolved in `.cells-agent/context.json`, when present
+3. project-local code and tests as runtime evidence
 
 ### Why This Order
 
-- `docs-next` should be treated as the preferred source for modern guidance.
-- `docs` is useful as fallback or compatibility material.
-- `docs/packages` should not be preloaded as raw markdown. It is better consumed through the bundled component catalog and package-level evidence.
+- the bundled index is portable and available without the source checkout
+- an environment-specific docs checkout is an optional refresh/evidence source
+- package documentation should not be preloaded as raw markdown; consume it
+  through the bundled catalog and package-level evidence
 - project code remains the final behavioral truth when docs and implementation differ.
 
 ### How `docs/packages` Should Be Used
@@ -212,21 +213,21 @@ That is exactly why this bundle includes `cells-components-catalog` with bundled
 
 ```yaml
 artifact_store:
-  mode: engram
+  mode: openspec
 ```
 
 Use the following modes:
 
-- `engram`: best default for long-running work, compact state recovery, and low repo noise
-- `openspec`: use when the user explicitly wants file artifacts inside the repository
-- `hybrid`: use when both Engram recovery and OpenSpec files are required
-- `none`: use when nothing should be persisted
+- `none`: default for fast-path and scoped-change work
+- `openspec`: default for a durable governed full workflow
+- `host-memory`: optional host-native recall when explicitly requested
+- `hybrid`: OpenSpec plus an explicitly requested host-memory mirror
 
 Mode-selection policy:
 
-- choose `engram` automatically when available
-- never choose `openspec` or `hybrid` automatically
-- only use `openspec` or `hybrid` when the user explicitly asks for file artifacts
+- choose `none` automatically for fast/scoped work
+- choose `openspec` for a durable full workflow
+- never require host memory for correctness
 
 ## Commands
 
@@ -280,15 +281,17 @@ This section explains how the agent is operated in real work, which commands to 
 
 ### Operating Modes
 
-The orchestrator can run in two practical modes:
+The orchestrator can run in two practical profiles:
 
-1. Delegated background mode (`delegate` available)
+1. Multi-agent profile
 
-  Better for parallel work and long investigations. The orchestrator stays responsive while sub-agents run.
+  Uses host-native bounded subagents for independent analysis, implementation,
+  and verification.
 
-1. Synchronous fallback mode (`task`)
+2. Single-agent profile
 
-  Used when background delegation is unavailable or immediate response is required. Workflow contracts and governance still apply.
+  Executes directly and is the default. Workflow contracts and governance
+  still apply.
 
 In both modes, behavior is identical from a governance perspective:
 
@@ -436,11 +439,9 @@ Always treat `artifacts` as source-of-truth references for what was actually pro
 
 | Skill | Responsibility |
 |---|---|
-| `cells-component-researcher` | Component API, events, style hooks, docs, tests, and usage evidence. |
+| `cells-components-catalog` | Component discovery plus API, events, style hooks, docs, tests, and usage evidence. |
 | `cells-component-authoring` | Reuse vs new component decisions, scaffold flow, docs, and tests. |
-| `cells-composition-architect` | Feature and widget composition strategy from existing packages. |
-| `cells-feature-analyzer` | Reusable patterns from real BBVA feature implementations. |
-| `cells-app-architecture` | Feature structure, data managers, routing, bridge, and communication guidance. |
+| `cells-app-architecture` | Feature structure, component composition, data managers, routing, bridge, and communication guidance. |
 | `cells-cli-usage` | Correct local CLI or npm-based command flow. |
 | `cells-coverage` | Coverage triage and failed-test artifact analysis (second in mandatory testing stack). |
 | `cells-test-creator` | Test authoring guidance using OpenWC, Sinon, and public-behavior rules (third in mandatory testing stack). |
@@ -467,226 +468,80 @@ These files keep repeated logic out of individual skills and make routing determ
 
 ## Installation
 
-Use `scripts/install.sh` for deterministic installs. It prefers the bundled `portable/` assets when they exist and falls back to the canonical source files when they do not.
+The repository now has one canonical source tree and one environment-neutral
+compiler: `scripts/cells_agent.py`. It renders the correct assets for each host
+at install time. A checked-in `portable/` copy is not required.
 
-Use `scripts/setup.sh` only when you specifically want the legacy interactive flow or OpenCode mode selection (`single` vs `multi`).
+### Inspect the Cells environment first
 
-### Which path to use
+```powershell
+python scripts/cells_agent.py doctor `
+  --workspace C:\work\cells-project
+```
 
-| Host | Run from | Recommended command | Result |
+`doctor` detects the Cells project, sibling Spherica `packages/` catalog,
+official guides checkout, Cells CLI checkout, and installed host executables.
+Pass `--catalog`, `--docs`, or `--cells-cli` only when auto-detection is not
+appropriate.
+
+### Install
+
+| Host | Scope | Bash | PowerShell |
 |---|---|---|---|
-| OpenCode global | this bundle repo | `./scripts/install.sh --agent opencode` | installs `~/.config/opencode/skills`, `commands`, `plugins`, and default config assets |
-| OpenCode project-local | target repo root | `/path/to/cells-agents/scripts/install.sh --agent project-local` | installs `./.opencode/skills` |
-| VS Code Copilot | target repo root | `/path/to/cells-agents/scripts/install.sh --agent vscode` | installs `.github/` workspace assets plus `.github/plugin/` |
-| Codex global | this bundle repo or any shell with the script path | `/path/to/cells-agents/scripts/install.sh --agent codex` | installs `~/.codex/AGENTS.md`, `~/.codex/config.toml`, `~/.codex/agents/`, `~/.codex/plugins/cells-agent-bundle-codex/`, and `~/.agents/plugins/marketplace.json` |
+| VS Code | workspace | `scripts/install.sh --host vscode --scope workspace --profile single` | `scripts/install.ps1 -HostName vscode -Scope workspace -Profile single` |
+| OpenCode | workspace | `scripts/install.sh --host opencode --scope workspace --profile single` | `scripts/install.ps1 -HostName opencode -Scope workspace -Profile single` |
+| OpenCode | user | `scripts/install.sh --host opencode --scope user --profile single` | `scripts/install.ps1 -HostName opencode -Scope user -Profile single` |
+| Codex | user | `scripts/install.sh --host codex --scope user --profile single` | `scripts/install.ps1 -HostName codex -Scope user -Profile single` |
 
-Windows PowerShell installer support is currently limited to `opencode`, `vscode`, `project-local`, `all-global`, and `custom`. Codex install is documented and validated through `scripts/install.sh` and the portable copy path.
+Use `--profile multi` / `-Profile multi` only when bounded specialist agents
+materially help. The default `single` profile keeps one proportional
+orchestrator and avoids unnecessary fan-out.
 
-### Script Install
+The installer:
 
-#### OpenCode
+- renders from `skills/` and `examples/<host>/`
+- merges the Cells agent into an existing OpenCode JSON configuration
+- appends or refreshes a marked Cells block in instruction files
+- replaces only Cells-managed skills, agents, commands, hooks, and plugin files
+- removes retired Cells-managed skill names only with explicit `--force` / `-Force`
+- preserves unrelated user files unless `--force` / `-Force` is explicit
+- writes `.cells-agent/context.json` and `.cells-agent/install-state.json` in
+  the target Cells workspace
 
-Default OpenCode install:
+Normal installs preserve retired skill directories because a matching name
+does not prove bundle ownership. `--force` additionally removes the known
+retired Cells skill names and the former Codex plugin-cache path; review the
+target before using it.
 
-```bash
-./scripts/install.sh --agent opencode
-```
+Codex writes `~/.codex/config.cells.example.toml` instead of overwriting an
+existing `config.toml`; review and merge the desired settings explicitly.
 
-This installs the global OpenCode bundle in `~/.config/opencode/`.
+### Render distributable host artifacts
 
-Important behavior:
-
-- if `~/.config/opencode/opencode.json` does not exist, the installer writes the Cells config for you
-- if `~/.config/opencode/opencode.json` already exists, the installer preserves it and asks you to merge the `cells-orchestrator` block manually
-- the default `install.sh` path is the portable/single-agent OpenCode profile
-
-If you want the multi-agent OpenCode layout, use the setup helper instead:
-
-```bash
-./scripts/setup.sh --agent opencode --opencode-mode multi
-```
-
-PowerShell equivalents:
-
-```powershell
-.\scripts\install.ps1 -Agent opencode
-.\scripts\setup.ps1 -Agent opencode -OpenCodeMode multi
-```
-
-Reference templates:
-
-- `examples/opencode/opencode.json`
-- `examples/opencode/opencode.single.json`
-- `examples/opencode/opencode.multi.json`
-- `portable/opencode-home/templates/opencode.single.json`
-- `portable/opencode-home/templates/opencode.multi.json`
-
-#### OpenCode project-local
-
-From the target repository root:
-
-```bash
-/path/to/cells-agents/scripts/install.sh --agent project-local
-```
-
-This installs `./.opencode/skills/`. It does not install global OpenCode commands or global OpenCode config.
-
-PowerShell:
+Generated packages belong in ignored `dist/`, not in source control:
 
 ```powershell
-\path\to\cells-agents\scripts\install.ps1 -Agent project-local
+scripts/render.ps1 -HostName all -Profile multi -Force
 ```
-
-#### VS Code Copilot
-
-From the target repository root:
 
 ```bash
-/path/to/cells-agents/scripts/install.sh --agent vscode
+python3 scripts/cells_agent.py render \
+  --host all --profile multi --output dist --force
 ```
 
-This creates:
+Every artifact includes `render-manifest.json` with capability status and
+SHA-256 hashes. VS Code output separates the workspace layout from the
+installable plugin root.
 
-- `.github/copilot-instructions.md`
-- `.github/instructions/`
-- `.github/prompts/`
-- `.github/agents/`
-- `.github/hooks/`
-- `.github/skills/`
-- `.github/plugin/`
-
-PowerShell:
-
-```powershell
-\path\to\cells-agents\scripts\install.ps1 -Agent vscode
-```
-
-#### Codex
-
-From any shell where the script path is reachable:
+### Validate
 
 ```bash
-/path/to/cells-agents/scripts/install.sh --agent codex
+python3 -m unittest discover -s tests -p "test_*.py" -v
+python3 scripts/cells_agent.py validate
 ```
 
-This creates or refreshes:
-
-- `~/.codex/AGENTS.md`
-- `~/.codex/config.toml`
-- `~/.codex/hooks.json`
-- `~/.codex/rules/default.rules`
-- `~/.codex/agents/*.toml`
-- `~/.codex/plugins/cells-agent-bundle-codex/`
-- `~/.agents/plugins/marketplace.json`
-
-Codex runtime behavior is global-first: `~/.codex/AGENTS.md` gates Cells mode to BBVA Cells repositories, the installed `~/.codex/` layer supplies the shared defaults, and any repository that also ships its own `AGENTS.md` or project `.codex/` files can refine behavior locally.
-
-Important behavior:
-
-- if `~/.codex/AGENTS.md` does not exist, the installer writes the Cells global router for you
-- if `~/.codex/AGENTS.md` already exists, the installer preserves it and asks you to merge the Cells block manually
-- if `~/.codex/config.toml` does not exist, the installer writes the Cells Codex defaults for you
-- if `~/.codex/config.toml` already exists, the installer preserves it and asks you to merge the Cells sections manually
-- the installer always refreshes the managed Cells agents, hooks, rules, plugin payload, and marketplace entry under `~/.codex/` and `~/.agents/`
-
-### Manual / Portable Install
-
-Use the portable path when the target environment is restrictive or you prefer Finder/manual copy. The portable trees are already built and validated:
-
-- `portable/opencode-home/.config/opencode/`
-- `portable/project-local/.opencode/`
-- `portable/vscode/.github/`
-- `portable/codex-home/.codex/`
-- `portable/codex-home/.agents/`
-
-#### OpenCode manual copy
-
-```bash
-cp -R portable/opencode-home/.config "$HOME/"
-```
-
-If `~/.config/opencode/opencode.json` already exists, keep your existing file and merge the Cells agent block from either:
-
-- `portable/opencode-home/.config/opencode/opencode.json`
-- `portable/opencode-home/templates/opencode.single.json`
-- `portable/opencode-home/templates/opencode.multi.json`
-
-#### VS Code manual copy
-
-From the target repository root:
-
-```bash
-cp -R /path/to/cells-agents/portable/vscode/.github .
-```
-
-That single copy already includes `.github/plugin/`. No extra build step is required.
-
-#### Codex manual copy
-
-Copy into your home directory:
-
-```bash
-cp -R /path/to/cells-agents/portable/codex-home/.codex "$HOME/"
-cp -R /path/to/cells-agents/portable/codex-home/.agents "$HOME/"
-```
-
-This installs the global Codex layout:
-
-- `~/.codex/AGENTS.md`
-- `~/.codex/config.toml`
-- `~/.codex/hooks.json`
-- `~/.codex/rules/default.rules`
-- `~/.codex/agents/*.toml`
-- `~/.codex/plugins/cells-agent-bundle-codex/`
-- `~/.agents/plugins/marketplace.json`
-
-If `~/.codex/AGENTS.md` or `~/.codex/config.toml` already exists, keep your current files and merge the Cells templates from `portable/codex-home/.codex/` instead of overwriting them blindly.
-
-#### Project-local manual copy
-
-From the target repository root:
-
-```bash
-cp -R /path/to/cells-agents/portable/project-local/.opencode .
-```
-
-#### Portable plugin note
-
-The standalone VS Code plugin package is also shipped for advanced distribution cases:
-
-```text
-portable/vscode-plugin/
-```
-
-### Validation
-
-Core repo-local validation:
-
-```bash
-python3 scripts/validate_skill_quality.py
-python3 scripts/validate_governance_behavior.py
-bash scripts/install_test.sh
-```
-
-Host-specific validation:
-
-```bash
-python3 scripts/validate_opencode_assets.py
-python3 scripts/validate_vscode_copilot_assets.py
-python3 scripts/validate_codex_assets.py
-python3 scripts/validate_official_docs_catalog.py
-```
-
-Portable validation:
-
-```bash
-python3 scripts/validate_opencode_assets.py --installed-root portable/opencode-home
-python3 scripts/validate_vscode_copilot_assets.py --installed-root portable/vscode/.github
-python3 scripts/validate_vscode_copilot_assets.py --plugin-root portable/vscode-plugin
-python3 scripts/validate_codex_assets.py --installed-root portable/codex-home
-```
-
-For exact manual-copy steps, see [portable/README.md](/home/monasterios/Documents/cells/cells-agents/portable/README.md).
+See [docs/harness.md](docs/harness.md) for the architecture, capability
+boundaries, migration, and smoke-test matrix.
 
 ## Project Structure
 
@@ -697,7 +552,9 @@ For exact manual-copy steps, see [portable/README.md](/home/monasterios/Document
 |-- .agents/
 |   `-- plugins/marketplace.json
 |-- plugins/
-|   `-- cells-agent-bundle-codex/
+|   `-- cells-agent-bundle-codex/    # thin plugin metadata; payload is generated
+|-- harness/
+|   `-- manifest.json
 |-- skills/
 |   |-- _shared/
 |   |   |-- cells-conventions.md
@@ -710,13 +567,10 @@ For exact manual-copy steps, see [portable/README.md](/home/monasterios/Document
 |   |-- cells-archive/
 |   |-- cells-cli-usage/
 |   |-- cells-component-authoring/
-|   |-- cells-component-researcher/
 |   |-- cells-components-catalog/
-|   |-- cells-composition-architect/
 |   |-- cells-coverage/
 |   |-- cells-design/
 |   |-- cells-explore/
-|   |-- cells-feature-analyzer/
 |   |-- cells-i18n/
 |   |-- cells-init/
 |   |-- cells-official-docs-catalog/
@@ -739,19 +593,16 @@ For exact manual-copy steps, see [portable/README.md](/home/monasterios/Document
 |       |-- instructions/
 |       |-- plugin/
 |       `-- prompts/
-|-- portable/
-|   |-- codex-home/
-|   |-- opencode-home/
-|   |-- project-local/
-|   |-- vscode/
-|   `-- vscode-plugin/
+|-- tests/
+|   `-- test_cells_agent.py
 `-- scripts/
+    |-- cells_agent.py
     |-- build_codex_plugin.sh
-    |-- build_portable_assets.sh
     |-- build_vscode_plugin.sh
     |-- install.ps1
     |-- install.sh
     |-- install_test.sh
+    |-- render.ps1
     |-- validate_codex_assets.py
     `-- validate_vscode_copilot_assets.py
 ```
@@ -762,8 +613,8 @@ For exact manual-copy steps, see [portable/README.md](/home/monasterios/Document
 - prefer evidence over assumptions
 - reuse existing BBVA components before inventing abstractions
 - keep official guidance indexed, not always loaded
-- treat Engram as canonical when available
-- only create OpenSpec file artifacts when explicitly requested
+- use OpenSpec as the portable source of truth for durable full workflows
+- keep host memory optional and supplemental
 - keep specialist logic inside skills, not hardcoded in host prompts
 
 ## Contributing

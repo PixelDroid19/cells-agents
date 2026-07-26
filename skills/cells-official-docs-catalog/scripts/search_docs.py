@@ -129,7 +129,10 @@ def connect(db_path: Path) -> sqlite3.Connection:
     """Open the SQLite index and verify it was built by the current schema."""
     if not db_path.exists():
         fail(f"index database not found: {db_path}")
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(
+        f"{db_path.resolve().as_uri()}?mode=ro&immutable=1",
+        uri=True,
+    )
     conn.row_factory = sqlite3.Row
     try:
         version_row = conn.execute(

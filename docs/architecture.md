@@ -6,7 +6,10 @@ Deep dive into how Cells Agent Bundle is structured. For quick start, see the [m
 
 ## Where Cells Agent Bundle Fits
 
-Cells Agent Bundle extends the Agent Teams Lite orchestration pattern with BBVA Cells-specific specialist skills, indexed documentation catalogs, and Cells-native command policies.
+Cells Agent Bundle combines a host-neutral Cells core with generated adapters
+for VS Code, Codex, and OpenCode. Specialist skills, indexed documentation
+catalogs, and Cells-native command policies stay canonical; host packages are
+rendered on demand.
 
 ---
 
@@ -14,11 +17,12 @@ Cells Agent Bundle extends the Agent Teams Lite orchestration pattern with BBVA 
 
 ```
 ┌──────────────────────────────────────────────────────────┐
-│  ORCHESTRATOR (coordinator — never does real work)         │
+│  ORCHESTRATOR (proportional coordinator and executor)      │
 │                                                           │
 │  Responsibilities:                                        │
-│  • Delegate ALL tasks to sub-agents (not just SDD)      │
-│  • Resolve persistence mode (engram > openspec > hybrid > none) │
+│  • Execute fast/scoped work directly                    │
+│  • Delegate only independent full-workflow slices       │
+│  • Resolve persistence mode (none or openspec; memory optional) │
 │  • Route intent to the correct specialist skill          │
 │  • Ask for approval between phases                        │
 │  • Track state: which artifacts exist, what's next        │
@@ -152,10 +156,7 @@ cells teams/
 │   ├── cells-apply/SKILL.md
 │   ├── cells-verify/SKILL.md
 │   ├── cells-archive/SKILL.md
-│   ├── cells-component-researcher/SKILL.md
 │   ├── cells-component-authoring/SKILL.md
-│   ├── cells-composition-architect/SKILL.md
-│   ├── cells-feature-analyzer/SKILL.md
 │   ├── cells-app-architecture/SKILL.md
 │   ├── cells-cli-usage/SKILL.md
 │   ├── cells-coverage/SKILL.md
@@ -163,9 +164,8 @@ cells teams/
 │   ├── cells-i18n/SKILL.md
 │   ├── cells-components-catalog/         ← SQLite FTS5: bbva_cells_components.db
 │   ├── cells-official-docs-catalog/     ← SQLite FTS5: cells_official_docs.db
-│   ├── cells-visual-intent-demo/SKILL.md
 │   ├── agent-browser/SKILL.md
-│   └── skill-registry/SKILL.md
+│   └── cells-cleanup/SKILL.md
 ├── docs/                              ← Deep-dive documentation
 │   ├── architecture.md                 ← This file
 │   ├── changelog.md                   ← Version history
@@ -190,6 +190,6 @@ cells teams/
 └── scripts/
     ├── setup.sh                       ← Full setup: detect + install + configure
     ├── setup.ps1
-    ├── install.sh                     ← Skills-only installer
+    ├── install.sh                     ← Unified host installer
     └── install.ps1
 ```

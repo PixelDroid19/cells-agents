@@ -39,6 +39,10 @@ Always answer these boundaries explicitly:
 - bridge or event-channel ownership
 - routing and navigation flow
 - where native integration should be isolated
+- which existing Spherica components, mixins, helpers, or data managers compose
+  the feature
+- the parent/child property flow and upward event flow
+- where wrappers are justified and where direct component reuse is enough
 
 ## Core Guidance
 
@@ -90,6 +94,13 @@ When the task involves feature flags, performance, service workers, microfronten
 - treat them as application architecture topics first
 - avoid hiding them inside ordinary feature components
 - document ownership and boundaries clearly
+
+### 6. Component Composition
+
+Search `cells-components-catalog` before introducing a wrapper or custom base
+component. Prefer composition over inheritance unless the repository already
+establishes extension as its pattern. Name exact custom elements, scoped
+registrations, events, data managers, and browser checkpoints in the design.
 
 ## References
 

@@ -1,6 +1,6 @@
 ---
 name: cells-init
-description: "Use when starting a Cells workflow, detecting stack and conventions, bootstrapping persistence, refreshing skill registry, or establishing project context before other phases."
+description: "Use when starting a Cells workflow, detecting stack and conventions, bootstrapping persistence, or establishing project context before other phases."
 ---
 
 ## Purpose
@@ -18,16 +18,11 @@ This phase writes `cells-init/{project-name}`. Handle persistence mode (engram/o
 
 ## What to Do
 
-### Step 1: Load Skill Registry (Mandatory)
+### Step 1: Resolve Context
 
-Do this FIRST, before any other work.
-
-1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
-2. If found, call `mem_get_observation(id: {id})` for the full registry
-3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
-4. If neither exists, proceed without skills (this is not an error)
-
-From the registry, load project conventions relevant to initialization context.
+Read `.cells-agent/context.json` when present, then inspect the workspace files
+needed for this initialization. Load skills directly by their frontmatter
+descriptions; do not require a generated registry or a host-specific memory tool.
 
 ### Step 2: Detect Project Context
 
@@ -99,32 +94,13 @@ rules:
     - Warn before merging destructive deltas (large removals)
 ```
 
-### Step 5: Build or Refresh Skill Registry
-
-Before returning, ensure skill-registry infrastructure is present:
-
-1. Scan available user-level and project-level skill directories for `*/SKILL.md`
-2. Skip `cells-*`, `_shared`, and `skill-registry` when registry output is meant for non-CELLS coding skills
-3. Write `.atl/skill-registry.md` in project root (create `.atl/` if needed)
-4. If engram is available, also save:
-
-```
-mem_save(
-  title: "skill-registry",
-  topic_key: "skill-registry",
-  type: "config",
-  project: "{project}",
-  content: "{registry markdown}"
-)
-```
-
-### Step 6: Artifact Persistence (Mandatory)
+### Step 5: Artifact Persistence (Mandatory)
 
 Persist initialization context as `cells-init/{project-name}` per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section (`openspec/config.yaml` was already written in Step 4 for `openspec`/`hybrid`).
 
 Do not skip this step in `engram` or `hybrid`, or later phases cannot recover initialization context.
 
-### Step 7: Return Summary
+### Step 6: Return Summary
 
 Return a structured summary adapted to the resolved mode:
 

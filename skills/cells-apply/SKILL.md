@@ -38,14 +38,10 @@ This phase requires `proposal`, `spec`, `design`, and `tasks`. Recover them and 
 
 ## Workflow
 
-### Step 1: Load Skill Registry
+### Step 1: Resolve Skills And Environment
 
-Before any other work:
-
-1. `mem_search(query: "skill-registry", project: "{project}")`
-2. `mem_get_observation(id: {id})` when available
-3. fallback: read `.atl/skill-registry.md`
-4. if neither exists, proceed without it
+Read `.cells-agent/context.json` when present and load only the skills whose
+frontmatter matches the task. Do not require a generated registry.
 
 ### Step 2: Load Canonical Dependencies
 

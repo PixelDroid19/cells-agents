@@ -14,7 +14,11 @@ node_modules/
 .ruff_cache/
 .pytest_cache/
 __pycache__/
+*.db-shm
+*.db-wal
 # Agent tooling cache/artifacts
 .atl/
 .opencode/
 build/
+dist/
+.cells-agent/

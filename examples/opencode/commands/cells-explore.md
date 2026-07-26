@@ -1,7 +1,6 @@
 ---
 description: Explore and investigate an idea or feature — reads codebase and compares approaches
 agent: cells-orchestrator
-subtask: true
 ---
 
 # Cells Explore Command
@@ -14,7 +13,7 @@ CONTEXT:
 - Current project: infer from current workspace
 - Topic to explore: $ARGUMENTS
 - Work sizing: read `skills/_shared/cells-work-sizing-contract.md` before choosing breadth
-- Artifact store mode: `none` for direct `fast-path` or narrow `scoped-change` exploration; `engram` for active governed workflows
+- Artifact store mode: `none` for direct `fast-path` or narrow `scoped-change` exploration; `openspec` for active governed workflows
 
 TASK:
 Explore the topic "$ARGUMENTS" in this codebase. Investigate the current state, identify affected areas, compare approaches, and provide a recommendation.

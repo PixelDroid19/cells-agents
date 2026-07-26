@@ -9,6 +9,10 @@ Use this skill to find the right BBVA Cells components before proposing code, ap
 
 The bundled index and record set are packaged inside this skill so the team can search BBVA components without depending on external folders at runtime.
 
+Follow `skills/_shared/cells-source-routing-contract.md` and
+`skills/_shared/cells-rules-contract.md` when turning catalog evidence into a
+recommendation or implementation decision.
+
 ## When To Use
 
 Use this skill when the task involves any of these:
@@ -78,6 +82,9 @@ If the result is still ambiguous:
 
 - inspect the detailed package dossier returned by the catalog
 - inspect the bundled record payload when you need raw indexed fields
+- confirm public properties, events, slots, CSS hooks, and usage against the
+  active project's code, tests, or `custom-elements.json`
+- record package version mismatches instead of combining APIs from different snapshots
 
 Prefer the package docs and metadata over any secondary summary.
 
@@ -91,6 +98,10 @@ After searching, convert the findings into a practical recommendation:
 - which code snippets or README examples should be reused
 - which caveats or dependencies must be respected
 - what should be composed together in the app
+
+For a component dossier, also report class and tag identity, public API,
+events and detail payloads, style hooks, imports or mixins, test evidence, one
+real usage pattern, and concrete caveats. Never infer missing API surface.
 
 ## Output Format
 

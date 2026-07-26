@@ -1,7 +1,6 @@
 ---
 description: Sweep Cells code quality with zero behavior change
 agent: cells-orchestrator
-subtask: true
 ---
 
 # Cells Cleanup Command

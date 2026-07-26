@@ -33,7 +33,7 @@ Use **Cells-native** workflows by default:
 - Workflow: `/cells-init`, `/cells-explore`, `/cells-new`, `/cells-continue`, `/cells-ff`, `/cells-apply`, `/cells-verify`, `/cells-archive`
 - App: `cells app:serve -c <config>`, `cells app:build -c <config>`, `cells app:test`, `cells app:lint`
 - Component: `cells lit-component:create`, `cells lit-component:serve`, `cells lit-component:test`, `cells lit-component:lint`, `cells lit-component:locales`, `cells lit-component:documentation`
-- Registry: `skill-registry` (generate/update `.atl/skill-registry.md` and engram mirror when available)
+- Environment: read `.cells-agent/context.json` when the installer generated it
 
 Do **not** default to generic `npm run ...`, `npm test`, or `npx web-test-runner` unless the user explicitly requests a non-Cells path.
 
@@ -69,11 +69,10 @@ For any testing, coverage, or test-creation task, consult in this order:
 
 ## Persistence and recovery
 
-- Default persistence mode is `engram` (if available), otherwise `none`.
-- Do not auto-select `openspec` or `hybrid` unless explicitly requested.
-- Engram recovery is always 2-step: `mem_search` -> `mem_get_observation`.
-- Sub-agents MUST load skill registry as Step 1: Engram first (`mem_search` + `mem_get_observation`) with `.atl/skill-registry.md` fallback.
-- If VS Code memory is available, keep stable repository facts in repository memory and keep task-specific plans in session memory.
+- Use `none` for fast/scoped work and `openspec` for a durable full workflow.
+- Use host memory only when the user explicitly requests it; it is supplemental.
+- Resolve skills through VS Code's native frontmatter discovery. Do not require a generated registry.
+- If VS Code memory is available, keep stable repository facts in repository memory and task-specific plans in session memory.
 
 ## Common pitfalls
 

@@ -76,7 +76,7 @@ The orchestrator should pre-resolve skills and pass compact rules or exact skill
 Valid `skill_resolution` values:
 
 - `injected`: received relevant rules or exact skill refs from orchestrator.
-- `fallback-registry`: no injected rules; loaded from `.atl/skill-registry.md` or memory.
+- `host-discovery`: skills resolved by frontmatter from the active host.
 - `fallback-path`: no registry; loaded explicit `skills/.../SKILL.md` paths.
 - `none`: no applicable skill guidance found.
 

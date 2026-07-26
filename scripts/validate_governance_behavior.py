@@ -304,8 +304,7 @@ def scenario_real_cells_patterns_contract() -> tuple[bool, str]:
     skills_to_check = (
         ROOT / "skills/cells-apply/SKILL.md",
         ROOT / "skills/cells-component-authoring/SKILL.md",
-        ROOT / "skills/cells-composition-architect/SKILL.md",
-        ROOT / "skills/cells-feature-analyzer/SKILL.md",
+        ROOT / "skills/cells-explore/SKILL.md",
         ROOT / "skills/cells-app-architecture/SKILL.md",
         ROOT / "skills/cells-test-creator/SKILL.md",
         ROOT / "skills/cells-i18n/SKILL.md",

@@ -112,7 +112,7 @@ When the task is building or reviewing a real Cells component, these patterns ar
 ## Source of Truth for These Rules
 
 These rules are consolidated from:
-- `skill-registry/SKILL.md` (anti-patterns, routing)
+- skill frontmatter plus the host's native skill discovery
 - `cells-conventions.md` (scopedElements, WidgetMixin, testing stack)
 - `cells-official-reference.md` (component checklist)
 - `real-cells-patterns.md` (real local Cells feature, app, and Spherica evidence)

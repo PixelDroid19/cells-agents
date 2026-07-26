@@ -173,7 +173,6 @@ def validate_commands(commands_root: Path) -> list[str]:
 
 def validate_source(root: Path) -> list[str]:
     invalid: list[str] = []
-    invalid.extend(validate_config(root / "opencode.json", multi=False))
     invalid.extend(validate_config(root / "opencode.single.json", multi=False))
     invalid.extend(validate_config(root / "opencode.multi.json", multi=True))
     invalid.extend(validate_commands(root / "commands"))

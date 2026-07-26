@@ -42,9 +42,10 @@ required_action: "Run /cells-explore first or provide a direct change descriptio
 
 When mode is `openspec`, check for `openspec/changes/{change-name}/proposal.md`. If the change folder exists with a proposal, read it and update rather than creating fresh.
 
-### Step 2: Load Skill Registry
+### Step 2: Resolve Skills And Environment
 
-Load the skill registry from the orchestrator's pre-resolved context. If the orchestrator did not pass a resolved skill registry path, read `skills/skill-registry/SKILL.md` to understand available skills and routing.
+Read `.cells-agent/context.json` when present and load only the skills whose
+frontmatter matches proposal work. Do not require a generated registry.
 
 This phase optionally uses `explore` and `cells-init/{project}` context. Recover them per `skills/_shared/artifact-recovery.md`.
 

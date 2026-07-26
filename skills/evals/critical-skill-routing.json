@@ -3,8 +3,8 @@
     {
       "id": "bbva-component-discovery",
       "prompt": "Necesito saber si ya existe un componente BBVA para un boton de transferencia con icono.",
-      "expected_skill": "skill-registry",
-      "required_description_terms": ["routing", "bbva components", "official docs"]
+      "expected_skill": "cells-components-catalog",
+      "required_description_terms": ["bbva cells components", "package names", "events"]
     },
     {
       "id": "cells-cli-test-command",

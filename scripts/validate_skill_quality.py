@@ -16,7 +16,7 @@ SHARED_DIR = SKILLS_DIR / "_shared"
 EVALS_PATH = SKILLS_DIR / "evals" / "critical-skill-routing.json"
 
 CRITICAL_SKILLS = {
-    "skill-registry",
+    "cells-components-catalog",
     "cells-explore",
     "cells-cli-usage",
     "cells-test-creator",
@@ -30,7 +30,7 @@ WARN_WORDS = 1800
 FORBIDDEN_COMMANDS = ("npm test", "npm run test", "npx web-test-runner")
 NEGATION_MARKERS = ("do not", "don't", "never", "forbidden", "avoid")
 REQUIRED_SHARED_REFS = {
-    "skill-registry": (
+    "cells-components-catalog": (
         "skills/_shared/cells-rules-contract.md",
         "skills/_shared/cells-source-routing-contract.md",
     ),

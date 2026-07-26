@@ -37,7 +37,10 @@ def open_db() -> tuple[sqlite3.Connection, Path, Path]:
     manifest_path = SCRIPT_DIR.parent / "assets" / "component_manifest.json"
     records_path = SCRIPT_DIR.parent / "assets" / "component_records.json"
     ensure_index(db_path, manifest_path, records_path)
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(
+        f"{db_path.resolve().as_uri()}?mode=ro&immutable=1",
+        uri=True,
+    )
     conn.row_factory = sqlite3.Row
     return conn, db_path, manifest_path
 

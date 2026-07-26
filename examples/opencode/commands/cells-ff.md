@@ -9,16 +9,17 @@ Follow the CELLS orchestrator workflow to fast-forward all planning phases for c
 
 WORKFLOW:
 
-Run these sub-agents in sequence:
+Run these phases:
 
 1. cells-propose — create the proposal
 2. cells-spec — write specifications
 3. cells-design — create technical design
 4. cells-tasks — break down into implementation tasks
 
-Prepare a Handoff Packet from `skills/_shared/cells-agent-handoff-contract.md` before each launch. Each handoff must include the current artifacts, acceptance criteria, constraints, `evidence_required`, and the next `handoff_target`.
-
-Prefer `delegate` for any non-blocking phase and for `cells-spec` + `cells-design` parallelization when background delegation is available. Fall back to synchronous `task` when immediate results are required.
+Execute phases directly by default. In the multi-agent profile, `cells-spec`
+and `cells-design` may run as native subagents in parallel only after both
+receive the same approved proposal and their outputs can be reviewed
+independently. Use a Handoff Packet only for work that is actually delegated.
 
 Source routing contract (mandatory):
 
@@ -35,6 +36,7 @@ CONTEXT:
 - Working directory: current OpenCode project root
 - Current project: infer from current workspace
 - Change name: $ARGUMENTS
-- Artifact store mode: engram
+- Artifact store mode: openspec
 
-Read the orchestrator instructions to coordinate this workflow. Do NOT execute phase work inline — delegate to sub-agents and keep Cells governance unchanged.
+Read the orchestrator instructions, execute the phase work, and keep Cells
+governance unchanged.

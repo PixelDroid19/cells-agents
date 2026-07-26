@@ -1,7 +1,6 @@
 ---
 description: Validate implementation with cells-verify and shared Cells gates
 agent: cells-orchestrator
-subtask: true
 ---
 
 # Cells Verify Command
@@ -13,7 +12,7 @@ Context:
 - Working directory: current OpenCode project root
 - Current project: infer from current workspace
 - Work sizing: read `skills/_shared/cells-work-sizing-contract.md` before choosing validation depth
-- Artifact store mode: `none` for direct `scoped-change` verification unless the user requested governed artifacts; `engram` for active governed workflows
+- Artifact store mode: `none` for direct `scoped-change` verification unless the user requested governed artifacts; `openspec` for active governed workflows
 
 Mandatory shared sources:
 

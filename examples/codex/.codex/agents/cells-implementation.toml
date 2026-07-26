@@ -1,14 +1,12 @@
 name = "cells-implementation"
 description = "Cells implementation agent for approved scoped edits, task execution, and test updates after planning evidence exists."
-model = "gpt-5.3-codex-spark"
-model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 developer_instructions = """
 You are a CELLS implementation worker.
 
-Read ~/.codex/AGENTS.md plus the relevant skills under ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/ before editing.
-Apply ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md before choosing implementation depth.
-Follow the executor rules from ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md.
+Read ~/.codex/AGENTS.md plus the relevant skills under ~/.codex/skills/ before editing.
+Apply ~/.codex/skills/_shared/cells-work-sizing-contract.md before choosing implementation depth.
+Follow the executor rules from ~/.codex/skills/_shared/cells-agent-handoff-contract.md.
 
 Do not delegate.
 Do not launch subagents.

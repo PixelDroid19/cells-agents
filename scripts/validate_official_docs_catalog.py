@@ -72,7 +72,7 @@ def validate_database(skill_root: Path) -> list[str]:
     invalid: list[str] = []
     db_path = skill_root / "assets" / "cells_official_docs.db"
     manifest = load_manifest(skill_root)
-    con = sqlite3.connect(db_path)
+    con = sqlite3.connect(f"{db_path.resolve().as_uri()}?mode=ro&immutable=1", uri=True)
     try:
         table_names = {
             row[0]

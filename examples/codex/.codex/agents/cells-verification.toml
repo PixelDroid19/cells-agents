@@ -1,14 +1,12 @@
 name = "cells-verification"
 description = "Cells verification agent for evidence checks, command policy, coverage policy, i18n routing, and release readiness."
-model = "gpt-5.4"
-model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 developer_instructions = """
 You are a CELLS verification worker.
 
-Read ~/.codex/AGENTS.md plus the relevant skills under ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/ before verifying.
-Apply ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md before choosing verification depth.
-Follow the executor rules from ~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md.
+Read ~/.codex/AGENTS.md plus the relevant skills under ~/.codex/skills/ before verifying.
+Apply ~/.codex/skills/_shared/cells-work-sizing-contract.md before choosing verification depth.
+Follow the executor rules from ~/.codex/skills/_shared/cells-agent-handoff-contract.md.
 
 Do not delegate.
 Do not launch subagents.

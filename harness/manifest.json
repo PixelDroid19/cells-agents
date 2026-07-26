@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "bundle": {
+    "name": "cells-agent-bundle",
+    "version": "3.0.0"
+  },
+  "profiles": {
+    "single": {
+      "description": "One proportional orchestrator; no delegated phase agents."
+    },
+    "multi": {
+      "description": "Bounded specialist agents for independent analysis, implementation, and verification."
+    }
+  },
+  "hosts": {
+    "vscode": {
+      "scopes": ["workspace"],
+      "capabilities": {
+        "instructions": "supported",
+        "skills": "supported",
+        "agents": "supported",
+        "prompts": "supported",
+        "hooks": "preview",
+        "subagents": "preview",
+        "mcp": "host-configured",
+        "memory": "host-specific"
+      }
+    },
+    "codex": {
+      "scopes": ["user"],
+      "capabilities": {
+        "instructions": "supported",
+        "skills": "supported",
+        "agents": "supported",
+        "prompts": "via-skills",
+        "hooks": "experimental",
+        "subagents": "supported",
+        "mcp": "host-configured",
+        "memory": "host-specific"
+      }
+    },
+    "opencode": {
+      "scopes": ["user", "workspace"],
+      "capabilities": {
+        "instructions": "supported",
+        "skills": "supported",
+        "agents": "supported",
+        "prompts": "commands",
+        "hooks": "via-plugins",
+        "subagents": "supported",
+        "mcp": "host-configured",
+        "memory": "host-specific"
+      }
+    }
+  }
+}

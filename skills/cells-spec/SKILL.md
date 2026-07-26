@@ -38,9 +38,10 @@ reason: "cells-spec requires cells-propose output before specs can be written"
 required_action: "Run /cells-propose first or provide a seeded proposal artifact"
 ```
 
-### Step 2: Load Skill Registry
+### Step 2: Resolve Skills And Environment
 
-Load the skill registry from the orchestrator's pre-resolved context. If the orchestrator did not pass a resolved skill registry path, read `skills/skill-registry/SKILL.md` to understand available skills and routing.
+Read `.cells-agent/context.json` when present and load only the skills whose
+frontmatter matches specification work. Do not require a generated registry.
 
 ### Step 3: Identify Affected Domains
 

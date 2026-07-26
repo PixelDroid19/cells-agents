@@ -23,18 +23,12 @@ This phase requires `verify-report`, `proposal`, `spec`, `design`, and `tasks` (
 
 ## What to Do
 
-### Step 1: Load Skill Registry (Mandatory)
+### Step 1: Resolve Skills And Environment
 
-Do this FIRST, before any other work.
+Read `.cells-agent/context.json` when present and load only the skills whose
+frontmatter matches archive and merge work. Do not require a generated registry.
 
-1. Try engram first: `mem_search(query: "skill-registry", project: "{project}")`
-2. If found, call `mem_get_observation(id: {id})` for the full registry
-3. If engram is unavailable or no result is found, read `.atl/skill-registry.md` from the project root
-4. If neither exists, proceed without skills (this is not an error)
-
-From the registry, load only the skills and convention files relevant to archive/merge work.
-
-### Step 2: Load Dependencies (Engram / Hybrid)
+### Step 2: Load Dependencies
 
 This phase requires proposal, spec, design, tasks, and verify-report. Recover them per `skills/_shared/artifact-recovery.md`.
 

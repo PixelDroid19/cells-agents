@@ -39,9 +39,10 @@ reason: "cells-tasks requires proposal, spec, and design artifacts before tasks 
 required_action: "Run the missing phase(s) first or provide the required canonical artifact"
 ```
 
-### Step 2: Load Skill Registry
+### Step 2: Resolve Skills And Environment
 
-Load the skill registry from the orchestrator's pre-resolved context. If the orchestrator did not pass a resolved skill registry path, read `skills/skill-registry/SKILL.md` to understand available skills and routing.
+Read `.cells-agent/context.json` when present and load only the skills whose
+frontmatter matches task planning. Do not require a generated registry.
 
 ### Step 3: Analyze the Design
 

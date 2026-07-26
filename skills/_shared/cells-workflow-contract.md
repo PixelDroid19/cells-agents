@@ -72,5 +72,6 @@ Required fields per entry: `intent`, `primary_source`, `fallback_used`, `fallbac
 
 ## Validation Safeguards
 
-- Local skill registry refreshes SHOULD verify whether workflow skill names or paths changed before rewriting `.atl/skill-registry.md`; unchanged registry entries do not require a content rewrite.
+- Host adapters SHOULD resolve current skill names from the canonical `skills/`
+  tree during each render; do not maintain a second registry file.
 - Validation scripts SHOULD check shared-contract parity, canonical write targets, canonical-only dependency guidance, source-decision template coverage, and any documented policy exemptions before the change is considered ready for verification.

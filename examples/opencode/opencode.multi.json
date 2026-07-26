@@ -12,10 +12,7 @@
         },
         "read": "allow",
         "edit": "allow",
-        "bash": "allow",
-        "delegate": "allow",
-        "delegation_read": "allow",
-        "delegation_list": "allow"
+        "bash": "allow"
       }
     },
     "cells-init": {

@@ -1,96 +1,49 @@
-# Cells Agent Bundle — Codex Global Instructions
+# Cells Agent Bundle
 
-This is a global Codex Cells bundle.
+Apply these instructions only in a BBVA Cells workspace or when the user asks
+for Cells help. Project `AGENTS.md` files may refine this global layer.
 
-Apply it only when the current workspace is a BBVA Cells project or the user explicitly asks for Cells workflow help. Outside Cells work, ignore this file and continue with normal Codex behavior.
+## Start
 
-When working on a BBVA Cells project with Codex, choose the smallest safe workflow first, then load the relevant skill(s) from `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/` before writing code or making architectural decisions.
+1. Read `.cells-agent/context.json` when present.
+2. Read `~/.codex/skills/_shared/cells-work-sizing-contract.md`.
+3. Choose `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
+4. Load only the relevant skill folders from `~/.codex/skills/`.
 
-## How to Use
+For fast or scoped work, inspect or implement directly and run targeted
+validation. Do not manufacture proposal/spec/design/task artifacts.
 
-1. Read this file first. Codex loads `~/.codex/AGENTS.md` before starting work.
-2. Apply `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md` to classify the task as `fast-path`, `scoped-change`, `full-workflow`, or `blocked`.
-3. Use `~/.codex/agents/cells-orchestrator.toml` as the main coordinator only for multi-phase Cells work.
-4. Treat `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/` as the canonical global skill payload.
-5. Use the role agents under `~/.codex/agents/` only for delegated execution:
-   - `cells-analysis`
-   - `cells-implementation`
-   - `cells-verification`
-6. If the active repository also provides `AGENTS.md` or project `.codex/` overrides, apply those as project-specific refinements after this global layer.
+For a full workflow, use:
 
-## Work Sizing
+`cells-init → cells-explore → cells-propose → (cells-spec + cells-design) → cells-tasks → cells-apply → cells-verify → cells-archive`
 
-- `fast-path`: questions, targeted reads, narrow explanations, or simple recommendations. No subagents, no artifacts, no full workflow.
-- `scoped-change`: small localized edits or direct user instructions. Load only directly relevant skills and run targeted validation.
-- `full-workflow`: multi-file features, architecture, complex UI/i18n/test/coverage work, release closure, or user-requested end-to-end proof.
-- `blocked`: ambiguous scope, missing environment/credentials, destructive risk, or proof that cannot be obtained.
+Use the role agents under `~/.codex/agents/` only for independent work that
+benefits from a separate context. Executors do not delegate again.
 
-User intent controls the mode unless it conflicts with Cells safety, command policy, or scope isolation.
+## Non-negotiable Cells routing
 
-## Cells Rules Contract (Always)
+- Search `cells-components-catalog` before inventing a component or API.
+- Use `cells-official-docs-catalog` for official Cells, CLI, testing, theming,
+  architecture, and authoring guidance.
+- Use `cells-app-architecture` for feature boundaries and composition.
+- Use `cells-cli-usage` to resolve commands, `cells-test-creator` only when
+  authoring tests, and `cells-coverage` only for coverage work.
+- Use `cells-i18n` for translated literals and locale behavior.
+- Use `agent-browser` only when visible runtime evidence is relevant.
 
-For UI, typography, forms, buttons, navigation, feedback, i18n, command policy, test routing, scoped elements, events, and Cells component rules:
+Use Cells-native commands:
 
-1. Read `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-rules-contract.md`
-2. Follow `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-source-routing-contract.md` for source order
-3. Do not duplicate or weaken those rules in phase-specific work
+- Apps: `cells app:serve`, `cells app:build`, `cells app:test`, `cells app:lint`
+- Components: `cells lit-component:serve`, `cells lit-component:test`,
+  `cells lit-component:lint`, `cells lit-component:documentation`
 
-## Testing Skills
+Do not default to generic `npm test` or `npx web-test-runner` in a Cells
+workspace unless the user explicitly requests that path.
 
-For any Cells test intent, load only the testing skill(s) the intent needs:
+## Persistence and evidence
 
-- `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-cli-usage/` for resolving and running commands
-- `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-coverage/` only for coverage work
-- `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-test-creator/` only for authoring or updating tests
+Use inline results for fast/scoped work. Use OpenSpec artifacts for a durable
+full workflow. Host memory is optional and never required.
 
-Never use generic fallback runners (`npm test`, `npx web-test-runner`) in Cells contexts unless the user explicitly requests them.
-
-## Memories
-
-Codex memories (`~/.codex/memories/`, `memories = true` in `config.toml`) are a supplemental local recall layer only. All mandatory Cells rules live in this checked-in `AGENTS.md` and the bundled `_shared/` contracts; never rely on memories as the source for rules that must always apply.
-
-## Agent Handoff Contract (Always)
-
-For any orchestrator, subagent, handoff, delegation, implementation loop, or verification loop:
-
-1. Read `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-work-sizing-contract.md`
-2. Read `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/_shared/cells-agent-handoff-contract.md`
-3. Treat orchestrators as coordinators for `full-workflow` work, not for every small task
-4. Treat executor agents as isolated workers: no nested delegation
-5. Use the standard Handoff Packet with `evidence_required` only when delegation is selected
-6. Return the standard envelope including `skill_resolution` and `evidence_required` for delegated or phase work
-
-## Workflow Skills
-
-Use these installed skill paths:
-
-- `cells-init`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-init/SKILL.md`
-- `cells-explore`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-explore/SKILL.md`
-- `cells-propose`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-propose/SKILL.md`
-- `cells-spec`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-spec/SKILL.md`
-- `cells-design`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-design/SKILL.md`
-- `cells-tasks`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-tasks/SKILL.md`
-- `cells-apply`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-apply/SKILL.md`
-- `cells-verify`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-verify/SKILL.md`
-- `cells-archive`: `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/cells-archive/SKILL.md`
-
-## Specialist Skills
-
-Use these when the task requires them:
-
-- `skill-registry`
-- `cells-component-researcher`
-- `cells-component-authoring`
-- `cells-composition-architect`
-- `cells-feature-analyzer`
-- `cells-app-architecture`
-- `cells-cli-usage`
-- `cells-coverage`
-- `cells-test-creator`
-- `cells-i18n`
-- `agent-browser`
-- `issue-creation`
-- `branch-pr`
-- `cells-cleanup`
-
-All of them live under `~/.codex/plugins/cells-agent-bundle-codex/.cache/cells-skills/`.
+Do not claim success from inferred behavior or unexecuted commands. Report
+exact files, commands, outputs, blockers, risks, and remaining evidence.

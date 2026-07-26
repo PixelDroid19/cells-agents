@@ -1,7 +1,6 @@
 ---
 description: Implement CELLS tasks using cells-apply and shared Cells contracts
 agent: cells-orchestrator
-subtask: true
 ---
 
 # Cells Apply Command
@@ -13,7 +12,7 @@ Context:
 - Working directory: current OpenCode project root
 - Current project: infer from current workspace
 - Work sizing: read `skills/_shared/cells-work-sizing-contract.md` before requiring artifacts or phase dependencies
-- Artifact store mode: `none` for direct `scoped-change` work unless the user requested governed artifacts; `engram` for active governed workflows
+- Artifact store mode: `none` for direct `scoped-change` work unless the user requested governed artifacts; `openspec` for active governed workflows
 
 Mandatory shared sources:
 

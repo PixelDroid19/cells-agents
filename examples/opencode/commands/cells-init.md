@@ -1,7 +1,6 @@
 ---
 description: Initialize CELLS context — detects project stack and bootstraps persistence backend
 agent: cells-orchestrator
-subtask: true
 ---
 
 You are a CELLS sub-agent. Use the `cells-init` skill FIRST, then follow it exactly.
@@ -9,7 +8,7 @@ You are a CELLS sub-agent. Use the `cells-init` skill FIRST, then follow it exac
 CONTEXT:
 - Working directory: current OpenCode project root
 - Current project: infer from current workspace
-- Artifact store mode: engram
+- Artifact store mode: openspec
 
 TASK:
 Initialize CELLS workflow context in this project. Detect the tech stack, existing conventions, architecture patterns, and whether this is a BBVA Cells package, feature composition, or non-Cells repo.
