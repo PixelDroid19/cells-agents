@@ -66,7 +66,7 @@ from tempfile import NamedTemporaryFile
 # and run from any working directory.
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
-SCHEMA_VERSION = "2"
+SCHEMA_VERSION = "3"
 DEFAULT_DB = SKILL_DIR / "assets" / "cells_official_docs.db"
 DEFAULT_MANIFEST = SKILL_DIR / "assets" / "manifest.json"
 LOCAL_DOCS_DIR = SKILL_DIR / "docs"
@@ -166,12 +166,17 @@ def repo_root() -> Path:
     return SKILL_DIR
 
 
-def safe_relative(path: Path, base: Path) -> str:
-    """Return a relative path when possible, otherwise an absolute path."""
+def safe_relative(path: Path, base: Path, fallback: str) -> str:
+    """Return portable provenance and never persist a host-specific absolute path."""
     try:
         return path.resolve().relative_to(base.resolve()).as_posix()
     except ValueError:
-        return path.resolve().as_posix()
+        return fallback
+
+
+def portable_source_path(rel_path: Path) -> str:
+    """Describe source origin without embedding the builder's local checkout."""
+    return f"docs/{rel_path.as_posix()}"
 
 
 def read_text(path: Path) -> str:
@@ -206,6 +211,15 @@ def should_skip(rel_path: Path) -> tuple[bool, str | None]:
 def content_hash(text: str) -> str:
     """Hash raw document content for reproducible manifest provenance."""
     return hashlib.sha256(text.encode("utf-8")).hexdigest()
+
+
+def sha256_file(path: Path) -> str:
+    """Hash a packaged artifact without loading it all into memory."""
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
 
 
 def normalize_space(text: str) -> str:
@@ -518,7 +532,7 @@ def build_database(db_path: Path, docs_root: Path, source_revision: str | None) 
                     title,
                     area,
                     rel_path.as_posix(),
-                    str(path.resolve()),
+                    portable_source_path(rel_path),
                     digest,
                     len(content.split()),
                     len(markdown_heading_events(content)),
@@ -547,7 +561,7 @@ def build_database(db_path: Path, docs_root: Path, source_revision: str | None) 
                         title,
                         area,
                         rel_path.as_posix(),
-                        str(path.resolve()),
+                        portable_source_path(rel_path),
                         chunk["kind"],
                         chunk["heading"],
                         chunk["heading_path"],
@@ -598,13 +612,14 @@ def build_database(db_path: Path, docs_root: Path, source_revision: str | None) 
         metadata = {
             "schema_version": SCHEMA_VERSION,
             "generated_at": utc_now(),
-            "source_root": str(docs_root),
+            "source_root": "docs",
             "source_revision": source_revision or "external-snapshot",
             "document_count": len(indexed_docs),
             "chunk_count": total_chunks,
             "legacy_document_count": legacy_document_count,
             "skipped": skipped_counts,
             "content_hash": aggregate_hash.hexdigest(),
+            "source_fingerprint": aggregate_hash.hexdigest(),
         }
         insert_metadata(conn, metadata)
         conn.commit()
@@ -631,18 +646,26 @@ def write_manifest(manifest_path: Path, payload: dict, root: Path) -> None:
         "metadata": {
             "schema_version": payload["schema_version"],
             "generated_at": payload["generated_at"],
-            "generator": safe_relative(Path(__file__), root),
+            "generator": safe_relative(Path(__file__), root, "skills/cells-official-docs-catalog/scripts/build_index.py"),
             "source_root": payload["source_root"],
             "source_revision": payload["source_revision"],
             "content_hash": payload["content_hash"],
+            "source_fingerprint": payload["source_fingerprint"],
         },
-        "database": safe_relative(Path(payload["database"]), root),
+        "database": safe_relative(
+            Path(payload["database"]), root, "skills/cells-official-docs-catalog/assets/cells_official_docs.db"
+        ),
         "document_count": payload["document_count"],
         "chunk_count": payload["chunk_count"],
         "legacy_document_count": payload["legacy_document_count"],
         "total_markdown_files": payload["total_markdown_files"],
         "skipped": payload["skipped"],
         "docs": payload["docs"],
+        "integrity": {
+            "algorithm": "sha256",
+            "database_sha256": sha256_file(Path(payload["database"])),
+            "source_fingerprint": payload["source_fingerprint"],
+        },
     }
 
     with NamedTemporaryFile(

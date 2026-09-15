@@ -18,3 +18,10 @@ __pycache__/
 .atl/
 .opencode/
 build/
+
+
+# Generated distribution and private local state
+portable/
+dist/
+.cells-agent/
+plugins/cells-agent-bundle-codex/.cache/

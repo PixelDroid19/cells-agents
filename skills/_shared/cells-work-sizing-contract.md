@@ -2,64 +2,59 @@
 
 ## Purpose
 
-Choose the smallest safe workflow for the user's request. This contract prevents overwork while preserving Cells correctness, source routing, scope control, and safety gates.
+Choose the smallest workflow that can complete the user's request with credible evidence. This contract controls planning ceremony, delegation, artifact persistence, and validation depth; it does not replace the Cells domain rules in `cells-rules-contract.md` or source routing in `cells-source-routing-contract.md`.
 
-Apply this contract before selecting phase skills, subagents, artifact persistence, or validation depth.
+## Precedence
 
-## Priority Order
+1. The user's explicit goal, scope, and authorization.
+2. Safety, project conventions, and verified command policy.
+3. The smallest mode that can prove the requested result.
 
-1. Follow the user's explicit instruction and requested scope.
-2. Keep safety, command policy, and Cells implementation rules intact.
-3. Choose the smallest work mode that can prove the result.
-4. Escalate only when evidence, risk, or scope requires it.
+`artifact_persistence` never controls permission to edit source. A direct user request authorizes directly scoped source changes even when `artifact_persistence: none`.
 
-## Work Modes
+## Modes
 
-| Mode | Use When | Do Not Do | Required Evidence |
+| Mode | Use when | Workflow artifacts | Validation |
 | --- | --- | --- | --- |
-| `fast-path` | Answering a question, reading a specific file, explaining code, making a one-line recommendation, or checking a narrow fact. | No subagents, no artifacts, no full CELLS phase flow, no broad repo scan. | Cite the inspected file, command, or source when a factual claim is made. |
-| `scoped-change` | A small localized edit, a direct user instruction, a known SCSS/style adjustment, a copy/doc tweak, or a targeted bug fix with clear files. | Do not require `cells-init`, proposal/spec/design/tasks, or full handoff unless the user requested governed artifacts. | Load only relevant skills, edit only the direct scope, and run the smallest validation that proves the change. |
-| `full-workflow` | Multi-file features, architecture decisions, new behavior contracts, significant UI flows, i18n/test/coverage work, release/PR closure, or user-requested end-to-end proof. | Do not skip required phase dependencies or evidence gates. | Use the canonical CELLS phases, artifacts, source decisions, and verification envelope. |
-| `blocked` | Scope is ambiguous, safe completion requires out-of-scope edits, credentials/environment are missing, a destructive action is requested without approval, or proof cannot be obtained. | Do not guess, silently expand scope, or claim completion. | Report the blocker, the missing decision/evidence, and the smallest next action. |
+| `fast-path` | A question, focused read, narrow explanation, or small recommendation. | None. | Cite the evidence that supports material claims. |
+| `scoped-change` | A localized edit or well-defined bug fix with a direct acceptance boundary. | None unless the user requests a governed record. | Run the smallest relevant check. |
+| `full-workflow` | Multi-file behavior, architecture, complex UI/i18n/test work, release closure, or end-to-end proof. | Plan and evidence are required; OpenSpec artifacts are optional unless the user asks for a governed chain. | Use phase-appropriate checks and browser evidence when visible behavior changed. |
+| `blocked` | Safe completion needs a missing decision, permission, environment, or out-of-scope change. | Do not create a partial record unless asked. | State the missing item and the smallest next action. |
 
-## Skill Loading Rules
+Do not upgrade a simple request to a full workflow merely because Cells skills are available.
 
-- Load only the skills needed for the selected mode.
-- For `fast-path`, a direct answer can use repository evidence without loading a full phase skill.
-- For `scoped-change`, load the specialist or phase skill that directly controls the touched area.
-- For `full-workflow`, use the ordered CELLS workflow phases and artifact rules.
-- Testing intents still use `cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`.
-- UI/component/i18n/command-policy work still follows `cells-rules-contract.md` and `cells-source-routing-contract.md`.
+## Artifact and Memory Choices
 
-## Delegation Rules
+Workflow artifacts and memory solve different problems:
 
-- Do not delegate `fast-path` work.
-- Do not delegate `scoped-change` work unless the user asks for parallel work or the task has independent non-blocking slices.
-- Use orchestrator/subagent handoff only for `full-workflow` or explicit delegation requests.
-- Executor agents must remain non-delegating.
+- `artifact_persistence: none` is the default. Keep planning and evidence in the current result.
+- `artifact_persistence: openspec` is for a user-requested or already governed change that needs repository artifacts.
+- LocalMemory is optional, external user data. It is not an artifact backend and is never required to inspect or edit source. See the [memory documentation](../../docs/memory.md).
+- Legacy `engram` and `hybrid` settings are migration context, not active modes. See `engram-convention.md`.
 
-## Artifact Rules
+Use `persistence-contract.md` only when the request actually needs workflow artifacts or memory behavior.
 
-- `fast-path`: no artifact writes.
-- `scoped-change`: write artifacts only when the user asks, an existing governed change is already active, or persistence mode is explicitly `engram`, `openspec`, or `hybrid`.
-- `full-workflow`: write/read canonical artifacts according to `cells-workflow-contract.md`.
-- `blocked`: do not create partial artifacts unless documenting the blocker is explicitly requested.
+## Workflow and Delegation
 
-## Validation Rules
+- `fast-path` work stays local.
+- An orchestrator may implement a scoped change directly.
+- For `full-workflow`, the orchestrator may delegate independent research, implementation, or verification when it improves evidence or speed. Delegation is optional, never a substitute for integration.
+- Use `cells-agent-handoff-contract.md` only when handing work to another agent.
+- A governed phase chain is optional. If selected, its planning order is `proposal` -> `spec` -> `design` -> `tasks`; implementation and verification follow the approved scope. A narrow request does not need that chain unless the user asks for it.
 
-- `fast-path`: no test run unless the answer depends on command output.
-- `scoped-change`: targeted validation only; do not run broad suites by default.
-- `full-workflow`: run the phase-appropriate verification gate and broader checks when required.
-- Browser validation is required only when visible UI behavior changed or the user asks for visual proof.
+## Domain and Command Rules
+
+For Cells-oriented work, apply the relevant parts of:
+
+- `cells-rules-contract.md` for BBVA reuse, scoped elements, i18n, public behavior, and command policy.
+- `cells-source-routing-contract.md` before making a component, documentation, or command claim.
+
+Load `cells-cli-usage`, `cells-coverage`, or `cells-test-creator` only when the request concerns command resolution, coverage, or test authoring respectively.
 
 ## Reporting
 
-Every non-trivial response should state the selected mode when it affects scope or verification.
-
-Use concise wording:
+State the selected mode when it changes scope or validation. Use the status meanings in `cells-governance-contract.md`:
 
 ```text
-Work sizing: scoped-change. Scope gate: only directly affected files were touched.
+Work sizing: scoped-change. Validation: the affected command resolved from the installed project scripts.
 ```
-
-Do not add a full workflow envelope for simple answers unless the user requested CELLS phase output.

@@ -1,5 +1,11 @@
 # Cells Agent Bundle — Skills Index
 
+## Working on this toolkit
+
+This repository packages agent guidance and a Python runtime; it is not a Cells application. Validate toolkit changes with `PYTHONPATH=runtime python3 -m unittest discover -s tests`, the relevant catalog/adapter validators, and `scripts/generate_adapters.py --check`. Do not run an invented Cells application test command here.
+
+The shared runtime is `runtime/cells-agent.py`. It resolves projects, proportional work, commands, catalogs, evidence and optional local memory. `adapters/hosts.json` is the native capability source; regenerate host projections instead of editing generated agent definitions independently. Build portable outputs after source writers finish. Workflow artifacts and memory are separate options; neither is a prerequisite for user-authorized source edits.
+
 When working on a BBVA Cells project, choose the smallest safe workflow first, then load only the relevant skill(s) before writing code or making architectural decisions.
 
 ## How to Use
@@ -74,19 +80,15 @@ Only when delegation to a subagent is actually selected (never for fast-path or 
 
 | Skill | Trigger | Path |
 |-------|---------|------|
-| `cells-component-researcher` | Researching component API, events, CSS hooks, or usage patterns | [`skills/cells-component-researcher/SKILL.md`](skills/cells-component-researcher/SKILL.md) |
+| `cells-components-catalog` | Finding existing BBVA Cells components, tags, APIs, or reuse candidates | [`skills/cells-components-catalog/SKILL.md`](skills/cells-components-catalog/SKILL.md) |
+| `cells-official-docs-catalog` | Finding official Cells framework, CLI, architecture, testing, or i18n guidance | [`skills/cells-official-docs-catalog/SKILL.md`](skills/cells-official-docs-catalog/SKILL.md) |
 | `cells-component-authoring` | Creating a new component (only if no BBVA component matches) | [`skills/cells-component-authoring/SKILL.md`](skills/cells-component-authoring/SKILL.md) |
-| `cells-composition-architect` | Composing features from existing components and building blocks | [`skills/cells-composition-architect/SKILL.md`](skills/cells-composition-architect/SKILL.md) |
-| `cells-feature-analyzer` | Extracting reusable patterns from real feature implementations | [`skills/cells-feature-analyzer/SKILL.md`](skills/cells-feature-analyzer/SKILL.md) |
 | `cells-app-architecture` | Designing feature structure, data managers, routing, bridge, pub/sub | [`skills/cells-app-architecture/SKILL.md`](skills/cells-app-architecture/SKILL.md) |
 | `cells-cli-usage` | Resolving correct Cells CLI command (`cells app:*`, `cells lit-component:*`) | [`skills/cells-cli-usage/SKILL.md`](skills/cells-cli-usage/SKILL.md) |
 | `cells-coverage` | Analyzing coverage reports, prioritizing test gaps, lcov triage | [`skills/cells-coverage/SKILL.md`](skills/cells-coverage/SKILL.md) |
 | `cells-test-creator` | Authoring tests with OpenWC + Sinon, public-behavior only | [`skills/cells-test-creator/SKILL.md`](skills/cells-test-creator/SKILL.md) |
 | `cells-i18n` | Managing `this.t(...)`, locale parity, IntlMsg setup | [`skills/cells-i18n/SKILL.md`](skills/cells-i18n/SKILL.md) |
 | `agent-browser` | Browser UI validation, screenshots, CDP automation | [`skills/agent-browser/SKILL.md`](skills/agent-browser/SKILL.md) |
-| `issue-creation` | Creating GitHub bug report or feature request | [`skills/issue-creation/SKILL.md`](skills/issue-creation/SKILL.md) |
-| `branch-pr` | Creating pull request or preparing branch for submission | [`skills/branch-pr/SKILL.md`](skills/branch-pr/SKILL.md) |
-| `skill-registry` | Knowledge gateway: BBVA component lookup, anti-patterns, routing | [`skills/skill-registry/SKILL.md`](skills/skill-registry/SKILL.md) |
 | `cells-cleanup` | Sweep component for code quality issues (JSDoc, formatting, conditions, attributes, `.map()`) without changing logic | [`skills/cells-cleanup/SKILL.md`](skills/cells-cleanup/SKILL.md) |
 
 ## Cleanup Rule (cells-cleanup)

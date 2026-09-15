@@ -1,7 +1,5 @@
-# Optional OpenCode Background Delegation
+# Native delegation
 
-This bundle ships a safe placeholder asset at `background-agents.ts` so setup and install scripts can surface optional plugin wiring without breaking standard `task` fallback.
+Version 3 retires the custom background task engine. This inert module returns no tools, hooks or injected prompts. It exists to replace the previously shipped filename during an explicit upgrade.
 
-- If your OpenCode environment supports background delegation, replace the placeholder with a real plugin that provides `delegate`, `delegation_read`, and `delegation_list`.
-- If not, keep the placeholder and rely on synchronous `task` fallback.
-- The orchestrator policy does not change: `/cells-*` commands stay canonical and Cells governance still applies.
+Use native OpenCode tasks with `opencode.multi.json` when useful. Executors deny `task`, `delegate`, `delegation_read` and `delegation_list`. The default and single configurations work directly. Existing external plugins are outside this bundle's control.

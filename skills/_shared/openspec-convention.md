@@ -1,135 +1,40 @@
-# OpenSpec File Convention (shared across all CELLS skills)
+# OpenSpec Artifact Convention
 
-This convention defines the filesystem layout used when the active mode writes OpenSpec artifacts. It is secondary to Engram unless the active mode is strictly `openspec`.
+OpenSpec is an optional repository artifact layout for a user-requested governed change. It is not required for fast-path answers or directly authorized scoped source edits.
 
-## Directory Structure
+## Layout
 
-```
+```text
 openspec/
-├── config.yaml              <- Project-specific CELLS config
-├── specs/                   <- Source of truth (main specs)
-│   └── {domain}/
-│       └── spec.md
-└── changes/                 <- Active changes
-    ├── archive/             <- Completed changes (YYYY-MM-DD-{change-name}/)
-    └── {change-name}/       <- Active change folder
-        ├── state.yaml       <- DAG state (orchestrator, survives compaction)
-        ├── exploration.md   <- (optional) from cells-explore
-        ├── proposal.md      <- from cells-propose
-        ├── specs/           <- from cells-spec
-        │   └── {domain}/
-        │       └── spec.md  <- Delta spec
-        ├── design.md        <- from cells-design
-        ├── tasks.md         <- from cells-tasks (updated by cells-apply)
-        ├── verify-report.md <- from cells-verify
-        └── ui-evidence/     <- optional screenshots, snapshots, diffs, or browser logs
+  config.yaml
+  specs/{domain}/spec.md
+  changes/
+    {change}/
+      proposal.md
+      specs/{domain}/spec.md
+      design.md
+      tasks.md
+      verify-report.md
+      ui-evidence/
+    archive/YYYY-MM-DD-{change}/
 ```
 
-## Artifact File Paths
+`exploration.md` and `state.yaml` are optional when they make a governed change easier to continue. Do not create placeholder files.
 
-| Skill | Creates / Reads | Path |
-|-------|----------------|------|
-| orchestrator | Creates/Updates | `openspec/changes/{change-name}/state.yaml` (DAG state for compaction recovery) |
-| cells-init | Creates | `openspec/config.yaml`, `openspec/specs/`, `openspec/changes/`, `openspec/changes/archive/` |
-| cells-explore | Creates (optional) | `openspec/changes/{change-name}/exploration.md` |
-| cells-propose | Creates | `openspec/changes/{change-name}/proposal.md` |
-| cells-spec | Creates | `openspec/changes/{change-name}/specs/{domain}/spec.md` |
-| cells-design | Creates | `openspec/changes/{change-name}/design.md` |
-| cells-tasks | Creates | `openspec/changes/{change-name}/tasks.md` |
-| cells-apply | Updates | `openspec/changes/{change-name}/tasks.md` (marks `[x]`) |
-| cells-verify | Creates | `openspec/changes/{change-name}/verify-report.md` |
-| any UI-aware skill | Creates (optional) | `openspec/changes/{change-name}/ui-evidence/` |
-| cells-archive | Moves | `openspec/changes/{change-name}/` → `openspec/changes/archive/YYYY-MM-DD-{change-name}/` |
-| cells-archive | Updates | `openspec/specs/{domain}/spec.md` (merges deltas into main specs) |
+## Writes
 
-## Reading Artifacts
+- Create `openspec/` only after the user selects `artifact_persistence: openspec` or asks for a governed record.
+- Read an existing artifact before updating it.
+- Keep artifacts focused on the requested change; do not create a registry, broad project inventory, or unrelated records as a side effect.
+- Store browser evidence only when it is needed for the governed change and record the command, route, and result alongside it.
+- Archive or merge artifacts only when the user requests closeout or an existing governed workflow explicitly includes that action. Do not move files merely because implementation finished.
 
-Each skill reads its dependencies from the filesystem using the canonical OpenSpec paths:
+## Planning Dependencies
 
-```
-Proposal:  openspec/changes/{change-name}/proposal.md
-Specs:     openspec/changes/{change-name}/specs/  (all domain subdirectories)
-Design:    openspec/changes/{change-name}/design.md
-Tasks:     openspec/changes/{change-name}/tasks.md
-Verify:    openspec/changes/{change-name}/verify-report.md
-UI evidence: openspec/changes/{change-name}/ui-evidence/  (optional)
-Config:    openspec/config.yaml
-Main specs: openspec/specs/{domain}/spec.md
+Within a governed chain, use this order:
+
+```text
+proposal -> spec -> design -> tasks -> apply -> verify -> archive
 ```
 
-## Writing Rules
-
-- ALWAYS create the change directory (`openspec/changes/{change-name}/`) before writing artifacts
-- If a file already exists, READ it first and UPDATE it (don't overwrite blindly)
-- If the change directory already exists with artifacts, the change is being CONTINUED
-- Use the `openspec/config.yaml` `rules` section to apply project-specific constraints per phase
-- If browser evidence is produced for UI work, keep it under `ui-evidence/` instead of scattering screenshots across the repo
-- In `hybrid`, treat these files as a filesystem projection of the canonical Engram-backed workflow state
-
-## Config File Reference
-
-```yaml
-# openspec/config.yaml
-schema: spec-driven
-
-context: |
-  Tech stack: {detected}
-  Architecture: {detected}
-  Testing: {detected}
-  Style: {detected}
-
-rules:
-  proposal:
-    - Include rollback plan for risky changes
-  specs:
-    - Use Given/When/Then for scenarios
-    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY)
-  design:
-    - Include sequence diagrams for complex flows
-    - Document architecture decisions with rationale
-  tasks:
-    - Group by phase, use hierarchical numbering
-    - Keep tasks completable in one session
-  apply:
-    - Follow existing code patterns
-    tdd: false           # Set to true to enable RED-GREEN-REFACTOR
-    test_command: ""     # e.g., "npm test", "pytest"
-  verify:
-    test_command: ""     # Override for verification
-    build_command: ""    # Override for build check
-    coverage_threshold: 0  # Set > 0 to enable coverage check
-  archive:
-    - Warn before merging destructive deltas
-```
-
-## State File Reference
-
-When the orchestrator persists filesystem state, use this schema:
-
-```yaml
-# openspec/changes/{change-name}/state.yaml
-change: {change-name}
-phase: {last-phase}
-artifact_store: openspec
-artifacts:
-  proposal: true
-  spec: true
-  design: false
-  tasks: false
-  verify_report: false
-tasks_progress:
-  completed: []
-  pending: []
-layout:
-  profile: canonical
-last_updated: 2026-03-09T00:00:00Z
-```
-
-## Archive Structure
-
-When archiving, the change folder moves to:
-```
-openspec/changes/archive/YYYY-MM-DD-{change-name}/
-```
-
-Use today's date in ISO format. The archive is an AUDIT TRAIL — never delete or modify archived changes.
+Exploration may inform a proposal but is not a mandatory artifact when the user has already supplied enough context. Outside a governed chain, use only the material needed for the user's request.

@@ -9,6 +9,12 @@ Use this skill to find the right BBVA Cells components before proposing code, ap
 
 The bundled index and record set are packaged inside this skill so the team can search BBVA components without depending on external folders at runtime.
 
+## Runtime quick start
+
+From the bundle root, run `python3 runtime/cells-agent.py search components "button icon" --limit 3`. Results contain identity and API counts. Fetch a selected API with `--limit 1 --detail`, or use the exact `--package` dossier command below. Resolve the installed runtime relative to this skill (`../../runtime/cells-agent.py`).
+
+The index opens read-only and verifies record/database/manifest hashes. Searches never rebuild it. Punctuation-only input reports a validation error; an unavailable or stale index reports a repairable error. Use the builder's `--packages-root` option to ingest an explicit Spherica package snapshot, then regenerate the distributable ZIP.
+
 ## When To Use
 
 Use this skill when the task involves any of these:

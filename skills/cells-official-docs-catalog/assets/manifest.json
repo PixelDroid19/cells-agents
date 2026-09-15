@@ -1,17 +1,18 @@
 {
   "metadata": {
-    "schema_version": "2",
-    "generated_at": "2026-05-04T20:59:50Z",
+    "schema_version": "3",
+    "generated_at": "2026-09-15T05:51:03Z",
     "generator": "skills/cells-official-docs-catalog/scripts/build_index.py",
-    "source_root": "/home/monasterios/Documents/cells/cellsjs-guides-resources-master@2bfdc69d580/docs",
-    "source_revision": "cellsjs-guides-resources-master@2bfdc69d580",
-    "content_hash": "e3328f71b9fa33ca8487e483e6d6baf3b6958e2cef9ba4ab61eab1d0a8586bf0"
+    "source_root": "docs",
+    "source_revision": "cellsjs-guides-resources-master@a45a67146db",
+    "content_hash": "8ab1c088923945b59454e290835c28fbc7f902420a0590500a17b7c354d30b9c",
+    "source_fingerprint": "8ab1c088923945b59454e290835c28fbc7f902420a0590500a17b7c354d30b9c"
   },
   "database": "skills/cells-official-docs-catalog/assets/cells_official_docs.db",
-  "document_count": 115,
-  "chunk_count": 964,
+  "document_count": 118,
+  "chunk_count": 989,
   "legacy_document_count": 41,
-  "total_markdown_files": 115,
+  "total_markdown_files": 118,
   "skipped": {
     "asset": 0,
     "hidden": 0,
@@ -44,11 +45,11 @@
     },
     {
       "slug": "cells-applications-ci-cd",
-      "title": "CI-CD: Continuous Integration & Continuous Delivery",
+      "title": "CI-CD: Continuous Integration & Delivery",
       "area": "applications",
       "path": "cells-applications/ci-cd.md",
-      "chunk_count": 2,
-      "hash": "0f5045c1eb0e31bbc8d8e8342ac16cb0836979e7710f0d50e1f2cac003d7332f"
+      "chunk_count": 3,
+      "hash": "594991a8dada77f8e8c257dc303bbb9a89d35b7733bf0a09d429468c6d0708a6"
     },
     {
       "slug": "cells-applications-components-in-applications-cross-components",
@@ -56,7 +57,7 @@
       "area": "applications",
       "path": "cells-applications/components-in-applications/cross-components.md",
       "chunk_count": 2,
-      "hash": "054f33ff4106a16c1dac54ff3a51c364f3097454b308ed4c2b0116ed2beb2dc7"
+      "hash": "100b44587227951ae7df562bebeeb053ff7e3172cdeadc443370a0fcade7d5bd"
     },
     {
       "slug": "cells-applications-components-in-applications-data-components",
@@ -115,12 +116,20 @@
       "hash": "6b19fe14c3fb8e9cb36b22191d61042e2ad6fb02b9b245797284dd39ba72bbc7"
     },
     {
+      "slug": "cells-applications-overview-application-fundamentals",
+      "title": "Application fundamentals",
+      "area": "applications",
+      "path": "cells-applications/overview/application-fundamentals.md",
+      "chunk_count": 6,
+      "hash": "122a2630145f399b1de7af25d0cec21658fac5a3b3575a532908fd5f5099c8bc"
+    },
+    {
       "slug": "cells-applications-overview-application-structure",
-      "title": "Cells Application",
+      "title": "Application Structure",
       "area": "applications",
       "path": "cells-applications/overview/application-structure.md",
-      "chunk_count": 2,
-      "hash": "be3a57f896dde42a8abaf6eb6c518023d78c8791977a75682ea4ffcfda3eb6fb"
+      "chunk_count": 14,
+      "hash": "0985b1d33a26a71d202110b182fe6c2a573c1a15523113af5db36523ef2579ad"
     },
     {
       "slug": "cells-applications-overview-managing-dependencies",
@@ -272,7 +281,7 @@
       "area": "guides",
       "path": "guides/bridge4-cli5/migration-guide.md",
       "chunk_count": 15,
-      "hash": "afaec81941878de7b06f3f120928181b9ddd74c365d16941c39e9f208bbade8e"
+      "hash": "588d24b2b77ef031bdb83cbf407a095a20ced22eea6c53f24b2da145cd0ec914"
     },
     {
       "slug": "guides-bridge4-cli5-overview",
@@ -288,7 +297,7 @@
       "area": "guides",
       "path": "guides/bridge4-cli5/quickstart.md",
       "chunk_count": 8,
-      "hash": "ac577c70c8c525edd871e04141ed1145a9d76146bf9b3078ba1d93b4edfcc4e7"
+      "hash": "f66d2d5cb395edccefd1e762e9093cb18bff8541b92cfb14ebb7ad853cdc7c87"
     },
     {
       "slug": "guides-employee-applications",
@@ -395,6 +404,14 @@
       "hash": "91a7747ea1463df168c326e25767ff68c1dfc7c427dcbc1e1670dd15bd71b6de"
     },
     {
+      "slug": "introduction-cells-in-bbva",
+      "title": "Cells in BBVA",
+      "area": "introduction",
+      "path": "introduction/cells-in-bbva.md",
+      "chunk_count": 1,
+      "hash": "e27c66f04217e343dbee5076ca485e5e22da61b31c3110581e9940779e1567bc"
+    },
+    {
       "slug": "introduction-ecosystem",
       "title": "Ecosystem",
       "area": "introduction",
@@ -407,8 +424,8 @@
       "title": "Foundations",
       "area": "introduction",
       "path": "introduction/foundations.md",
-      "chunk_count": 7,
-      "hash": "9e44c1f540615c465f9b604bc8b924a99f04d6a1266e1616e2ec99304e2dffa8"
+      "chunk_count": 8,
+      "hash": "cebb79b92a17d46f048c5566b59d67bfb74f0595ed3fb0533068d4809ede6918"
     },
     {
       "slug": "introduction-getting-started",
@@ -443,12 +460,20 @@
       "hash": "b33ed78c00dbcf682a29cff952a5fbf4d73f58d6d123eae88fdbbbec6feda5d9"
     },
     {
-      "slug": "learn-web-components-resources",
-      "title": "Resources",
+      "slug": "learn-frontend-dev-basics",
+      "title": "Frontend Dev Basics",
       "area": "learn",
-      "path": "learn/web-components-resources.md",
+      "path": "learn/frontend-dev-basics.md",
       "chunk_count": 1,
-      "hash": "9c3f8c9ac58fdf35f4955137236ea30ef77721c74a172842b74fd314b328f689"
+      "hash": "75b19466174d33eb97419c742b1946ead34369b7a8688bf038d45ba22d36a9b7"
+    },
+    {
+      "slug": "learn-learning-resources",
+      "title": "Learning Resources",
+      "area": "learn",
+      "path": "learn/learning-resources.md",
+      "chunk_count": 4,
+      "hash": "360c09d6a7ffce8c2c877621d4af9b0e824e490d20e5631a9deadd886e9cf4e4"
     },
     {
       "slug": "older-versions-cli4-bridge3-advanced-features-akamai-bmp",
@@ -488,7 +513,7 @@
       "area": "legacy",
       "path": "older-versions/cli4-bridge3/advanced-features/lit-element-support.md",
       "chunk_count": 17,
-      "hash": "16a1bf0c0de3860396ea39e52c90a944d3fc7ef91b792360a04dcfacc3b2f772"
+      "hash": "54b632bc9d3d96a1b458c6b470eb46518277ea0f99cf52e2c61a775806ef07bf"
     },
     {
       "slug": "older-versions-cli4-bridge3-advanced-features-microfrontends",
@@ -938,5 +963,10 @@
       "chunk_count": 16,
       "hash": "b264ae1224e6dee91681d5120a92c8a92e475087d467c4d518e6e3c4d9851e69"
     }
-  ]
+  ],
+  "integrity": {
+    "algorithm": "sha256",
+    "database_sha256": "baf307410c67686a31be8f093e5dde386fffc5c6f2d55c4919e6b05239699062",
+    "source_fingerprint": "8ab1c088923945b59454e290835c28fbc7f902420a0590500a17b7c354d30b9c"
+  }
 }

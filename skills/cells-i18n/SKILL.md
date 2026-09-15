@@ -30,7 +30,7 @@ Use this skill when a task changes user-visible text, translation keys, locale f
 3. Resolve whether the touched surface is component/demo, feature, or app/runtime
 4. Ensure locale parity in the correct locale source for that surface
 5. Ensure demo/test/runtime `IntlMsg` setup is deterministic
-5. Return changed keys, files, and any fallback or race-condition risk
+6. Return changed keys, files, and any fallback or race-condition risk
 
 ## Rules
 

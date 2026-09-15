@@ -1,181 +1,34 @@
 ---
 name: cells-verify
-description: "Use when validating Cells implementation against specs, design, tasks, command policy, tests, coverage evidence, i18n, browser-visible behavior, or archive readiness."
+description: "Use when verifying a Cells change against requested specs, tests, coverage, i18n, source evidence, and browser-visible behavior."
 ---
 
 # Cells Verify
 
 ## Purpose
 
-Verify that the implementation is complete, correct, and proven by real execution evidence.
+Verify the actual change, not a generic checklist. Use the strongest relevant evidence that is available within the requested scope.
 
-Use [verification-playbook.md](references/verification-playbook.md) for the detailed report template, compliance checklist, and execution examples.
+Read [Cells rules](../_shared/cells-rules-contract.md) and [source routing](../_shared/cells-source-routing-contract.md) when their evidence classes apply to the change.
 
-## What You Receive
+## Evidence Requirements
 
-- change name
-- artifact store mode: `engram | openspec | hybrid | none`
+1. Re-read the changed files and compare them with the user request or active governed requirements.
+2. Resolve any test, build, lint, documentation, or locale command through `cells-cli-usage` and installed project scripts before execution.
+3. Run focused tests or checks that exercise the changed behavior. Add coverage analysis only when coverage is in scope.
+4. For user-visible changes, inspect the relevant browser state when code and tests cannot prove the result.
+5. Check that the change did not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the requested task unless the user explicitly expanded scope. Also check that it did not hide errors or weaken tests.
 
-## Execution and Persistence Contract
+For workflow-contract changes, validate links, referenced paths, YAML/Markdown structure, and the relevant semantic contract checks. Do not use a text-presence check as proof that behavior is correct.
 
-Read and follow:
+## Stop Conditions
 
-- `skills/_shared/persistence-contract.md`
-- `skills/_shared/cells-work-sizing-contract.md`
-- `skills/_shared/cells-workflow-contract.md`
-- `skills/_shared/cells-source-routing-contract.md`
-- `skills/_shared/cells-rules-contract.md`
-- `skills/_shared/cells-conventions.md`
-- `skills/_shared/cells-governance-contract.md`
-- `skills/_shared/cells-policy-matrix.yaml`
-- `skills/_shared/cells-official-reference.md`
+- `success`: required checks passed and evidence supports the requested result.
+- `partial`: a useful check ran, but a stated evidence gap remains (for example, no runnable browser environment when browser proof is useful but not essential).
+- `blocked`: a required command, environment, input, or permission is unavailable and prevents safe verification.
 
-Also use:
+Continue safe, in-scope debugging when new evidence suggests a next step. Do not stop solely because an arbitrary retry count was reached.
 
-- `skills/cells-coverage/` when coverage reports or test-artifact triage exist
-- `skills/cells-i18n/` when translated literals, locale files, or `BbvaCoreIntlMixin` are in scope
-- `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` for browser-visible changes
+## Output
 
-For Cells testing and test-execution decisions, load only the testing skill(s) the intent needs: `cells-cli-usage` for commands, `cells-coverage` only for coverage work, `cells-test-creator` only for authoring tests  never generic npm/web-test-runner fallbacks in Cells contexts.
-
-This phase requires `proposal`, `spec`, `design`, and `tasks`. Recover them and handle persistence mode (persisting `verify-report`, in engram, or writing `openspec/changes/{change-name}/verify-report.md` in openspec/hybrid) per `skills/_shared/artifact-recovery.md`.
-
-## Workflow
-
-### Step 1: Load Skill Registry
-
-Before any other work:
-
-1. `mem_search(query: "skill-registry", project: "{project}")`
-2. `mem_get_observation(id: {id})` when available
-3. fallback: read `.atl/skill-registry.md`
-4. if neither exists, proceed without it
-
-### Step 2: Load Canonical Dependencies
-
-When mode is `engram` or `hybrid`, retrieve proposal, spec, design, and tasks per `skills/_shared/artifact-recovery.md`.
-
-If any required canonical dependency is absent during `full-workflow`, return `status: blocked`.
-For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/tasks artifacts; verify against the user request, touched files, and targeted evidence.
-
-### Step 3: Check Completeness
-
-For `fast-path` or direct `scoped-change`, define completeness from the user request and the changed files, then skip artifact task counting if no task artifact exists.
-
-- count total tasks
-- count completed tasks
-- list incomplete tasks
-- flag core gaps as CRITICAL
-
-### Step 4: Check Correctness
-
-For each requirement and scenario:
-
-- locate structural implementation evidence
-- verify preconditions, actions, outcomes, and edge cases
-- mark missing or partial coverage explicitly
-
-Static analysis is not enough; runtime proof comes later.
-
-### Step 5: Check Coherence
-
-- compare implementation against design decisions
-- note deviations and whether they are justified
-- check touched files against the intended scope
-
-Verify the implementation did not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the requested task unless explicit scope expansion was requested.
-
-### Step 6: Check Testing and Runtime Evidence
-
-Static test check:
-
-- confirm test files exist for the changed area
-- verify coverage of happy path, edge cases, error states, and public behavior
-
-Runtime check:
-
-1. resolve the test command through `skills/cells-cli-usage/`
-2. review coverage/reporting constraints through `skills/cells-coverage/`
-3. validate test quality through `skills/cells-test-creator/`
-4. run the smallest confirmation scope that proves the change
-
-When the change touches i18n, verify contextually:
-
-- component/demo work: confirm `demo/locales/locales.json` or repo-equivalent demo locale evidence
-- app/runtime work: confirm app-level locale configuration and/or generated test locale evidence
-- tests that depend on translations: confirm `IntlMsg` setup, `localesHost`, and locale-load waiting when applicable
-
-When the change modifies workflow skills or shared contracts instead of runtime code, run deterministic contract checks:
-
-- `python scripts/validate_governance_behavior.py --scenario workflow-contract-parity`
-- `python scripts/validate_governance_behavior.py --scenario canonical-write-contract`
-- `python scripts/validate_governance_behavior.py --scenario canonical-lineage-only`
-- `python scripts/validate_governance_behavior.py --scenario source-decision-template`
-
-Coverage policy rule:
-
-- if coverage threshold is configured, run coverage and compare against the threshold
-- otherwise use `scripts/validate_governance_behavior.py --scenario coverage-policy-exemption`
-- record `Coverage policy exemption: N/A`
-- include `with deterministic evidence`
-- report coverage as `N/A (policy exemption)`
-
-When the change is browser-visible, use the browser validation checklist from [verification-playbook.md](references/verification-playbook.md).
-
-### Step 7: Build the Compliance Matrix
-
-For `fast-path` or direct `scoped-change`, build a compact evidence checklist instead of a full spec matrix when no spec artifact exists.
-
-For every spec scenario, map:
-
-- requirement
-- scenario
-- covering test
-- runtime result
-- status: `COMPLIANT | FAILING | UNTESTED | PARTIAL`
-
-### Step 8: Persist the Report
-
-Persist as `cells/{change-name}/verify-report` per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section.
-
-### Step 9: Return Summary
-
-Use the template from [verification-playbook.md](references/verification-playbook.md).
-
-The report must include:
-
-- artifact lineage
-- completeness
-- build and test execution
-- coverage outcome
-- browser validation outcome when relevant
-- spec compliance matrix
-- source decisions
-- issues found
-- verdict
-- fixed compliance checklist
-
-## Rules
-
-### Verification rules
-
-- Read actual source code, not summaries.
-- Execute tests; static analysis alone is not verification.
-- Specs first, design second.
-- When no governed artifact exists, user intent and touched-file evidence are the verification baseline.
-- Prefer targeted confirmation before broader execution.
-- Do not fix issues during verification; report them.
-
-### Cells-specific rules
-
-- report mismatches across source, docs, manifests, and tests
-- existing BBVA component reuse, `scopedElements`, event pattern, i18n parity, style alignment, and browser validation must be checked when relevant
-- locale path violations are verification issues when the implementation invents or uses an unsupported locale path for the touched surface
-- use Cells-native commands unless the user explicitly requests a non-Cells path
-
-### Reporting rules
-
-- be objective
-- separate CRITICAL, WARNING, and SUGGESTION findings
-- cite canonical artifact refs: `cells/{change-name}/proposal`, `spec`, `design`, `tasks`, `verify-report`
-- include explicit source decisions for each verification path
+Report changed scope, commands actually run, pass/fail results, browser evidence when applicable, limitations, and the final status. Persist `verify-report.md` only for an active OpenSpec workflow.

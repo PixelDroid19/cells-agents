@@ -2,140 +2,38 @@
 
 ## Purpose
 
-Define the canonical, reusable governance rules for Cells-oriented CELLS work.
+Keep Cells work evidence-based, within the user's scope, and aligned with the actual project. This contract applies alongside `cells-rules-contract.md` and `cells-source-routing-contract.md`; it does not override explicit user authorization with an internal workflow preference.
 
-This contract is the source of truth for:
-- catalog-first routing
-- deterministic fallback order
-- escalation and evidence-quality gates
-- execution-trace fields required in artifacts
+## Scope and Evidence
 
-## Contract Priority
+- Verify a path before reporting or editing it.
+- Do not claim a component API, event, command, locale location, or browser result without the relevant catalog, project, command, or runtime evidence.
+- Use the primary source and ordered fallback in `cells-source-routing-contract.md` for material Cells decisions.
+- Record a compact source decision for a governed artifact or an important implementation choice. A quick answer only needs the evidence it relies on.
+- Keep changes inside the user-approved files and behavior. Report unrelated findings instead of fixing them by default.
 
-Apply this contract after persistence rules and before phase-specific implementation choices.
+## Task Scope Isolation
 
-1. `skills/_shared/persistence-contract.md`
-2. `skills/_shared/cells-governance-contract.md`
-3. `skills/_shared/cells-policy-matrix.yaml`
-4. phase prompts and phase skills
+Keep edits within the assigned task and the user's explicit behavior request. Do not perform opportunistic refactors, adjacent cleanups, unrelated bug fixes, or cross-module rewrites unless the user explicitly expands the scope. If an unrelated defect affects safe completion, report the concrete dependency and its effect instead of silently widening the change.
 
-## Catalog-First Routing
+## Status Policy
 
-For every decision, resolve source intent first and query the primary source before fallback.
+| Status | Meaning |
+| --- | --- |
+| `success` | The requested scope is complete and the collected evidence supports the stated result. |
+| `partial` | Work progressed safely, but a stated acceptance condition or evidence item remains unresolved. |
+| `blocked` | Safe continuation requires an unavailable decision, permission, environment, or out-of-scope change. |
 
-**The canonical routing table lives in `skills/_shared/cells-source-routing-contract.md` (Core Intent Matrix).** Use it for all intent routing decisions.
+Do not use `success` for a claim supported only by memory, an unchecked plan, or a catalog hit that has not been applied to the project. Catalog commands may report `ok` for their own query result.
 
-Fallback rules:
-- Fallback is allowed only when primary source is unavailable or insufficient.
-- Fallback order MUST NOT skip intermediate sources.
-- Every fallback MUST include an explicit reason and impact note.
+## Cells-Specific Reliability
 
-## Escalation and Evidence Gates
+- For UI, component, form, navigation, feedback, or typography work, search the component catalog before creating a replacement.
+- For framework, CLI, testing, i18n, theming, or architecture guidance, search the official catalog before fallback.
+- Resolve an executable Cells command from the installed project scripts and command resolver before running it.
+- Use `cells-cli-usage`, `cells-coverage`, and `cells-test-creator` only when command resolution, coverage, or test authoring is actually in scope.
+- When user-visible behavior changes, use browser evidence if static or unit evidence cannot establish the result.
 
-When evidence minimums are not met, do not claim full completion.
+## Contribution Work
 
-Required evidence minimums:
-
-- at least one source decision trace per major requirement/task group
-- explicit primary-source attempt recorded
-- fallback reason recorded when fallback occurred
-- unresolved gaps mapped to `blocked` or `partial`
-- cross-layer parity checks recorded when workflow contracts or shared guidance change
-- non-SDD delegated specialist routing recorded when the work was not a CELLS phase
-- issue approval, PR, review, and merge checkpoints preserved in workflow-facing docs and prompts when contributor guidance changes
-
-Additional quality minimums (anti-hallucination):
-
-- do not claim a file/path exists without direct repository evidence (directory listing or file read)
-- do not claim a component API/event/prop exists without catalog or code evidence
-- do not claim command validity without Cells-native command evidence (`cells-cli-usage` or project command mapping)
-- when evidence is missing or ambiguous, downgrade to `partial` or `blocked` (never infer by memory)
-
-Status policy:
-
-- `ok`: evidence minimums met
-- `partial`: work progressed but at least one evidence minimum unmet
-- `blocked`: required evidence unavailable and progress cannot safely continue
-
-## File and Path Verification (Mandatory)
-
-Before reporting or editing a path, verify it exists in the active workspace.
-
-Minimum rule:
-
-- references to paths/files in outputs must be backed by observed repo evidence
-- if an expected path is missing, report it explicitly and provide remediation
-- never relocate files conceptually (for example locale paths) without checking project conventions first
-
-## Translation and i18n Reliability
-
-For i18n-related tasks:
-
-- route through official Cells docs and `cells-i18n` guidance before proposing changes
-- keep technical/public API naming in English unless the user explicitly requests otherwise
-- enforce locale-path policy (`demo/locales`) when in Cells context
-- if translation source-of-truth cannot be verified, return `partial` with the missing evidence list
-
-## Task Scope Isolation (Mandatory)
-
-Work must stay strictly inside the user-assigned task scope.
-
-Minimum rules:
-
-- analyze and modify only the files, modules, errors, and behaviors directly required to complete the assigned task
-- do not perform opportunistic refactors, adjacent cleanups, unrelated bug fixes, or cross-module rewrites unless the user explicitly expands scope
-- if another module must be touched for the task to work, limit the change to the direct dependency surface required by the assigned task
-- if you discover unrelated defects while working, report them in `risks`, `issues found`, or `next_recommended`, but do not fix them by default
-- if safe completion requires broader changes than originally assigned, pause and request explicit scope expansion instead of silently continuing
-
-Scope policy:
-
-- `ok`: all touched files are directly justified by the assigned task or its required dependency surface
-- `partial`: the requested task progressed, but scope justification for one or more touched areas is incomplete
-- `blocked`: safe completion would require out-of-scope edits that were not explicitly authorized
-
-## Execution Trace Fields (Mandatory)
-
-Every workflow phase artifact MUST include a compact `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
-
-## Contribution Lifecycle Enforcement
-
-Cells workflow guidance MUST preserve the contribution lifecycle below whenever shared prompts, README guidance, or installer-facing contributor messaging changes:
-
-1. Open or reference an issue
-2. Wait for explicit approval or equivalent approval state
-3. Open a PR linked to the approved issue
-4. Complete review before merge
-5. Merge only after review gates pass
-
-Do not translate this lifecycle into weaker generic wording such as "just open a PR".
-
-## Non-SDD Specialist Routing
-
-When work is outside a CELLS phase, route to the specialist skill that matches the request intent.
-
-- UI/component discovery -> component/catalog specialist first
-- Docs/process/CLI/testing/i18n/theming knowledge -> official docs specialist first
-- Coverage and test-quality work -> mandatory testing stack first
-
-This routing must remain explicit in shared prompts, README guidance, and host examples.
-
-## Deterministic Test Stack
-
-For Cells testing intents, the mandatory route is:
-
-`cells-cli-usage` -> `cells-coverage` -> `cells-test-creator`
-
-This stack MUST remain ordered, MUST NOT skip intermediate sources, and MUST be preserved across prompts, shared contracts, and validation scripts.
-
-Example:
-
-```yaml
-- intent: testing-command-resolution
-  primary_source: skills/cells-cli-usage
-  fallback_used: false
-  fallback_source: null
-  fallback_reason: null
-  evidence_quality: high
-  status: ok
-```
+When the user asks to create an issue, PR, review, or merge, follow the repository's configured contribution policy and the user-authorized action. Do not make an issue-first preference block an explicitly authorized local implementation task. Do not create or publish external records unless the user requested that action.

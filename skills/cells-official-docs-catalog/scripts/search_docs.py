@@ -55,20 +55,26 @@ from __future__ import annotations
 
 import argparse
 from dataclasses import dataclass
+import hashlib
 import json
 import re
 import sqlite3
 import sys
+import unicodedata
 from pathlib import Path
 from typing import Iterable
+from urllib.parse import quote
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 SKILL_DIR = SCRIPT_DIR.parent
 DEFAULT_DB = SKILL_DIR / "assets" / "cells_official_docs.db"
-SCHEMA_VERSION = "2"
+DEFAULT_MANIFEST = SKILL_DIR / "assets" / "manifest.json"
+SCHEMA_VERSION = "3"
+MAX_LIMIT = 12
+MAX_QUERY_LENGTH = 512
 
-TOKEN_RE = re.compile(r"[A-Za-z0-9_@:+.-]+")
+TOKEN_RE = re.compile(r"[^\W_]+(?:[-_][^\W_]+)*", re.UNICODE)
 
 # Query expansion is intentionally small and explicit. It covers Cells terms
 # that users and docs spell differently, without requiring embeddings.
@@ -119,41 +125,157 @@ class SearchCandidate:
     bm25: float
 
 
+class CatalogIntegrityError(RuntimeError):
+    """The bundle cannot safely answer a query until it is rebuilt."""
+
+
 def fail(message: str, code: int = 2) -> None:
     """Exit with a deterministic CLI error on stderr."""
     print(f"error: {message}", file=sys.stderr)
     raise SystemExit(code)
 
 
-def connect(db_path: Path) -> sqlite3.Connection:
-    """Open the SQLite index and verify it was built by the current schema."""
-    if not db_path.exists():
-        fail(f"index database not found: {db_path}")
-    conn = sqlite3.connect(db_path)
-    conn.row_factory = sqlite3.Row
+def sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as source:
+        for chunk in iter(lambda: source.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def load_manifest(path: Path) -> dict:
+    if not path.is_file():
+        raise CatalogIntegrityError(f"manifest is missing: {path.name}")
     try:
-        version_row = conn.execute(
-            "SELECT value FROM metadata WHERE key = 'schema_version'"
-        ).fetchone()
+        manifest = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise CatalogIntegrityError(f"manifest is not valid JSON: {exc}") from exc
+    if not isinstance(manifest, dict):
+        raise CatalogIntegrityError("manifest must be a JSON object")
+    return manifest
+
+
+def immutable_connect(db_path: Path) -> sqlite3.Connection:
+    """Open the packaged index without permitting journals or writes."""
+    if not db_path.is_file():
+        raise CatalogIntegrityError(f"index database is missing: {db_path.name}")
+    uri = f"file:{quote(db_path.resolve().as_posix())}?mode=ro&immutable=1"
+    try:
+        conn = sqlite3.connect(uri, uri=True)
+        conn.row_factory = sqlite3.Row
+        conn.execute("PRAGMA query_only = ON")
+        return conn
     except sqlite3.DatabaseError as exc:
+        raise CatalogIntegrityError(f"could not open index database read-only: {exc}") from exc
+
+
+def metadata_from_db(conn: sqlite3.Connection) -> dict:
+    try:
+        rows = conn.execute("SELECT key, value FROM metadata").fetchall()
+    except sqlite3.DatabaseError as exc:
+        raise CatalogIntegrityError(f"database metadata is unavailable: {exc}") from exc
+    metadata: dict[str, object] = {}
+    for row in rows:
+        try:
+            metadata[row["key"]] = json.loads(row["value"])
+        except (KeyError, json.JSONDecodeError) as exc:
+            raise CatalogIntegrityError("database metadata contains invalid JSON") from exc
+    return metadata
+
+
+def document_fingerprint(documents: Iterable[tuple[str, str]]) -> str:
+    digest = hashlib.sha256()
+    for path, content_hash in sorted(documents):
+        digest.update(path.encode("utf-8"))
+        digest.update(content_hash.encode("ascii"))
+    return digest.hexdigest()
+
+
+def validate_bundle(db_path: Path, manifest_path: Path) -> sqlite3.Connection:
+    """Verify the package bytes and metadata agree before querying the index."""
+    manifest = load_manifest(manifest_path)
+    metadata = manifest.get("metadata")
+    integrity = manifest.get("integrity")
+    docs = manifest.get("docs")
+    if not isinstance(metadata, dict) or not isinstance(integrity, dict) or not isinstance(docs, list):
+        raise CatalogIntegrityError("manifest is missing metadata, integrity, or docs")
+    if metadata.get("schema_version") != SCHEMA_VERSION:
+        raise CatalogIntegrityError(f"manifest schema is unsupported; expected {SCHEMA_VERSION}")
+    if metadata.get("source_root") != "docs" or not metadata.get("source_revision"):
+        raise CatalogIntegrityError("manifest has incomplete portable source provenance")
+    if manifest.get("database") != "skills/cells-official-docs-catalog/assets/cells_official_docs.db":
+        raise CatalogIntegrityError("manifest has a non-portable database path")
+    if integrity.get("algorithm") != "sha256":
+        raise CatalogIntegrityError("manifest uses an unsupported integrity algorithm")
+    expected_db_hash = integrity.get("database_sha256")
+    if not isinstance(expected_db_hash, str) or not re.fullmatch(r"[0-9a-f]{64}", expected_db_hash):
+        raise CatalogIntegrityError("manifest is missing integrity.database_sha256")
+    if not db_path.is_file() or sha256_file(db_path) != expected_db_hash:
+        raise CatalogIntegrityError("database hash does not match the manifest")
+
+    manifest_documents: list[tuple[str, str]] = []
+    for item in docs:
+        if not isinstance(item, dict) or not isinstance(item.get("path"), str) or not isinstance(item.get("hash"), str):
+            raise CatalogIntegrityError("manifest document fingerprint is malformed")
+        manifest_documents.append((item["path"], item["hash"]))
+    source_fingerprint = document_fingerprint(manifest_documents)
+    if metadata.get("content_hash") != source_fingerprint or metadata.get("source_fingerprint") != source_fingerprint:
+        raise CatalogIntegrityError("manifest document fingerprint does not match its document list")
+    if integrity.get("source_fingerprint") != source_fingerprint:
+        raise CatalogIntegrityError("manifest integrity source fingerprint does not match its document list")
+
+    conn = immutable_connect(db_path)
+    try:
+        db_metadata = metadata_from_db(conn)
+        expected_metadata = {
+            "schema_version": metadata.get("schema_version"),
+            "source_root": metadata.get("source_root"),
+            "source_revision": metadata.get("source_revision"),
+            "content_hash": metadata.get("content_hash"),
+            "source_fingerprint": metadata.get("source_fingerprint"),
+            "document_count": manifest.get("document_count"),
+            "chunk_count": manifest.get("chunk_count"),
+            "legacy_document_count": manifest.get("legacy_document_count"),
+        }
+        for key, expected in expected_metadata.items():
+            if db_metadata.get(key) != expected:
+                raise CatalogIntegrityError(f"database metadata.{key} does not match the manifest")
+        database_documents = [
+            (row["path"], row["content_hash"])
+            for row in conn.execute("SELECT path, content_hash FROM documents ORDER BY path")
+        ]
+        if database_documents != sorted(manifest_documents):
+            raise CatalogIntegrityError("database document hashes do not match the manifest")
+        if document_fingerprint(database_documents) != source_fingerprint:
+            raise CatalogIntegrityError("database document fingerprint does not match the manifest")
+        source_paths = conn.execute("SELECT source_path FROM documents UNION SELECT source_path FROM chunks").fetchall()
+        if any(Path(row[0]).is_absolute() or not str(row[0]).startswith("docs/") for row in source_paths):
+            raise CatalogIntegrityError("database contains non-portable source paths")
+        document_count = conn.execute("SELECT count(*) FROM documents").fetchone()[0]
+        chunk_count = conn.execute("SELECT count(*) FROM chunks").fetchone()[0]
+        fts_count = conn.execute("SELECT count(*) FROM chunks_fts").fetchone()[0]
+        if document_count != manifest.get("document_count") or chunk_count != manifest.get("chunk_count") or fts_count != chunk_count:
+            raise CatalogIntegrityError("database row counts do not match the manifest")
+    except Exception:
         conn.close()
-        fail(f"invalid Cells docs index: {exc}")
-    version = json.loads(version_row["value"]) if version_row else None
-    if version != SCHEMA_VERSION:
-        conn.close()
-        fail(
-            f"unsupported index schema; expected {SCHEMA_VERSION}. "
-            "Rebuild with scripts/build_index.py"
-        )
+        raise
     return conn
+
+
+def connect(db_path: Path, manifest_path: Path = DEFAULT_MANIFEST) -> sqlite3.Connection:
+    """Compatibility wrapper used by the CLI and callers importing this script."""
+    return validate_bundle(db_path, manifest_path)
 
 
 def tokens(text: str) -> list[str]:
     """Tokenize user text for FTS and lexical reranking."""
+    normalized = unicodedata.normalize("NFC", text or "")
+    if len(normalized) > MAX_QUERY_LENGTH:
+        fail(f"query must be at most {MAX_QUERY_LENGTH} characters")
     found: list[str] = []
-    for match in TOKEN_RE.finditer(text):
-        token = match.group(0).strip("._-/").lower()
-        if len(token) >= 2:
+    for match in TOKEN_RE.finditer(normalized):
+        token = match.group(0).strip("-_").casefold()
+        if token:
             found.append(token)
     return found
 
@@ -189,8 +311,7 @@ def expanded_terms(query: str) -> list[str]:
 
 def quote_fts(term: str) -> str:
     """Escape one term/phrase for SQLite FTS5 MATCH."""
-    cleaned = re.sub(r'"', " ", term)
-    cleaned = re.sub(r"[^A-Za-z0-9_@:+.-]+", " ", cleaned).strip()
+    cleaned = unicodedata.normalize("NFC", term).replace('"', " ").strip()
     return f'"{cleaned}"' if cleaned else ""
 
 
@@ -205,8 +326,14 @@ def fts_or_query(terms: list[str]) -> str:
 
 
 def like_pattern(text: str) -> str:
-    """Create a case-insensitive LIKE pattern for exact path/title lookup."""
-    return f"%{text.lower()}%"
+    """Create a literal, case-insensitive LIKE pattern for exact lookup."""
+    escaped = text.casefold().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return f"%{escaped}%"
+
+
+def like_prefix(text: str) -> str:
+    escaped = text.casefold().replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_")
+    return f"{escaped}%"
 
 
 def filters_sql(args: argparse.Namespace, alias: str = "c") -> tuple[str, list[str]]:
@@ -217,8 +344,8 @@ def filters_sql(args: argparse.Namespace, alias: str = "c") -> tuple[str, list[s
         clauses.append(f"{alias}.area = ?")
         values.append(args.area)
     if args.path_prefix:
-        clauses.append(f"{alias}.path LIKE ?")
-        values.append(f"{args.path_prefix}%")
+        clauses.append(f"{alias}.path LIKE ? ESCAPE '\\'")
+        values.append(like_prefix(args.path_prefix))
     if args.kind:
         clauses.append(f"{alias}.kind = ?")
         values.append(args.kind)
@@ -266,9 +393,9 @@ def run_exact_phase(
         SELECT c.*, 0.0 AS bm25_score, '' AS match_snippet
         FROM chunks c
         WHERE (
-            lower(c.title) LIKE ?
-            OR lower(c.heading_path) LIKE ?
-            OR lower(c.path) LIKE ?
+            lower(c.title) LIKE ? ESCAPE '\\'
+            OR lower(c.heading_path) LIKE ? ESCAPE '\\'
+            OR lower(c.path) LIKE ? ESCAPE '\\'
         ){filter_sql}
         LIMIT ?
     """
@@ -439,12 +566,18 @@ def search(conn: sqlite3.Connection, args: argparse.Namespace) -> dict:
     candidate_limit = max(args.limit * 8, 40)
     candidates: dict[int, SearchCandidate] = {}
 
-    phases = [
+    strict_phases = [
         *run_exact_phase(conn, args, query, candidate_limit),
-        *run_fts_phase(conn, args, "phrase", quote_fts(" ".join(tokens(query))), candidate_limit),
         *run_fts_phase(conn, args, "expanded-and", fts_and_query(terms_for_query[:8]), candidate_limit),
-        *run_fts_phase(conn, args, "expanded-or", fts_or_query(terms_for_query), candidate_limit),
+        *run_fts_phase(conn, args, "phrase", quote_fts(" ".join(tokens(query))), candidate_limit),
     ]
+    # OR is intentionally a fallback. Returning an OR union while a strict
+    # phrase/AND answer exists made generic token matches drown out the query.
+    phases = strict_phases
+    search_strategy = "strict"
+    if not strict_phases:
+        phases = [*run_fts_phase(conn, args, "expanded-or", fts_or_query(terms_for_query), candidate_limit)]
+        search_strategy = "or_fallback"
 
     for candidate in phases:
         existing = candidates.get(candidate.row["id"])
@@ -466,6 +599,7 @@ def search(conn: sqlite3.Connection, args: argparse.Namespace) -> dict:
         "status": "ok",
         "query": query,
         "expanded_terms": terms_for_query,
+        "search_strategy": search_strategy,
         "count": len(ranked),
         "results": [
             result_from_candidate(
@@ -685,23 +819,36 @@ Exit codes:
     selector.add_argument("--list-areas", action="store_true", help="List indexed areas")
     selector.add_argument("--stats", action="store_true", help="Show index statistics")
     parser.add_argument("--db", type=Path, default=DEFAULT_DB, help="SQLite index path")
+    parser.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST, help="Bundled manifest path")
     parser.add_argument("--format", choices=("markdown", "json"), default="markdown")
+    parser.add_argument("--json", action="store_true", help="Legacy alias for --format json")
     parser.add_argument("--area", help="Filter search results by indexed area")
     parser.add_argument("--path-prefix", help="Filter search results by relative path prefix")
     parser.add_argument("--kind", choices=("intro", "section", "document"), help="Filter chunk kind")
     parser.add_argument("--limit", type=int, default=8, help="Maximum search results")
-    parser.add_argument("--content", action="store_true", help="Include chunk content")
+    parser.add_argument("--content", "--detail", dest="content", action="store_true", help="Include full chunk content")
     parser.add_argument("--no-snippets", action="store_true", help="Do not include snippets")
     parser.add_argument("--explain", action="store_true", help="Include lexical score breakdown")
-    return parser.parse_args()
+    args = parser.parse_args()
+    if args.json:
+        args.format = "json"
+    if not 1 <= args.limit <= MAX_LIMIT:
+        parser.error(f"--limit must be between 1 and {MAX_LIMIT}")
+    return args
 
 
 def main() -> int:
     """CLI entry point."""
     args = parse_args()
-    if args.limit < 1:
-        fail("--limit must be greater than zero")
-    conn = connect(args.db.resolve())
+    if args.query and not tokens(args.query):
+        fail("query must include at least one Unicode letter or number")
+    try:
+        conn = connect(args.db.resolve(), args.manifest.resolve())
+    except (CatalogIntegrityError, OSError, sqlite3.DatabaseError) as exc:
+        fail(
+            "official docs catalog is stale or corrupt: "
+            f"{exc}. Rebuild explicitly with scripts/build_index.py --docs-root <docs-dir>."
+        )
     try:
         if args.query:
             payload = search(conn, args)

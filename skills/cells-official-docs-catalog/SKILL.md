@@ -7,7 +7,13 @@ description: "Use when looking up official Cells guidance for architecture, CLI,
 
 ## Purpose
 
-Use this skill as the local official Cells documentation catalog. It replaces live RAG/MCP lookup with a bundled SQLite FTS5 index built from Markdown docs, including historical Cells documentation.
+Use this skill as the local official Cells documentation catalog. Its bundled SQLite FTS5 index contains Markdown source excerpts, including historical Cells documentation. The local CLI and optional MCP adapter use the same index; no remote service is required.
+
+## Runtime quick start
+
+From the bundle root, run `python3 runtime/cells-agent.py search docs "component test" --limit 3`. Results are previews; request `--detail` only when full source content is needed. Resolve installed paths from this skill location (`../../runtime/cells-agent.py`).
+
+Queries never rebuild or write the index. Invalid or punctuation-only queries report an input-validation error instead of arbitrary wildcard matches. Missing, stale or corrupt packaged data reports an error; rebuild explicitly from a known source snapshot. Manifest hashes bind the SQLite file, provenance and document fingerprint, while package validation checks ZIP bytes against the source tree.
 
 ## Bundled Resources
 

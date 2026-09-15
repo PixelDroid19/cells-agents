@@ -8,7 +8,7 @@
       "name": "cells-agent-bundle-codex",
       "source": {
         "source": "local",
-        "path": "./.codex/plugins/cells-agent-bundle-codex"
+        "path": "./plugins/cells-agent-bundle-codex"
       },
       "policy": {
         "installation": "AVAILABLE",

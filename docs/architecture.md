@@ -1,195 +1,104 @@
-# Architecture
+# Cells Agent Bundle Architecture
 
-Deep dive into how Cells Agent Bundle is structured. For quick start, see the [main README](../README.md).
+Cells Agent Bundle combines a small local runtime with offline Cells knowledge and focused workflow guidance. It helps an agent make evidence-based Cells decisions without requiring a cloud service, an Engram integration, or a mandatory multi-agent workflow.
 
----
+## Four Layers
 
-## Where Cells Agent Bundle Fits
-
-Cells Agent Bundle extends the Agent Teams Lite orchestration pattern with BBVA Cells-specific specialist skills, indexed documentation catalogs, and Cells-native command policies.
-
----
-
-## System Architecture
-
-```
-┌──────────────────────────────────────────────────────────┐
-│  ORCHESTRATOR (coordinator — never does real work)         │
-│                                                           │
-│  Responsibilities:                                        │
-│  • Delegate ALL tasks to sub-agents (not just SDD)      │
-│  • Resolve persistence mode (engram > openspec > hybrid > none) │
-│  • Route intent to the correct specialist skill          │
-│  • Ask for approval between phases                        │
-│  • Track state: which artifacts exist, what's next        │
-│  • Enforce Cells-native command policy                    │
-│                                                           │
-│  Context usage: MINIMAL (only state + summaries)          │
-└──────────────┬───────────────────────────────────────────┘
-               │
-               │ delegate / task (host-specific)
-               │
-    ┌──────────┴──────────────────────────────────────────┐
-    │                                                      │
-    ▼          ▼          ▼         ▼         ▼           ▼
-┌────────┐┌────────┐┌────────┐┌────────┐┌────────┐┌────────┐
-│EXPLORE ││PROPOSE ││  SPEC  ││ DESIGN ││ TASKS  ││ APPLY  │ ...
-│        ││        ││        ││        ││        ││        │
-│ Fresh  ││ Fresh  ││ Fresh  ││ Fresh  ││ Fresh  ││ Fresh  │
-│context ││context ││context ││context ││context ││context │
-└───┬────┘└───┬────┘└───┬────┘└───┬────┘└───┬────┘└───┬────┘
-    │         │         │         │         │         │
-    └─────────┴─────────┴────┬────┴─────────┴─────────┘
-                             │
-              (receive pre-resolved skill paths
-               from the orchestrator's launch prompt)
-                             │
-                 ┌───────────▼───────────┐      ┌────────────────────┐
-                 │    SUB-AGENT USES     │      │   SKILL REGISTRY   │
-                 │   skills as directed  │      │                    │
-                 │ • cells-cli-usage   │      │ • cells skills    │
-                 │ • cells-components-   │      │   + paths         │
-                 │   catalog            │      │ • project conven- │
-                 │ • cells-official-    │      │   tions           │
-                 │   docs-catalog       │      └────────────────────┘
-                 └───────────────────────┘
+```text
+Host adapters
+    Native agent roles, permissions, and optional MCP/command entry points
+        ↓
+Runtime
+    runtime/cells-agent.py: project detection, command resolution,
+    policy, evidence, catalog search, and optional memory commands
+        ↓
+Skills and catalogs
+    Cells rules, workflow guidance, SQLite/FTS5 component and official-doc catalogs
+        ↓
+Workspace and optional persistence
+    Project source and scripts; optional OpenSpec artifacts; separate LocalMemory data
 ```
 
----
+### Host adapters
 
-## Capability Comparison
+Host configuration is a thin adapter over native agent capabilities. It can route a task to a specialist or expose the runtime, but it does not create a separate background-delegation engine or change host permissions. Delegation is useful for independent full-workflow work; an orchestrator can perform a scoped change directly and integrates any delegated results.
 
-| Capability | Basic Subagents | Agent Teams Lite | Cells Agent Bundle |
-|---|:---:|:---:|:---:|
-| Delegate-only lead | — | ✅ | ✅ |
-| DAG-based phase orchestration | — | ✅ | ✅ |
-| Parallel phases (spec ∥ design) | — | ✅ | ✅ |
-| Structured result envelope | — | ✅ | ✅ |
-| Pluggable artifact store | — | ✅ | ✅ |
-| **Cells specialist skills** | — | — | ✅ |
-| **Indexed Cells documentation (SQLite FTS5)** | — | — | ✅ |
-| **Cells-native command policy** | — | — | ✅ |
-| **Catalog-first evidence routing** | — | — | ✅ |
-| **Mandatory testing stack** | — | — | ✅ |
-| **Browser automation integration** | — | — | ✅ |
+### Runtime
 
----
+`runtime/cells-agent.py` is a Python standard-library command-line entry point. It keeps executable decisions close to the workspace:
 
-## The Dependency Graph
+- `doctor` checks the local bundle/runtime environment.
+- `project` detects actual BBVA Cells markers and project conventions.
+- `resolve` maps a requested intent to a verified installed project script; skills map that result to a documented Cells command family when useful.
+- `policy` and `check` evaluate commands and local prerequisites without treating arbitrary prose as an executable command.
+- `evidence` records command outcomes and source fingerprints separately from memory.
+- `search` queries the bundled catalogs with bounded results.
+- `memory` exposes explicit `search`, `get`, `save`, `context`, `export`, and `import-engram` operations when the independent Cells Memory executable is installed.
+- `mcp` is an optional stdio entry point for hosts that support it.
 
+The runtime does not claim that a command, component API, or UI works merely because a process stayed alive. Verification uses the observed command exit status and source fingerprints; user-visible claims need the appropriate runtime or browser evidence.
+
+### Skills and catalogs
+
+Skills provide guidance on demand. The shared contracts choose work size, preserve BBVA UI/i18n/public-behavior rules, route evidence, and define status meanings. They do not require a proposal, registry write, memory lookup, or every specialist skill before a direct edit.
+
+Catalog search is primary for bundled Cells knowledge:
+
+| Decision | Primary source | Local confirmation/fallback |
+| --- | --- | --- |
+| Component selection and package API | Component catalog | CEM, installed package source, project code/tests |
+| Framework, CLI, testing, i18n, architecture | Official docs catalog | Project code/CEM/tests, then component detail as needed |
+| Executable command | Installed project scripts through resolver | Official documented equivalent and an explicit gap if none resolves |
+
+The documented component command family is `cells component:*`. An installed legacy `cells lit-component:*` script is still a valid local compatibility route when the resolver verifies it. This distinction is grounded in the bundled official catalog guidance and the local legacy command reference at `skills/cells-cli-usage/references/commands.md`.
+
+### Workspace and optional persistence
+
+The user's request authorizes directly scoped source edits. Workflow persistence does not change that authority:
+
+- `artifact_persistence: none` keeps plans and evidence in the current result.
+- `artifact_persistence: openspec` stores user-requested governed artifacts under `openspec/`.
+- Cells Memory is an independently installed application with an optional local SQLite store with explicit project scope. It is separate from workflow artifacts and verification evidence.
+
+No data is captured to LocalMemory automatically. Imported legacy memories are reference material, not proof. `engram` and `hybrid` are deprecated migration settings; `cells-agent memory import-engram` is explicit and opt-in. See [memory.md](memory.md).
+
+## Workflow Selection
+
+```mermaid
+flowchart TD
+  request[User request] --> sizing{Work size}
+  sizing -->|fast-path| answer[Targeted evidence and answer]
+  sizing -->|scoped-change| edit[Direct scoped edit and targeted validation]
+  sizing -->|full-workflow| plan[Plan and proportional evidence]
+  plan --> governed{User requests governed artifacts?}
+  governed -->|no| implement[Implement and verify directly]
+  governed -->|yes| chain[proposal -> spec -> design -> tasks -> apply -> verify]
+  sizing -->|blocked| blocker[State missing decision or evidence]
 ```
-                    proposal
-                   (root node)
-                       │
-         ┌─────────────┴─────────────┐
-         │                           │
-         ▼                           ▼
-      specs                       design
-   (requirements                (technical
-    + scenarios)                 approach)
-         │                           │
-         └─────────────┬─────────────┘
-                       │
-                       ▼
-                    tasks
-                (implementation
-                  checklist)
-                       │
-                       ▼
-                    apply
-                (write code)
-                       │
-                       ▼
-                    verify
-               (quality gate)
-                       │
-                       ▼
-                   archive
-              (merge specs,
-               close change)
-```
 
----
+The governed chain is optional. When selected, `spec` precedes `design` and `design` precedes `tasks`. A missing governed artifact blocks that selected phase, not a separately authorized narrow source change.
 
-## Catalog-First Evidence Routing
+## Evidence and Status
 
-Every decision follows a deterministic source priority:
+Workflow results use three statuses:
 
-| Intent class | Primary source | Deterministic fallback order |
-|---|---|---|
-| UI/component discovery | `cells-components-catalog` SQL lookup | `cells-official-docs-catalog` → project code/tests |
-| Cells process/docs/CLI/testing/theming/i18n | `cells-official-docs-catalog` | `cells-components-catalog` → project code/tests |
-| Test execution and coverage | `cells-cli-usage` → `cells-coverage` → `cells-test-creator` | escalate (no generic runner by default) |
-| Browser-visible validation | `browser-testing-convention` + `agent-browser` | source-only evidence with explicit limitation note |
+| Status | Meaning |
+| --- | --- |
+| `success` | Requested scope is complete and evidence supports the stated result. |
+| `partial` | Useful work completed with a concrete evidence or acceptance gap. |
+| `blocked` | Safe progress needs an unavailable decision, permission, environment, or out-of-scope change. |
 
----
+Catalog tools may return `ok` for a successful query. That is a catalog result, not a workflow completion claim.
 
-## Project Structure
+For UI work, follow the Cells rules: reuse BBVA components first, register custom elements in `scopedElements`, preserve the project's `WidgetMixin`/data-manager architecture, route component-owned visible text through `this.t(...)`, and use the project’s actual locale source. Browser snapshots or screenshots supplement source and test evidence whenever they are needed to prove rendered behavior.
 
-```
-cells teams/
-├── README.md                          ← Project overview and quick start
-├── AGENTS.md                         ← Skills index with triggers (THIS FILE IS THE INDEX)
-├── LICENSE
-├── skills/                           ← Cells workflow and specialist skills + shared contracts
-│   ├── _shared/                      ← Shared conventions (referenced by all skills)
-│   │   ├── cells-governance-contract.md
-│   │   ├── cells-workflow-contract.md
-│   │   ├── cells-policy-matrix.yaml
-│   │   ├── cells-source-routing-contract.md
-│   │   ├── persistence-contract.md
-│   │   ├── engram-convention.md
-│   │   ├── openspec-convention.md
-│   │   ├── cells-conventions.md
-│   │   ├── cells-official-reference.md
-│   │   ├── browser-testing-convention.md
-│   ├── cells-init/SKILL.md
-│   ├── cells-explore/SKILL.md
-│   ├── cells-propose/SKILL.md
-│   ├── cells-spec/SKILL.md
-│   ├── cells-design/SKILL.md
-│   ├── cells-tasks/SKILL.md
-│   ├── cells-apply/SKILL.md
-│   ├── cells-verify/SKILL.md
-│   ├── cells-archive/SKILL.md
-│   ├── cells-component-researcher/SKILL.md
-│   ├── cells-component-authoring/SKILL.md
-│   ├── cells-composition-architect/SKILL.md
-│   ├── cells-feature-analyzer/SKILL.md
-│   ├── cells-app-architecture/SKILL.md
-│   ├── cells-cli-usage/SKILL.md
-│   ├── cells-coverage/SKILL.md
-│   ├── cells-test-creator/SKILL.md
-│   ├── cells-i18n/SKILL.md
-│   ├── cells-components-catalog/         ← SQLite FTS5: bbva_cells_components.db
-│   ├── cells-official-docs-catalog/     ← SQLite FTS5: cells_official_docs.db
-│   ├── cells-visual-intent-demo/SKILL.md
-│   ├── agent-browser/SKILL.md
-│   └── skill-registry/SKILL.md
-├── docs/                              ← Deep-dive documentation
-│   ├── architecture.md                 ← This file
-│   ├── changelog.md                   ← Version history
-│   └── (future: concepts.md, sub-agents.md, persistence.md)
-├── examples/                           ← Config examples per tool
-│   ├── opencode/
-│   │   ├── opencode.json              ← OpenCode config (single mode)
-│   │   ├── opencode.single.json
-│   │   ├── opencode.multi.json
-│   │   ├── commands/cells-*.md        ← Slash commands
-│   │   └── plugins/
-│   └── vscode/                        ← VS Code Copilot layered assets
-│       ├── copilot-instructions.md
-│       ├── instructions/
-│       ├── prompts/                   ← `*.prompt.md`
-│       ├── agents/                    ← `*.agent.md`
-│       ├── hooks/
-│       ├── scripts/
-│       ├── plugin/
-│       ├── docs/
-│       └── skills/
-└── scripts/
-    ├── setup.sh                       ← Full setup: detect + install + configure
-    ├── setup.ps1
-    ├── install.sh                     ← Skills-only installer
-    └── install.ps1
-```
+## Boundaries
+
+- The bundle does not install dependencies or use generic test runners merely to make a command work.
+- It does not create OpenSpec files, registry entries, or LocalMemory records for questions or direct scoped work unless the user requests that persistence.
+- It does not make external issue, PR, push, merge, or publication actions without explicit user authorization.
+- It does not replace active project conventions with a bundle heuristic.
+
+## Independent memory package
+
+The storage engine lives in the private `PixelDroid19/cells-memory` repository, with its own installer, package version, tests and MCP server. This repository contains only a subprocess JSON adapter (`runtime/cells_agent/memory.py`); it has no database implementation or direct private-package dependency. Commands and catalogs remain usable when memory is absent. Default memory paths and project identities agree between the two applications.

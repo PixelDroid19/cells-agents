@@ -1,64 +1,30 @@
 #!/usr/bin/env node
-
-let input = '';
-process.stdin.setEncoding('utf8');
-process.stdin.on('data', chunk => { input += chunk; });
-process.stdin.on('end', () => {
-  let payload = {};
-  try {
-    payload = input.trim() ? JSON.parse(input) : {};
-  } catch {
-    process.stdout.write('{}');
-    return;
-  }
-
-  const toolInput = payload.tool_input || {};
-  const text = [
-    payload.tool_name,
-    toolInput.command,
-    toolInput.cmd,
-    toolInput.input,
-    toolInput.text,
-    Array.isArray(toolInput.args) ? toolInput.args.join(' ') : ''
-  ].filter(Boolean).join(' ');
-
-  const denyPatterns = [
-    /\bgit\s+reset\s+--hard\b/i,
-    /\bgit\s+checkout\s+--\s+/i,
-    /\brm\s+-rf\s+(\/|\.|\*)\b/i,
-    /\bdel\s+\/[fqs]\b/i,
-    /\bRemove-Item\b.*\s-Recurse\b.*\s-Force\b/i,
-    /\b(git\s+push\s+--force|git\s+push\s+-f)\b/i
-  ];
-
-  const askPatterns = [
-    /\bnpm\s+test\b/i,
-    /\bnpm\s+run\s+test\b/i,
-    /\bnpx\s+web-test-runner\b/i,
-    /\bnpm\s+run\s+start\b/i
-  ];
-
-  let permissionDecision;
-  let permissionDecisionReason;
-
-  if (denyPatterns.some(pattern => pattern.test(text))) {
-    permissionDecision = 'deny';
-    permissionDecisionReason = 'CELLS policy blocks destructive commands unless the user explicitly asks and approves the exact operation.';
-  } else if (askPatterns.some(pattern => pattern.test(text))) {
-    permissionDecision = 'ask';
-    permissionDecisionReason = 'CELLS projects should use Cells-native commands first; confirm this generic command is intentional.';
-  }
-
-  if (!permissionDecision) {
-    process.stdout.write('{}');
-    return;
-  }
-
-  process.stdout.write(JSON.stringify({
-    hookSpecificOutput: {
-      hookEventName: 'PreToolUse',
-      permissionDecision,
-      permissionDecisionReason
-    }
-  }));
-});
+// Thin native hook bridge. The Python core owns parsing and project policy.
+const fs = require('node:fs');
+const path = require('node:path');
+const { spawnSync } = require('node:child_process');
+const event = "PreToolUse";
+let dir = __dirname;
+let runtime;
+for (let i = 0; i < 9; i++) {
+  const candidate = path.join(dir, 'runtime', 'cells-agent.py');
+  if (fs.existsSync(candidate)) { runtime = candidate; break; }
+  const parent = path.dirname(dir);
+  if (parent === dir) break;
+  dir = parent;
+}
+const input = fs.readFileSync(0, 'utf8');
+const fallback = message => JSON.stringify(event === 'PreToolUse' ? {
+  hookSpecificOutput: { hookEventName: event, permissionDecision: 'ask', permissionDecisionReason: message }
+} : { systemMessage: message });
+if (!runtime) {
+  process.stdout.write(fallback('Cells runtime is missing; repair the bundle before relying on this hook.'));
+} else {
+  const executable = process.env.CELLS_AGENT_PYTHON || (process.platform === 'win32' ? 'python' : 'python3');
+  const result = spawnSync(executable, [runtime, 'hook', event], {
+    input, encoding: 'utf8', timeout: 9000, maxBuffer: 1024 * 1024, windowsHide: true
+  });
+  let output;
+  try { output = JSON.parse(result.stdout || ''); } catch {}
+  process.stdout.write(output && typeof output === 'object' ? JSON.stringify(output) : fallback('Cells hook failed: ' + (result.error?.message || result.stderr || 'invalid runtime output').slice(0, 400)));
+}

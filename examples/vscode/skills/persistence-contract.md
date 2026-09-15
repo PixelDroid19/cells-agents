@@ -1,5 +1,3 @@
-# Persistence Contract (VS Code runtime mirror)
+# Canonical guidance
 
-This file mirrors the canonical persistence contract guidance for VS Code Copilot runtime context.
-
-Source of truth: `skills/_shared/persistence-contract.md`.
+Use the canonical shared contract: [skills/_shared/persistence-contract.md](../../../skills/_shared/persistence-contract.md). Native installation copies the complete shared directory beside the runtime.

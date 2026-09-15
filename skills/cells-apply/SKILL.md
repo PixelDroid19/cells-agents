@@ -1,183 +1,56 @@
 ---
 name: cells-apply
-description: "Use when turning approved Cells proposal, specs, design, or task artifacts into scoped code changes, component updates, test files, or implementation progress."
+description: "Use when implementing an approved Cells change, including relevant component, feature, i18n, style, and test updates."
 ---
 
 # Cells Apply
 
-## Purpose
+## Quick Start
 
-Implement the assigned Cells task batch with real code changes, strict scope control, and evidence-backed source routing.
+1. Confirm the user-approved scope and choose `scoped-change` or `full-workflow`.
+2. Inspect the affected source and its existing tests before editing.
+3. Load only the reference that controls the change:
 
-Use [implementation-playbook.md](references/implementation-playbook.md) for the detailed TDD loop, browser validation checklist, and response template.
+| Change | Load on demand |
+| --- | --- |
+| BBVA UI/component selection | `cells-rules-contract.md` and component-catalog routing |
+| Framework, architecture, CLI, i18n, theming | official-catalog routing |
+| Command to run | `cells-cli-usage` |
+| Coverage | `cells-coverage` |
+| Test creation or update | `cells-test-creator` |
+| Rendered behavior | browser-testing convention and `agent-browser` |
 
-## What You Receive
+4. Make the smallest maintainable change that matches local patterns.
+5. Run the relevant targeted validation and report actual evidence.
 
-- change name
-- task batch or phase scope
-- artifact store mode: `engram | openspec | hybrid | none`
+For implementation work, read [Cells rules](../_shared/cells-rules-contract.md), [source routing](../_shared/cells-source-routing-contract.md), [real Cells patterns](../_shared/real-cells-patterns.md), and [code quality rules](../_shared/code-quality-rules.md) when their subject applies.
 
-## Execution and Persistence Contract
+## Cells Implementation Rules
 
-Read and follow:
+- Reuse an existing BBVA component before authoring a new one.
+- Register custom template dependencies in `scopedElements`.
+- Preserve the local `WidgetMixin`, data-manager, event, and bridge patterns when present.
+- Route component-owned visible text through `this.t(...)` and update the actual locale source only when it is in scope.
+- Keep SCSS and generated runtime style artifacts aligned when the project workflow requires both.
+- Test public behavior, public events, and user-visible states; do not hide errors or weaken tests.
 
-- `skills/_shared/persistence-contract.md`
-- `skills/_shared/cells-work-sizing-contract.md`
-- `skills/_shared/cells-workflow-contract.md`
-- `skills/_shared/cells-source-routing-contract.md`
-- `skills/_shared/cells-rules-contract.md`
-- `skills/_shared/cells-conventions.md`
-- `skills/_shared/cells-governance-contract.md`
-- `skills/_shared/cells-policy-matrix.yaml`
-- `skills/_shared/real-cells-patterns.md`
-- `skills/_shared/cells-official-reference.md`
+## Dependencies and Artifacts
 
-For Cells testing or test-execution decisions during implementation, load only the testing skill(s) the intent needs: `cells-cli-usage` for commands, `cells-coverage` only for coverage work, `cells-test-creator` only for authoring tests  never generic npm/web-test-runner fallbacks in Cells contexts.
+Use approved tasks or design artifacts when a governed workflow provides them. A direct scoped implementation may proceed from the user's request and source evidence without proposal, spec, design, tasks, registry, or memory prerequisites.
 
-This phase requires `proposal`, `spec`, `design`, and `tasks`. Recover them and handle persistence mode (persisting `apply-progress` in engram, updating `tasks.md` in openspec/hybrid) per `skills/_shared/artifact-recovery.md`.
+If `artifact_persistence: openspec` is active, update only the relevant governed task/progress record after the source change. With `none`, report progress inline. Never save source edits or verification output to LocalMemory automatically.
 
-## Workflow
+## Scope
 
-### Step 1: Load Skill Registry
+Do not fix unrelated modules, unrelated errors, or perform opportunistic cleanup outside the assigned task unless the user explicitly expands scope. Preserve existing public behavior and responsibility boundaries while applying the requested change.
 
-Before any other work:
+## Output Envelope
 
-1. `mem_search(query: "skill-registry", project: "{project}")`
-2. `mem_get_observation(id: {id})` when available
-3. fallback: read `.atl/skill-registry.md`
-4. if neither exists, proceed without it
+Return:
 
-### Step 2: Load Canonical Dependencies
+- changed files and behavior;
+- validation commands and observed results;
+- `success`, `partial`, or `blocked` with a concrete reason;
+- risks and remaining work, if any.
 
-When mode is `engram` or `hybrid`, retrieve proposal, spec, design, and tasks per `skills/_shared/artifact-recovery.md`.
-
-If any required canonical dependency is absent during `full-workflow`, return `status: blocked`.
-For `fast-path` or direct `scoped-change`, do not force proposal/spec/design/tasks artifacts; use the user request, touched files, and project-local evidence as the working scope.
-
-### Step 3: Read Context Before Editing
-
-Read the minimum context required by the selected work size. For governed `full-workflow`, always read:
-
-1. spec or acceptance criteria
-2. design decisions
-3. affected code and nearby patterns
-4. project-local conventions
-
-For Cells work, also inspect the relevant subset of:
-
-5. `custom-elements.json`
-6. relevant tests
-7. `package.json`
-8. real feature usage when composition or architecture is involved
-9. `python skills/cells-components-catalog/scripts/search_docs.py --query "<intent>"` when component identity is not already certain (query phrasing and zero-result fallback: `skills/_shared/doc-search.md`)
-10. `skills/cells-cli-usage/` for command resolution
-11. `skills/cells-coverage/` only when coverage work is needed
-12. `skills/cells-test-creator/` only when authoring tests
-13. `skills/_shared/browser-testing-convention.md` and `skills/agent-browser/SKILL.md` for browser-visible changes
-
-Before coding real Cells UI/component work, enforce these implementation checks:
-
-- reuse existing BBVA components first
-- register every template dependency in `scopedElements`
-- when the surrounding architecture uses feature/data-manager patterns, prefer `WidgetMixin` and `this.emitEvent(...)`
-- route component-owned literals through `this.t(...)` and keep parity in the correct locale source for the touched surface
-- treat SCSS as visual source and keep runtime style artifacts aligned
-- require a browser validation target when the change is visible in the UI
-
-### Step 3b: Scope Restriction Gate
-
-Before editing any file:
-
-- identify the exact module, feature slice, or task boundary
-- touch only files directly required by that work
-- justify every dependency edit explicitly
-- stop if safe completion requires broader edits than requested
-
-If the assigned batch is tests-only:
-
-- allowed: `test/**`, `test/mocks/**`, and test-only fixtures
-- forbidden: `src/**`, repo locale source paths, and runtime source paths
-- do not "just fix source quickly" during this batch
-
-Absolute scope rule:
-
-- Do not fix unrelated modules, unrelated errors, or opportunistic cleanup outside the assigned task unless the user explicitly expands scope
-
-Use one of these gate notes in the implementation report:
-
-- `Scope gate: strict task scope enforced; only directly affected files were touched`
-- `Scope gate: direct dependency edit justified for assigned task`
-- `Scope gate: tests-only enforced (no src/** or repo locale source edits)`
-- `Scope gate: transitioned after explicit scope expansion confirmation`
-
-### Step 4: Implement
-
-Detect whether the project is running TDD. Use the detailed RED/GREEN/REFACTOR flow from [implementation-playbook.md](references/implementation-playbook.md) when TDD is active.
-
-Standard mode minimum:
-
-- read the task or direct user instruction
-- read relevant specs/design decisions when the selected work size is `full-workflow` or the artifact exists
-- match existing code patterns
-- make the smallest working change
-- note deviations or issues
-
-When the change is browser-visible, use the browser validation checklist from [implementation-playbook.md](references/implementation-playbook.md).
-
-### Step 5: Persist Progress
-
-Update `tasks.md` from `[ ]` to `[x]` (openspec/hybrid) and/or save an `apply-progress` artifact (engram/hybrid) per `skills/_shared/artifact-recovery.md`'s Persistence Mode Handling section.
-
-### Step 6: Return Summary
-
-Use the response template from [implementation-playbook.md](references/implementation-playbook.md).
-
-The report must include:
-
-- completed tasks
-- files changed
-- remaining tasks
-- status
-- scope gate note
-
-Include a `Source Decisions` section with these exact fields:
-
-- `intent`
-- `primary_source`
-- `fallback_used`
-- `fallback_source`
-- `fallback_reason`
-- `evidence_quality`
-- `status`
-
-## Rules
-
-### Core implementation rules
-
-- Specs are acceptance criteria.
-- Follow design decisions when a design artifact exists unless you explicitly record a deviation.
-- Match existing patterns before introducing new abstractions.
-- Scope isolation is mandatory.
-- Use `fast-path` or `scoped-change` when the user requested a local/trivial change; do not manufacture a full proposal/spec/design/tasks chain.
-
-### Cells-specific rules
-
-- BBVA-first: search `cells-components-catalog` before inventing UI.
-- Register every custom element used in templates in `scopedElements`.
-- Use `static get properties()` for Lit properties. Do not use `@property`, `@state`, or `@attribute`.
-- Route component-owned visible literals through `this.t(...)`.
-- Keep locale parity in the correct locale source for the touched surface.
-- Keep public technical naming in English.
-- Use Cells-native commands only unless the user explicitly requests otherwise.
-
-### Code hygiene rules
-
-Follow `skills/_shared/code-quality-rules.md`.
-
-- keep SCSS/runtime style artifacts aligned when both exist.
-
-### Verification handoff rules
-
-- If the change affects rendered UI, do minimal browser validation before claiming implementation complete.
-- If tests changed, resolve commands through `skills/cells-cli-usage/` first.
-- If evidence is missing, return `partial` or `blocked`, never certainty by memory.
+Do not claim a browser-visible result from static checks alone when runtime proof is required.

@@ -44,7 +44,7 @@ agent-browser snapshot -i  # Check result
 | Open URL | `agent-browser open <url>` |
 | Connect to existing | `agent-browser connect <port>` or `agent-browser --auto-connect` |
 | Snapshot | `agent-browser snapshot -i` |
-| Click | `agent-click <ref>` |
+| Click | `agent-browser click <ref>` |
 | Fill input | `agent-browser fill <ref> "text"` |
 | Select option | `agent-browser select <ref> "value"` |
 | Wait | `agent-browser wait --load networkidle` |

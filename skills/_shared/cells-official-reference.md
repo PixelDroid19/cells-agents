@@ -2,269 +2,39 @@
 
 ## Purpose
 
-Use this file to route Cells work to the internal official-docs skill bundled inside this package.
+Route framework and process questions to the bundled official Cells catalog without loading unrelated documentation. Use `cells-source-routing-contract.md` first; it decides whether the component catalog, official catalog, local code, or command resolver is primary.
 
-Do NOT reference folders outside this package from this file or from dependent skills.
+## Topic Map
 
-## Minimal Retrieval Protocol
+| Need | Official catalog topic | Add when relevant |
+| --- | --- | --- |
+| Foundations, packaging, custom elements | `web-components-foundations`, `component-api` | Project CEM and package source |
+| Lit lifecycle, templates, styles | `lit-authoring`, `theming` | Existing component patterns |
+| Component composition and feature architecture | `composition`, `architecture`, `application-runtime` | `cells-app-architecture` and project code |
+| App communication | `application-communication` | Bridge or routing source code |
+| Tests | `testing`, `application-testing` | `cells-cli-usage`, `cells-coverage`, or `cells-test-creator` only as needed |
+| Demos, docs, i18n, assets | `demo-docs-i18n-assets` | Actual locale/runtime configuration |
+| CLI | `cli` | Installed scripts through `cells-cli-usage` |
 
-1. Classify the task first:
-   - web-components fundamentals
-   - component API
-   - feature or app architecture
-   - app runtime or communication
-   - advanced application concerns
-   - CLI or workflow command
-   - testing or coverage
-   - demo, docs, i18n
-   - styling, theming, assets
-1b. Apply intent routing before reading catalogs:
-   - UI/component discovery or element selection -> run SQL/database-backed lookup first with `skills/cells-components-catalog/scripts/search_docs.py` against `skills/cells-components-catalog/assets/bbva_cells_components.db` (do not guess from memory)
-   - Any Cells documentation or knowledge lookup (variables, workflows, tests, architecture, CLI, authoring, theming, i18n, or general Cells guidance) -> `skills/cells-official-docs-catalog/` first
-   - Use fallback only when the first catalog is insufficient for the decision
-2. Read project code and `package.json` first.
-3. Then query `skills/cells-official-docs-catalog/` for the exact topic family needed.
-4. Use repo-local specialist skills as accelerators:
-   - `skills/cells-components-catalog/`
-   - `skills/cells-component-authoring/`
-   - `skills/cells-cli-usage/`
-   - `skills/cells-coverage/`
-   - `skills/cells-i18n/`
-   - `skills/cells-test-creator/`
-   - `skills/cells-app-architecture/`
-   - `skills/_shared/browser-testing-convention.md`
-   - `skills/agent-browser/SKILL.md` when browser interaction or visual validation is required
-5. Return extracted rules and evidence, not long doc summaries.
+Search the narrow topic, extract the rule that matters, then verify it against the active project before making a local claim. Do not paste whole catalog documents into a result.
 
-## Official Source Map
+## Component and UI Work
 
-### Canonical component-construction checklist
+For a real component or feature-facing UI, apply the relevant requirements in `cells-rules-contract.md`:
 
-When building or reviewing real Cells components, ensure coverage (only the relevant items for the task scope):
+- reuse an existing BBVA component when evidence supports it;
+- register template dependencies in `scopedElements`;
+- preserve `WidgetMixin`/`this.emitEvent(...)` architecture when the project uses it;
+- use `this.t(...)` and the real locale source for visible literals;
+- keep SCSS and generated style artifacts aligned where required;
+- collect browser evidence for visible behavior when source evidence is insufficient.
 
-- Web Components overview/reference
-- Packaging
-- Custom elements
-- Class and properties
-- Lifecycle
-- Reuse and composition
-- Component API
-- Templating in Lit
-- Styles and theming
-- Demo
-- Internationalization (i18n)
-- Documentation
-- Images and icons
-- Spherica integration
-- Context
-- Testing
-- CI/CD
+## Command Evidence in This Bundle
 
-If required checklist items are not supported by evidence, return `partial` and list missing areas.
+The documented current component route is represented by `cells component:*` in the official catalog guidance. `skills/cells-cli-usage/references/commands.md` records legacy `cells lit-component:*` wrapper behavior. Treat the latter as valid only when the active workspace exposes it; resolve the actual executable script before use.
 
-### Required real-component implementation patterns
+For app work, resolve the applicable `cells app:*` command and its local configuration from the project rather than guessing a config path. Do not install tooling or select a generic runner merely to satisfy a workflow template.
 
-When the task is about building a real component or feature-facing UI, validate these operational patterns as applicable:
+## Evidence Limits
 
-- reuse existing BBVA components first (`cells-components-catalog`)
-- register template dependencies in `scopedElements`
-- use `WidgetMixin` and `this.emitEvent(...)` when following Cells feature/data-manager architecture
-- use `this.t(...)` for component-owned literals
-- keep locale parity in the repo's actual locale source for the touched surface
-- treat SCSS as visual source and keep runtime style artifacts aligned
-- validate visible behavior in the browser before closure
-
-Use these sources:
-
-- `skills/cells-components-catalog/` for reuse-first evidence
-- `skills/cells-official-docs-catalog/` topics `component-api`, `lit-authoring`, `composition`, `demo-docs-i18n-assets`, `testing`, `theming`
-- `skills/cells-app-architecture/references/data-managers.md`
-- `skills/cells-app-architecture/references/routing.md`
-- `skills/cells-app-architecture/references/feature-structure.md`
-- `skills/cells-i18n/references/i18n-runtime-and-locales.md`
-- `skills/_shared/browser-testing-convention.md`
-
-### Cells and Web Components fundamentals
-
-- `skills/cells-official-docs-catalog/` topic: `web-components-foundations`
-
-Use for:
-- core Cells and Web Components principles
-- API interaction boundaries
-- reuse-first decisions
-- declarative vs imperative component use
-
-### Cells ecosystem and architecture
-
-- `skills/cells-official-docs-catalog/` topic: `architecture`
-- `skills/cells-official-docs-catalog/` topic: `application-runtime`
-- `skills/cells-official-docs-catalog/` topic: `application-communication`
-- `skills/cells-official-docs-catalog/` topic: `advanced-application`
-- `skills/cells-app-architecture/`
-
-Use for:
-- feature structure
-- app bootstrap and configuration
-- bridge, routing, pub/sub
-- event channels
-- native bridge
-- feature flags
-- microfrontends
-- performance and service workers
-- data managers
-- app vs component responsibilities
-
-### CLI and local workflows
-
-- `skills/cells-official-docs-catalog/` topic: `cli`
-- `skills/cells-cli-usage/`
-- local `package.json` scripts
-
-Use for:
-- build, serve, test, lint, docs commands
-- mapping local wrappers to canonical `cells ...` commands
-- understanding app vs component vs `lit-component` commands
-
-Rule:
-- Keep Cells-native commands canonical for Cells app/theme workflows (`/cells-*`, `cells app:*`, documented `cells component:*`, and repo-local `cells lit-component:*` wrappers where present).
-- Resolve command families in this order:
-  - repo-local script or wrapper actually present
-  - documented Cells equivalent
-  - explicit gap note when the repo uses legacy or product-specific naming
-- Canonical command families to prefer in guidance and execution decisions:
-  - Workflow: `/cells-init`, `/cells-explore`, `/cells-new`, `/cells-continue`, `/cells-ff`, `/cells-apply`, `/cells-verify`, `/cells-archive`
-  - App: `cells app:serve -c <config>`, `cells app:build -c <config>`, `cells app:test`, `cells app:lint`, `cells app:install`, `cells app:create`
-  - Component documented path: `cells component:create`, `cells component:dev`, `cells component:test`, `cells component:lint`, `cells component:locales`, `cells component:documentation`
-  - Component repo-local wrapper path: `cells lit-component:create`, `cells lit-component:serve`, `cells lit-component:test`, `cells lit-component:lint`, `cells lit-component:locales`, `cells lit-component:documentation`
-- Do NOT default to generic external commands (`npm run *`, `npm test`, `npx web-test-runner`) for Cells workflows.
-- Use non-Cells commands only when the user explicitly requests them in a clearly non-Cells context.
-- If uncertain whether a command is Cells-native, ask the user before running a non-Cells command.
-- Do NOT recommend global install or update steps unless the user explicitly asks for installation help.
-
-### Component API and package contracts
-
-- `skills/cells-official-docs-catalog/` topic: `component-api`
-- `skills/cells-component-authoring/`
-
-Use for:
-- public properties and attributes
-- methods, events, slots
-- exported classes and entry points
-- package exports and `custom-elements.json`
-- deciding whether a new base component should be authored or avoided
-- packaging rules and publishability checks for reusable components
-
-### Lit authoring and component internals
-
-- `skills/cells-official-docs-catalog/` topic: `lit-authoring`
-
-Use for:
-- render parts and template structure
-- `willUpdate`, `firstUpdated`, `updated`
-- reflected attributes and styling rules
-- DOM references and interactive element patterns
-
-### Reuse and composition
-
-- `skills/cells-official-docs-catalog/` topic: `composition`
-- `skills/cells-app-architecture/`
-
-Use for:
-- composition vs extension
-- scoped elements
-- mixins
-- feature widgets and internal wrappers
-
-### Demo, docs, i18n, and assets
-
-- `skills/cells-official-docs-catalog/` topic: `demo-docs-i18n-assets`
-
-Use for:
-- demo structure
-- `demo.js`, `demo-build.js`, `index.html`
-- locales setup
-- icons, SVG assets, microillustrations
-- translated literals and locale parity
-- documentation outputs and examples needed for reusable components
-
-### Testing
-
-- `skills/cells-official-docs-catalog/` topic: `testing`
-- `skills/cells-official-docs-catalog/` topic: `application-testing`
-- `skills/cells-test-creator/`
-
-Use for:
-- test structure
-- OpenWC, Sinon, Mocha, Chai patterns
-- i18n setup in tests
-- public-behavior testing rules
-- feature or app integration testing
-- coverage triage and deterministic failure analysis when artifacts exist
-
-Testing stack for Cells contexts (load only what the intent needs, in this precedence when more than one applies):
-1. `skills/cells-cli-usage/` (canonical test command and invocation path — enough alone for command questions)
-2. `skills/cells-coverage/` (only when coverage thresholds, reports, or branch-miss triage are involved)
-3. `skills/cells-test-creator/` (only when creating or updating tests)
-
-Rules:
-- Prefer these skills over any other testing source for Cells testing requests.
-- Do not reintroduce generic fallback commands (`npm test`, `npm run test`, `npx web-test-runner`) in Cells contexts.
-
-### Browser-visible UI, demos, and visual validation
-
-- `skills/_shared/browser-testing-convention.md`
-- `skills/agent-browser/SKILL.md` when available
-- `skills/cells-cli-usage/`
-
-Use for:
-- opening demo or local app routes
-- clicking through feature flows
-- taking screenshots or DOM snapshots
-- comparing visible UI states after a change
-- validating runtime i18n, theming, and dark mode
-
-Rule:
-- resolve the local serve or demo path first
-- snapshot before interaction and re-snapshot after DOM changes
-
-### Theming and design tokens
-
-- `skills/cells-official-docs-catalog/` topic: `theming`
-
-Use for:
-- theme package structure
-- shared styles
-- design tokens
-- dark mode
-
-### CI/CD and delivery checks
-
-- `skills/cells-official-docs-catalog/` topic: `cli`
-- local project CI configuration and scripts
-
-Use for:
-- lint/test/build gating before merge
-- command consistency with Cells-native toolchain
-- release/publish checklist alignment for component packages
-
-## Preferred Evidence Order
-
-When a claim is important, validate it in this order:
-
-1. Project code and tests
-2. `skills/cells-components-catalog/` package dossier or search result
-3. `skills/cells-official-docs-catalog/` topic dossier or search result
-4. Repo-local specialist skills
-
-## Context Discipline
-
-- Do not paste full official docs into reports.
-- Extract only the rule, pattern, or command needed for the current decision.
-- If a task is only about one topic, read only one topic family from this file.
-
-## Language Policy
-
-- Keep generated technical naming in English by default.
-- JSDoc and maintainer-facing comments must be written in English.
-- Event names, custom event types, payload keys, and public API names must be in English.
-- If the user writes in Spanish (or another language), the assistant may respond in that language, but generated code/docs naming must stay in English unless the user explicitly requests otherwise.
+Return `partial` when a required project-specific API, locale, command, or runtime fact is not available. Return `blocked` only when that gap prevents safe continuation. A catalog query's own `ok` result says that the query completed, not that the user's task is complete.

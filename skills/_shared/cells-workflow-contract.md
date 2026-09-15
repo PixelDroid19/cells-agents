@@ -1,76 +1,58 @@
 # Cells Workflow Contract
 
-This file is the shared workflow scaffold for every CELLS phase skill.
+## Purpose
 
-Use `skills/_shared/cells-work-sizing-contract.md` before applying this workflow. The full artifact flow is required for `full-workflow` work, but it is not mandatory for `fast-path` answers or direct `scoped-change` tasks.
+This contract describes the optional governed workflow for Cells work. Use `cells-work-sizing-contract.md` first. It provides a plan and evidence structure for complex work; it does not turn every user request into a phase ceremony.
 
-## Canonical Artifact Lineage
+## Direct Work and Governed Work
 
-- Active workflow artifacts MUST use only `cells-init/{project}` and `cells/{change}/{artifact}` for writes, status reporting, and readiness checks.
-- Project context reads and writes use `cells-init/{project}`.
-- Change artifact writes use `cells/{change}/{artifact}`.
-- Historical pre-Cells artifacts MAY remain in Engram as migration history.
-- Historical pre-Cells artifacts MAY be read only as compatibility evidence during backports or migration work when the task explicitly requests it.
-- Compatibility reads MUST NOT replace canonical `cells/...` writes, MUST NOT change `/cells-*` command canon, and MUST be recorded in `source_decisions` as migration-only evidence.
+- A question or `scoped-change` can be investigated, implemented, and validated directly from the user's request and project evidence.
+- A `full-workflow` needs a written plan and evidence proportionate to the risk. Keep those in the result unless the user requests persistent artifacts.
+- A **governed chain** exists only when the user requests phase artifacts or continues one. With `artifact_persistence: openspec`, use `openspec-convention.md`.
 
-## Dependency Lookup Matrix
+Source-write authorization comes from the user's request, not from the presence of a proposal, memory entry, or artifact.
 
-| Phase | Active dependency lookup |
-|---|---|
-| `cells-init` | `cells-init/{project}` |
-| `cells-explore` | `cells-init/{project}` |
-| `cells-propose` | `cells/{change}/explore`, `cells-init/{project}` |
-| `cells-spec` | `cells/{change}/proposal` |
-| `cells-design` | `cells/{change}/proposal`, `cells/{change}/spec` |
-| `cells-tasks` | `cells/{change}/proposal`, `cells/{change}/spec`, `cells/{change}/design` |
-| `cells-apply` | `cells/{change}/proposal`, `cells/{change}/spec`, `cells/{change}/design`, `cells/{change}/tasks` |
-| `cells-verify` | `cells/{change}/proposal`, `cells/{change}/spec`, `cells/{change}/design`, `cells/{change}/tasks` |
-| `cells-archive` | `cells/{change}/proposal`, `cells/{change}/spec`, `cells/{change}/design`, `cells/{change}/tasks`, `cells/{change}/verify-report` |
+## Governed Phase Dependencies
 
-If a required canonical artifact is missing during `full-workflow`, stop and report the phase as `blocked` until the missing canonical prerequisite is seeded, unless the assigned migration task explicitly authorizes a legacy compatibility read for analysis only.
+When the governed chain is selected, the planning dependencies are:
 
-For `fast-path` and `scoped-change`, do not require canonical artifacts unless the user requested governed persistence or an active phase depends on them.
+```text
+proposal -> spec -> design -> tasks -> apply -> verify -> archive
+```
 
-## Orchestrator Delegation Policy
+- Exploration may inform a proposal, but is optional when the user already supplied adequate context.
+- `spec` precedes `design`; `design` precedes `tasks`.
+- Apply uses the approved task scope, then verification checks the implemented behavior.
+- Archive is a closeout action, not an automatic consequence of a passing check.
 
-- CELLS orchestration is proportional, not delegation-first by default.
-- Fast-path work stays in the current agent unless the user explicitly asks for delegation.
-- Scoped-change work stays in the current agent unless there are independent non-blocking slices or the user asks for parallel work.
-- Full-workflow work may use orchestrator/subagent handoff when the host supports it and the task benefits from role separation.
-- Agent role boundaries, handoff packets, Dev-QA loops, skill resolution feedback, and evidence gates are defined in `skills/_shared/cells-agent-handoff-contract.md`.
-- When OpenCode exposes `delegate`, `delegation_read`, and `delegation_list`, the orchestrator SHOULD prefer `delegate` only for non-blocking or parallel full-workflow work.
-- When background delegation is unavailable, the orchestrator MUST fall back to synchronous `task` without weakening governance, evidence gates, specialist routing, or approval flow.
-- `/cells-*` commands remain canonical even when historical pre-Cells artifacts are consulted for migration continuity.
-- Non-SDD delegated work MUST load the relevant Cells specialist skill or pre-resolved skill path instead of generic upstream routing language.
+A missing artifact blocks only the governed phase that requires it. It does not block a separately authorized narrow change.
 
-## Result Envelope
+## Evidence
 
-Every workflow phase returns the same structured envelope:
+For a material Cells decision, record the chosen source and any fallback using the template in `cells-source-routing-contract.md`. For a governed artifact, include a compact `source_decisions` section. Do not create a trace for an unrelated quick question.
 
-- `status`
-- `executive_summary`
-- `detailed_report` (optional when phase guidance allows)
-- `artifacts`
-- `next_recommended`
-- `risks`
-- `skill_resolution`
-- `evidence_required`
+Use the result status defined in `cells-governance-contract.md`:
 
-## Source Decisions
+- `success`: the requested scope is complete and the stated evidence supports the claims.
+- `partial`: useful work is complete, with a stated evidence or acceptance gap.
+- `blocked`: safe progress needs an unavailable input, decision, permission, or environment.
 
-Every workflow artifact MUST include an explicit `source_decisions` section using the canonical template defined in `skills/_shared/cells-source-routing-contract.md`.
+Catalog tools may report their own `ok` result; that is not a workflow completion status.
 
-When a phase stays on canonical evidence, record that explicitly.
-When historical legacy context is mentioned for archive continuity or migration compatibility, record it as inactive history or compatibility-only evidence and do not treat it as active canonical fallback.
+## Delegation
 
-Required fields per entry: `intent`, `primary_source`, `fallback_used`, `fallback_source`, `fallback_reason`, `evidence_quality`, `status`.
+Delegation is optional. An orchestrator may implement a scoped change itself and must integrate any delegated full-workflow work. When a handoff is useful, follow `cells-agent-handoff-contract.md`; otherwise keep the work in one context.
 
-## Reporting Lineage
+## Result Shape
 
-- Verification, apply-progress, and archive reporting MUST cite canonical active artifact refs such as `cells/{change-name}/proposal` and `cells/{change-name}/verify-report`.
-- Historical legacy lineage MAY be mentioned only as inactive archive context or migration compatibility evidence and MUST NOT change canonical phase readiness, dependency recovery, or pass/fail outcomes.
+Use this compact shape when a structured result helps the receiving agent or user:
 
-## Validation Safeguards
+```yaml
+status: success | partial | blocked
+summary: short outcome
+evidence: files, commands, catalog results, or browser result
+risks: none or a concrete limitation
+next_recommended: none or the smallest useful next action
+```
 
-- Local skill registry refreshes SHOULD verify whether workflow skill names or paths changed before rewriting `.atl/skill-registry.md`; unchanged registry entries do not require a content rewrite.
-- Validation scripts SHOULD check shared-contract parity, canonical write targets, canonical-only dependency guidance, source-decision template coverage, and any documented policy exemptions before the change is considered ready for verification.
+Do not manufacture artifacts, registry updates, or memory saves to fill this shape.

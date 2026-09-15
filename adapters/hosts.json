@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "roles": {
+    "orchestrator": {
+      "source_edit": true,
+      "execute": true,
+      "delegate": true,
+      "codex_sandbox": "workspace-write"
+    },
+    "analysis": {
+      "source_edit": false,
+      "execute": false,
+      "delegate": false,
+      "codex_sandbox": "read-only"
+    },
+    "implementation": {
+      "source_edit": true,
+      "execute": true,
+      "delegate": false,
+      "codex_sandbox": "workspace-write"
+    },
+    "verification": {
+      "source_edit": false,
+      "execute": true,
+      "delegate": false,
+      "codex_sandbox": "workspace-write"
+    }
+  },
+  "hosts": {
+    "vscode": {
+      "native_agents": true,
+      "mcp": true,
+      "hooks": true,
+      "probe": "code --version",
+      "scopes": [
+        "workspace"
+      ]
+    },
+    "codex": {
+      "native_agents": true,
+      "mcp": true,
+      "hooks": true,
+      "probe": "codex --version",
+      "scopes": [
+        "user"
+      ]
+    },
+    "opencode": {
+      "native_agents": true,
+      "mcp": true,
+      "hooks": false,
+      "probe": "opencode --version",
+      "scopes": [
+        "user",
+        "workspace"
+      ]
+    }
+  },
+  "limits": {
+    "concurrent_children": 4,
+    "child_delegation": false
+  },
+  "note": "Declared adapter capabilities. source_edit is role intent and native edit-tool availability, not a filesystem sandbox. Verification may write generated reports through test execution. Models are chosen by the host or user; this manifest is not a live host attestation.",
+  "bundle": {
+    "name": "cells-agent-bundle",
+    "version": "3.0.0"
+  },
+  "profiles": {
+    "single": {
+      "roles": [
+        "orchestrator"
+      ],
+      "delegation": false
+    },
+    "multi": {
+      "roles": [
+        "orchestrator",
+        "analysis",
+        "implementation",
+        "verification"
+      ],
+      "delegation": true
+    }
+  }
+}

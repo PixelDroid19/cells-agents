@@ -1,8 +1,3 @@
-# Mirror: Cells Governance Contract
+# Canonical guidance
 
-Refer to `skills/_shared/cells-governance-contract.md` as the canonical source.
-
-- preserve catalog-first evidence
-- preserve deterministic fallback
-- preserve contribution lifecycle enforcement
-- preserve non-SDD specialist routing
+Use the canonical shared contract: [skills/_shared/cells-governance-contract.md](../../../skills/_shared/cells-governance-contract.md). Native installation copies the complete shared directory beside the runtime.

@@ -1,19 +1,7 @@
 ---
 name: cells-tasks
-description: Break approved Cells work into ordered, file-level implementation and verification tasks.
-argument-hint: "<approved design>"
+description: Run the tasks intent with proportional Cells guidance.
 agent: cells-orchestrator
-tools: ["search/codebase", "search/usages", "read/problems"]
 ---
 
-# cells-tasks prompt
-
-## Goal
-
-Read `skills/_shared/cells-work-sizing-contract.md` first. Use this prompt only when approved specs/design need implementation tasks.
-
-Use the `cells-tasks` skill first. Break approved Cells work into dependency-ordered tasks with clear evidence expectations.
-
-## Output envelope
-
-Return `status`, `executive_summary`, `artifacts`, `next_recommended`, `risks`, `skill_resolution`, `evidence_required`.
+Use cells-tasks for the requested intent. Apply only the needed scope and cite actual sources and validation. Inherit the agent's tools; do not override delegation or catalog access at prompt level.

@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "bundle": {
+    "name": "cells-agent-bundle",
+    "version": "3.0.0"
+  },
+  "profiles": {
+    "single": {
+      "roles": [
+        "orchestrator"
+      ],
+      "delegation": false
+    },
+    "multi": {
+      "roles": [
+        "orchestrator",
+        "analysis",
+        "implementation",
+        "verification"
+      ],
+      "delegation": true
+    }
+  },
+  "hosts": {
+    "vscode": {
+      "native_agents": true,
+      "mcp": true,
+      "hooks": true,
+      "probe": "code --version",
+      "scopes": [
+        "workspace"
+      ]
+    },
+    "codex": {
+      "native_agents": true,
+      "mcp": true,
+      "hooks": true,
+      "probe": "codex --version",
+      "scopes": [
+        "user"
+      ]
+    },
+    "opencode": {
+      "native_agents": true,
+      "mcp": true,
+      "hooks": false,
+      "probe": "opencode --version",
+      "scopes": [
+        "user",
+        "workspace"
+      ]
+    }
+  }
+}

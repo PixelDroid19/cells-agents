@@ -1,27 +1,26 @@
-# Artifact Recovery Pattern (Shared)
+# Workflow Artifact Recovery
 
-Single source for how phase skills load prior context. Reference this file from phase skills; do not restate the steps inline.
+Use this file only for a user-requested governed change with `artifact_persistence: openspec`. A direct answer or scoped source change does not need artifact recovery.
 
-## When
+## Read Order
 
-Only when `artifact_store.mode` is `engram` or `hybrid` and the phase depends on prior artifacts. Skip entirely for `none`, for fast-path/scoped-change work, and when the orchestrator already passed the needed context.
+Read only the artifacts needed by the current governed phase:
 
-## Steps
+| Need | OpenSpec location |
+| --- | --- |
+| Project rules | `openspec/config.yaml` |
+| Proposal | `openspec/changes/{change}/proposal.md` |
+| Specifications | `openspec/changes/{change}/specs/` |
+| Design | `openspec/changes/{change}/design.md` |
+| Tasks | `openspec/changes/{change}/tasks.md` |
+| Verification report | `openspec/changes/{change}/verify-report.md` |
 
-1. Project context: `mem_search(query: "cells-init/{project}", project: "{project}")`; if found, `mem_get_observation(id: {id})`.
-2. Phase dependencies: for each artifact the phase needs (`proposal`, `spec`, `design`, `tasks`), `mem_search(query: "cells/{change-name}/{artifact}", project: "{project}")` then `mem_get_observation` on the hit.
-3. Optional discovery: `mem_search(query: "cells/", project: "{project}")` to list related prior artifacts — only when the change name is unknown.
+For a governed planning chain, `spec` follows `proposal`, `design` follows `spec`, and `tasks` follows `design`. A missing dependency blocks that chosen governed phase; it does not block a separately authorized narrow change.
 
 ## Rules
 
-- Two-step recovery always: search preview first, full fetch only for the artifacts you will actually use.
-- A missing optional artifact is not `blocked` — proceed and note the gap.
-- A missing required dependency (e.g. `tasks` before apply): report `blocked` naming the missing artifact and the command that produces it.
-- For `openspec`/`hybrid` file artifacts, resolve paths via `skills/_shared/openspec-convention.md`.
-
-## Persistence Mode Handling
-
-- `engram`: follow `skills/_shared/engram-convention.md` for writes.
-- `openspec`: follow `skills/_shared/openspec-convention.md`.
-- `hybrid`: both.
-- `none`: return the result only; write nothing.
+- Read existing artifacts before updating them.
+- Recover the smallest useful context; do not scan all changes by default.
+- Keep memory retrieval separate. LocalMemory can add user-approved context, but cannot satisfy a workflow-artifact dependency or prove an implementation.
+- Do not create artifact files unless `artifact_persistence: openspec` was selected by the user or an active governed change already requires them.
+- Report an unavailable required artifact as `blocked` only when the selected governed phase cannot proceed safely without it. Otherwise continue with direct evidence and report any limitation as `partial`.

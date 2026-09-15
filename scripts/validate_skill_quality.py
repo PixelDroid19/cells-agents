@@ -16,7 +16,7 @@ SHARED_DIR = SKILLS_DIR / "_shared"
 EVALS_PATH = SKILLS_DIR / "evals" / "critical-skill-routing.json"
 
 CRITICAL_SKILLS = {
-    "skill-registry",
+    "cells-components-catalog",
     "cells-explore",
     "cells-cli-usage",
     "cells-test-creator",
@@ -30,10 +30,6 @@ WARN_WORDS = 1800
 FORBIDDEN_COMMANDS = ("npm test", "npm run test", "npx web-test-runner")
 NEGATION_MARKERS = ("do not", "don't", "never", "forbidden", "avoid")
 REQUIRED_SHARED_REFS = {
-    "skill-registry": (
-        "skills/_shared/cells-rules-contract.md",
-        "skills/_shared/cells-source-routing-contract.md",
-    ),
     "cells-explore": (
         "skills/_shared/cells-source-routing-contract.md",
         "skills/_shared/cells-rules-contract.md",
@@ -54,6 +50,19 @@ REQUIRED_SHARED_REFS = {
         "skills/_shared/cells-source-routing-contract.md",
     ),
 }
+RETIRED_SKILLS = frozenset(
+    {
+        "branch-pr",
+        "issue-creation",
+        "skill-registry",
+        "cells-new",
+        "cells-component-researcher",
+        "cells-composition-architect",
+        "cells-feature-analyzer",
+        "cells-visual-intent-demo",
+    }
+)
+ACTIVE_ROUTING_PATHS = (ROOT / "AGENTS.md", EVALS_PATH)
 FORBIDDEN_ABSOLUTES = (
     "only valid locale path",
     "must not be created or referenced outside `demo/locales`",
@@ -106,7 +115,7 @@ def find_relative_refs(text: str, source: Path) -> list[str]:
             continue
         if ref.startswith("mailto:"):
             continue
-        target = (source.parent / ref).resolve()
+        target = (source.parent / ref.split("#", 1)[0]).resolve()
         if not target.exists():
             errors.append(f"{source.relative_to(ROOT)}: broken relative reference `{ref}`")
     return errors
@@ -145,14 +154,28 @@ def validate_eval_scenarios(skills: dict[str, SkillDoc]) -> list[str]:
             errors.append(f"{EVALS_PATH.relative_to(ROOT)}: expected skill `{skill_name}` not found")
             continue
         description = doc.description.lower()
-        missing = [
-            term for term in scenario["required_description_terms"]
-            if term.lower() not in description
-        ]
-        if missing:
+        # Descriptions are human guidance; token presence cannot prove LLM routing.
+        # Executable intent routing is covered by tests/test_workflow.py.
+        if not scenario.get("prompt", "").strip() or not doc.description.strip():
+            errors.append(f"{EVALS_PATH.relative_to(ROOT)}: empty routing fixture `{scenario['id']}`")
+    return errors
+
+
+def validate_retired_skills() -> list[str]:
+    errors: list[str] = []
+    for skill_name in sorted(RETIRED_SKILLS):
+        if (SKILLS_DIR / skill_name).exists():
             errors.append(
-                f"{EVALS_PATH.relative_to(ROOT)}: scenario `{scenario['id']}` expects `{skill_name}` description to contain {missing}"
+                f"skills/{skill_name}: retired skill must not be published"
             )
+
+    for path in ACTIVE_ROUTING_PATHS:
+        content = path.read_text(encoding="utf-8")
+        for skill_name in sorted(RETIRED_SKILLS):
+            if re.search(rf"(?<![A-Za-z0-9-]){re.escape(skill_name)}(?![A-Za-z0-9-])", content):
+                errors.append(
+                    f"{path.relative_to(ROOT)}: active routing refers to retired skill `{skill_name}`"
+                )
     return errors
 
 
@@ -206,7 +229,7 @@ def main() -> int:
 
         required_refs = REQUIRED_SHARED_REFS.get(doc.name, ())
         for ref in required_refs:
-            if ref not in doc.body:
+            if ref not in doc.body and Path(ref).name not in doc.body:
                 errors.append(
                     f"{skill_path.relative_to(ROOT)}: missing required shared-contract reference `{ref}`"
                 )
@@ -217,6 +240,7 @@ def main() -> int:
         errors.extend(validate_forbidden_commands(shared_doc, shared_text))
         errors.extend(validate_overstatements(shared_doc, shared_text))
 
+    errors.extend(validate_retired_skills())
     errors.extend(validate_eval_scenarios(skills))
 
     if errors:

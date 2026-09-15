@@ -2,70 +2,50 @@
 
 ## Purpose
 
-Define deterministic source selection so CELLS phases do not skip critical knowledge or consult sources out of order.
+Choose evidence by intent before making a material Cells claim. Catalogs are primary for bundled knowledge; project code and Custom Elements Manifest (CEM) data are the fallback for the active workspace.
 
-Use this contract when planning or executing `cells-explore`, `cells-tasks`, `cells-apply`, and `cells-verify`.
+## Intent Matrix
 
-## Core Intent Matrix
-
-| Intent | Primary source | Required fallback order |
+| Intent | Primary evidence | Ordered fallback |
 | --- | --- | --- |
-| UI/component discovery, element selection, package/tag/API lookup | `skills/cells-components-catalog/` SQL lookup | `skills/cells-official-docs-catalog/` -> project code/tests |
-| Cells docs/process/CLI/testing/architecture/theming/i18n guidance | `skills/cells-official-docs-catalog/` | `skills/cells-components-catalog/` -> project code/tests |
-| Testing command, coverage, and test quality | `skills/cells-cli-usage/` -> `skills/cells-coverage/` -> `skills/cells-test-creator/` | escalate as `partial` or `blocked` (no generic runner by default) |
-| i18n translation/runtime/locales | `skills/cells-i18n/` + `skills/cells-official-docs-catalog/` | project code/tests (`demo/locales`, runtime bootstrap) |
-| file-location or path-sensitive changes | project file tree + direct file reads | `partial`/`blocked` (no inferred paths) |
+| Choose a UI/component package, tag, prop, event, or CSS hook | `cells-components-catalog` search | Project `custom-elements.json`/CEM, installed package source, project code and tests, then official docs |
+| Cells framework, architecture, CLI guidance, testing, i18n, theming, demos, or packaging | `cells-official-docs-catalog` search | Project code/CEM/tests, then component catalog when package detail matters |
+| Resolve a command to execute | Installed project scripts and manifest through `cells-cli-usage` | Official catalog's documented equivalent, then report a concrete gap |
+| Create or update tests | Relevant official testing guidance and `cells-test-creator` | Existing project tests and test configuration |
+| Analyze coverage | `cells-coverage` and actual report artifacts | Targeted test output and project configuration |
+| Locate a file or local convention | Project tree and direct file reads | `partial` or `blocked`; do not invent a path |
 
-## Minimum Evidence by Phase
+The test command resolver is needed only when a test command must be selected or run. Coverage and test-authoring skills are not prerequisites for unrelated Cells work.
 
-### `cells-explore`
+## Routing Rules
 
-Must include evidence from:
+1. Classify the decision.
+2. Consult its primary source unless the decision is purely local-path or runtime evidence.
+3. Use the next fallback only when the primary source is unavailable or insufficient; record why for material work.
+4. Stop once the evidence answers the decision. Do not cross-check sources for ceremony.
 
-- at least one routing source from the intent matrix
-- project-local code (`src/`, `test/`, `package.json`, `custom-elements.json` when relevant)
-- source decision trace entry with primary source and fallback status
+For UI discovery, a catalog result identifies candidates; verify the selected API against the active project's CEM, package source, or code before relying on it. For command execution, observed installed scripts determine what can run; official documentation identifies the current equivalent.
 
-### `cells-tasks`
+## Source Decision Template
 
-Must include evidence from:
-
-- canonical planning dependencies (`proposal`, `spec`, `design`)
-- at least one routing source from the intent matrix for each major task group
-- mandatory testing stack evidence for every testing task group
-
-## Flow-Level Rule
-
-When the user asks to keep a minimal command surface, use only workflow commands as user-facing commands:
-
-- `/cells-init`
-- `/cells-explore`
-- `/cells-new`
-- `/cells-continue`
-- `/cells-ff`
-- `/cells-apply`
-- `/cells-verify`
-- `/cells-archive`
-
-Specialist behavior remains enabled through internal sub-agent routing and skill loading.
-
-## Source Decisions Template
+Use this for governed artifacts or material decisions:
 
 ```yaml
-- intent: <intent-name>
-  primary_source: <source>
+- intent: component-selection
+  primary_source: cells-components-catalog
   fallback_used: false
   fallback_source: null
   fallback_reason: null
   evidence_quality: high
-  status: ok
+  status: success
 ```
 
-## Hard Reliability Gate
+`status` uses the workflow meanings from `cells-governance-contract.md`. A catalog tool may retain its own `ok` query status.
 
-Do not return `status: ok` when any of these happened:
+## Evidence by Work Size
 
-- primary source for the detected intent was not consulted
-- file/path claims were made without repository evidence
-- i18n/locales guidance was provided without consulting i18n docs or runtime evidence
-- command recommendations bypassed Cells command policy in a Cells context
+- `fast-path`: inspect the narrow source that answers the question.
+- `scoped-change`: inspect the direct code and any source needed for an affected Cells rule or command.
+- `full-workflow`: retain source decisions for each material requirement and validation claim.
+
+Do not force a test-stack lookup, a catalog search, or a source-decision artifact when it has no connection to the user request.

@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.0.0 — Local runtime and native adapters
+
+- Added a dependency-free project/command/catalog/evidence CLI and optional stdio MCP server.
+- Replaced mandatory Engram with an independently installable Cells Memory application and optional JSON bridge.
+- Generated native role capabilities, invocable VS Code children, direct Codex skill discovery and native OpenCode delegation.
+- Replaced text-presence governance tests with executable regressions; added independent review fixes and source-bound evidence.
+- Rebuilt catalogs from supplied BBVA snapshots, with read-only queries, bounded previews and hash/ZIP integrity validation.
+- Added conflict-preserving installation plans, backups, single/multi profiles, idempotent updates and generated runtime delivery.
+- Integrated remote harness contracts and the retirement of eight overlapping skills; generated portable copies are no longer tracked.
+
+Historical release notes below describe their own versions, not current requirements.
+
 ## Notable Upgrades
 
 ### v1.0.0 — Cells Agent Bundle
@@ -66,23 +78,23 @@ cells teams/
 
 | Skill | Trigger | Path |
 |-------|---------|------|
-| `cells-init` | When initializing CELLS context or detecting project stack | [`skills/cells-init/SKILL.md`](skills/cells-init/SKILL.md) |
-| `cells-explore` | When investigating a problem space, component, or change area | [`skills/cells-explore/SKILL.md`](skills/cells-explore/SKILL.md) |
-| `cells-propose` | When creating a change proposal with intent and scope | [`skills/cells-propose/SKILL.md`](skills/cells-propose/SKILL.md) |
-| `cells-spec` | When writing delta specifications with requirements and scenarios | [`skills/cells-spec/SKILL.md`](skills/cells-spec/SKILL.md) |
-| `cells-design` | When producing technical design and architecture decisions | [`skills/cells-design/SKILL.md`](skills/cells-design/SKILL.md) |
-| `cells-tasks` | When breaking work into concrete implementation tasks | [`skills/cells-tasks/SKILL.md`](skills/cells-tasks/SKILL.md) |
-| `cells-apply` | When implementing planned tasks against spec and design | [`skills/cells-apply/SKILL.md`](skills/cells-apply/SKILL.md) |
-| `cells-verify` | When validating implementation against requirements | [`skills/cells-verify/SKILL.md`](skills/cells-verify/SKILL.md) |
-| `cells-archive` | When closing a completed change and archiving artifacts | [`skills/cells-archive/SKILL.md`](skills/cells-archive/SKILL.md) |
-| `cells-component-researcher` | When discovering component APIs, events, CSS hooks, or usage patterns | [`skills/cells-component-researcher/SKILL.md`](skills/cells-component-researcher/SKILL.md) |
-| `cells-component-authoring` | When creating or evolving a reusable Cells component package | [`skills/cells-component-authoring/SKILL.md`](skills/cells-component-authoring/SKILL.md) |
-| `cells-composition-architect` | When composing features from existing Cells packages | [`skills/cells-composition-architect/SKILL.md`](skills/cells-composition-architect/SKILL.md) |
-| `cells-feature-analyzer` | When analyzing real feature implementations for reusable patterns | [`skills/cells-feature-analyzer/SKILL.md`](skills/cells-feature-analyzer/SKILL.md) |
-| `cells-app-architecture` | When working with feature structure, data managers, routing, or bridge | [`skills/cells-app-architecture/SKILL.md`](skills/cells-app-architecture/SKILL.md) |
-| `cells-cli-usage` | When resolving which Cells CLI command to use | [`skills/cells-cli-usage/SKILL.md`](skills/cells-cli-usage/SKILL.md) |
-| `cells-coverage` | When analyzing coverage reports or triaging failed tests | [`skills/cells-coverage/SKILL.md`](skills/cells-coverage/SKILL.md) |
-| `cells-test-creator` | When authoring or updating tests using OpenWC and Sinon | [`skills/cells-test-creator/SKILL.md`](skills/cells-test-creator/SKILL.md) |
-| `cells-i18n` | When working with IntlMsg, locale parity, or translation discipline | [`skills/cells-i18n/SKILL.md`](skills/cells-i18n/SKILL.md) |
-| `agent-browser` | When browser confirmation, capture, or automation is needed | [`skills/agent-browser/SKILL.md`](skills/agent-browser/SKILL.md) |
-| `skill-registry` | When generating or updating the skill registry for the project | [`skills/skill-registry/SKILL.md`](skills/skill-registry/SKILL.md) |
+| `cells-init` | When initializing CELLS context or detecting project stack | [`skills/cells-init/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-init/SKILL.md) |
+| `cells-explore` | When investigating a problem space, component, or change area | [`skills/cells-explore/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-explore/SKILL.md) |
+| `cells-propose` | When creating a change proposal with intent and scope | [`skills/cells-propose/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-propose/SKILL.md) |
+| `cells-spec` | When writing delta specifications with requirements and scenarios | [`skills/cells-spec/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-spec/SKILL.md) |
+| `cells-design` | When producing technical design and architecture decisions | [`skills/cells-design/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-design/SKILL.md) |
+| `cells-tasks` | When breaking work into concrete implementation tasks | [`skills/cells-tasks/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-tasks/SKILL.md) |
+| `cells-apply` | When implementing planned tasks against spec and design | [`skills/cells-apply/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-apply/SKILL.md) |
+| `cells-verify` | When validating implementation against requirements | [`skills/cells-verify/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-verify/SKILL.md) |
+| `cells-archive` | When closing a completed change and archiving artifacts | [`skills/cells-archive/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-archive/SKILL.md) |
+| `cells-component-researcher` | When discovering component APIs, events, CSS hooks, or usage patterns | [`skills/cells-component-researcher/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-component-researcher/SKILL.md) |
+| `cells-component-authoring` | When creating or evolving a reusable Cells component package | [`skills/cells-component-authoring/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-component-authoring/SKILL.md) |
+| `cells-composition-architect` | When composing features from existing Cells packages | [`skills/cells-composition-architect/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-composition-architect/SKILL.md) |
+| `cells-feature-analyzer` | When analyzing real feature implementations for reusable patterns | [`skills/cells-feature-analyzer/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-feature-analyzer/SKILL.md) |
+| `cells-app-architecture` | When working with feature structure, data managers, routing, or bridge | [`skills/cells-app-architecture/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-app-architecture/SKILL.md) |
+| `cells-cli-usage` | When resolving which Cells CLI command to use | [`skills/cells-cli-usage/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-cli-usage/SKILL.md) |
+| `cells-coverage` | When analyzing coverage reports or triaging failed tests | [`skills/cells-coverage/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-coverage/SKILL.md) |
+| `cells-test-creator` | When authoring or updating tests using OpenWC and Sinon | [`skills/cells-test-creator/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-test-creator/SKILL.md) |
+| `cells-i18n` | When working with IntlMsg, locale parity, or translation discipline | [`skills/cells-i18n/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/cells-i18n/SKILL.md) |
+| `agent-browser` | When browser confirmation, capture, or automation is needed | [`skills/agent-browser/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/agent-browser/SKILL.md) |
+| `skill-registry` | When generating or updating the skill registry for the project | [`skills/skill-registry/SKILL.md`](https://github.com/PixelDroid19/cells-agents/blob/4a54ab9660ad97e23a45e8a37b602cc09dba6147/skills/skill-registry/SKILL.md) |

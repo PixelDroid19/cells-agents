@@ -1,5 +1,3 @@
-# OpenSpec Convention (VS Code runtime mirror)
+# Canonical guidance
 
-This file mirrors the canonical OpenSpec convention guidance for VS Code Copilot runtime context.
-
-Source of truth: `skills/_shared/openspec-convention.md`.
+Use the canonical shared contract: [skills/_shared/openspec-convention.md](../../../skills/_shared/openspec-convention.md). Native installation copies the complete shared directory beside the runtime.

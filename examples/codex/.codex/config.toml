@@ -1,15 +1,10 @@
-approval_policy = "on-request"
-personality = "pragmatic"
-sandbox_mode = "workspace-write"
-project_doc_fallback_filenames = ["CLAUDE.md", "GEMINI.md"]
-project_doc_max_bytes = 65536
-project_root_markers = [".git", "package.json", "pyproject.toml", "Cargo.toml", "project.godot"]
-
+# Merge these optional settings with your existing Codex configuration.
 [features]
 codex_hooks = true
-multi_agent = true
-unified_exec = true
 
 [agents]
-max_threads = 6
-max_depth = 1
+max_concurrent_threads_per_session = 4
+
+[mcp_servers.cells]
+command = "python3"
+args = ["-c", "import pathlib,runpy,sys; p=pathlib.Path.home()/'.codex/runtime'; sys.path.insert(0,str(p)); sys.argv=[str(p/'cells-agent.py'),'mcp']; runpy.run_path(str(p/'cells-agent.py'),run_name='__main__')"]

@@ -1,8 +1,3 @@
-# Mirrored Shared Skills
+# Canonical guidance
 
-This folder mirrors key shared CELLS contracts for VS Code/Copilot layered guidance.
-
-- `cells-governance-contract.md`
-- `cells-policy-matrix.yaml`
-
-Keep these mirrors aligned with `skills/_shared/`.
+Use the canonical shared contract: [skills/_shared/cells-work-sizing-contract.md](../../../skills/_shared/cells-work-sizing-contract.md). Native installation copies the complete shared directory beside the runtime.

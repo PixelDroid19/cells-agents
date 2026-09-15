@@ -1,6 +1,6 @@
 {
   "name": "cells-agent-bundle-codex",
-  "version": "2.2.1",
+  "version": "3.0.0",
   "description": "BBVA Cells workflow skills for Codex project installs and local plugin discovery.",
   "author": {
     "name": "D. J",
